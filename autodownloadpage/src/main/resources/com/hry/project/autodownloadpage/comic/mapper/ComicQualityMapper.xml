@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hry.project.comic.mapper.ComicQualityMapper">
+  <resultMap id="BaseResultMap" type="com.hry.project.autodownloadpage.comic.model.ComicQuality">
+    <id column="comic_id_" jdbcType="INTEGER" property="comicId" />
+    <result column="right_" jdbcType="INTEGER" property="right" />
+    <result column="pink_" jdbcType="INTEGER" property="pink" />
+    <result column="pop_" jdbcType="INTEGER" property="pop" />
+    <result column="rookie_" jdbcType="INTEGER" property="rookie" />
+    <result column="exclusive_" jdbcType="INTEGER" property="exclusive" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    comic_id_, right_, pink_, pop_, rookie_, exclusive_
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comic_quality
+    where comic_id_ = #{comicId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comic_quality
+    where comic_id_ = #{comicId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hry.project.autodownloadpage.comic.model.ComicQuality">
+    insert into comic_quality (comic_id_, right_, pink_, 
+      pop_, rookie_, exclusive_
+      )
+    values (#{comicId,jdbcType=INTEGER}, #{right,jdbcType=INTEGER}, #{pink,jdbcType=INTEGER}, 
+      #{pop,jdbcType=INTEGER}, #{rookie,jdbcType=INTEGER}, #{exclusive,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicQuality">
+    insert into comic_quality
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="comicId != null">
+        comic_id_,
+      </if>
+      <if test="right != null">
+        right_,
+      </if>
+      <if test="pink != null">
+        pink_,
+      </if>
+      <if test="pop != null">
+        pop_,
+      </if>
+      <if test="rookie != null">
+        rookie_,
+      </if>
+      <if test="exclusive != null">
+        exclusive_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="comicId != null">
+        #{comicId,jdbcType=INTEGER},
+      </if>
+      <if test="right != null">
+        #{right,jdbcType=INTEGER},
+      </if>
+      <if test="pink != null">
+        #{pink,jdbcType=INTEGER},
+      </if>
+      <if test="pop != null">
+        #{pop,jdbcType=INTEGER},
+      </if>
+      <if test="rookie != null">
+        #{rookie,jdbcType=INTEGER},
+      </if>
+      <if test="exclusive != null">
+        #{exclusive,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicQuality">
+    update comic_quality
+    <set>
+      <if test="right != null">
+        right_ = #{right,jdbcType=INTEGER},
+      </if>
+      <if test="pink != null">
+        pink_ = #{pink,jdbcType=INTEGER},
+      </if>
+      <if test="pop != null">
+        pop_ = #{pop,jdbcType=INTEGER},
+      </if>
+      <if test="rookie != null">
+        rookie_ = #{rookie,jdbcType=INTEGER},
+      </if>
+      <if test="exclusive != null">
+        exclusive_ = #{exclusive,jdbcType=INTEGER},
+      </if>
+    </set>
+    where comic_id_ = #{comicId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hry.project.autodownloadpage.comic.model.ComicQuality">
+    update comic_quality
+    set right_ = #{right,jdbcType=INTEGER},
+      pink_ = #{pink,jdbcType=INTEGER},
+      pop_ = #{pop,jdbcType=INTEGER},
+      rookie_ = #{rookie,jdbcType=INTEGER},
+      exclusive_ = #{exclusive,jdbcType=INTEGER}
+    where comic_id_ = #{comicId,jdbcType=INTEGER}
+  </update>
+</mapper>

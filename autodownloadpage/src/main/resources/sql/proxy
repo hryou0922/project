@@ -1,0 +1,15 @@
+create table proxylist(
+	id int PRIMARY key COMMENT '主键', 
+	createtime TIMESTAMP not null default now() COMMENT '创建时间',
+	updatetime TIMESTAMP not null default now() COMMENT '创建时间',
+	ip VARCHAR(30) not NULL COMMENT 'ip', 
+	port int not null COMMENT 'port',
+	anonymity VARCHAR(30) not null COMMENT '匿名度',
+	httptype VARCHAR(30) not null COMMENT '类型',
+	getpost VARCHAR(30) not null COMMENT 'get/post支持',
+	location VARCHAR(256) not null COMMENT '位置',
+	respondingSpeed VARCHAR(60) not null COMMENT '响应速度',
+	lastVerifyTime TIMESTAMP not null default now()  COMMENT '最后验证时间',
+    susNum int not null default 0 comment '成功次数',
+    failNum int not null default 0 comment '失败次数'
+)

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hry.project.comic.mapper.ComicTagMapper">
+  <resultMap id="BaseResultMap" type="com.hry.project.autodownloadpage.comic.model.ComicTag">
+    <id column="id_" jdbcType="INTEGER" property="id" />
+    <result column="tagname_" jdbcType="VARCHAR" property="tagname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id_, tagname_
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comic_tag
+    where id_ = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comic_tag
+    where id_ = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hry.project.autodownloadpage.comic.model.ComicTag">
+    insert into comic_tag (id_, tagname_)
+    values (#{id,jdbcType=INTEGER}, #{tagname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicTag">
+    insert into comic_tag
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id_,
+      </if>
+      <if test="tagname != null">
+        tagname_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="tagname != null">
+        #{tagname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicTag">
+    update comic_tag
+    <set>
+      <if test="tagname != null">
+        tagname_ = #{tagname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id_ = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hry.project.autodownloadpage.comic.model.ComicTag">
+    update comic_tag
+    set tagname_ = #{tagname,jdbcType=VARCHAR}
+    where id_ = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

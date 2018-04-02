@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hry.project.comic.mapper.ComicSubMapper">
+  <resultMap id="BaseResultMap" type="com.hry.project.autodownloadpage.comic.model.ComicSub">
+    <id column="comics_id_" jdbcType="INTEGER" property="comicsId" />
+    <result column="popularity_" jdbcType="BIGINT" property="popularity" />
+    <result column="last_update_chapter_" jdbcType="INTEGER" property="lastUpdateChapter" />
+    <result column="num_of_evaluator_" jdbcType="INTEGER" property="numOfEvaluator" />
+    <result column="num_of_collections_" jdbcType="INTEGER" property="numOfCollections" />
+    <result column="num_of_red_vote_" jdbcType="INTEGER" property="numOfRedVote" />
+    <result column="num_of_black_vote_" jdbcType="INTEGER" property="numOfBlackVote" />
+    <result column="score_" jdbcType="INTEGER" property="score" />
+    <result column="month_ticket_today_" jdbcType="INTEGER" property="monthTicketToday" />
+    <result column="month_ticket_" jdbcType="INTEGER" property="monthTicket" />
+    <result column="create_time_" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="month_ticker_rank_" jdbcType="INTEGER" property="monthTickerRank" />
+    <result column="update_time_" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    comics_id_, popularity_, last_update_chapter_, num_of_evaluator_, num_of_collections_, 
+    num_of_red_vote_, num_of_black_vote_, score_, month_ticket_today_, month_ticket_, 
+    create_time_, month_ticker_rank_, update_time_
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comic_sub
+    where comics_id_ = #{comicsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comic_sub
+    where comics_id_ = #{comicsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hry.project.autodownloadpage.comic.model.ComicSub">
+    insert into comic_sub (comics_id_, popularity_, last_update_chapter_, 
+      num_of_evaluator_, num_of_collections_, num_of_red_vote_, 
+      num_of_black_vote_, score_, month_ticket_today_, 
+      month_ticket_, create_time_, month_ticker_rank_, 
+      update_time_)
+    values (#{comicsId,jdbcType=INTEGER}, #{popularity,jdbcType=BIGINT}, #{lastUpdateChapter,jdbcType=INTEGER}, 
+      #{numOfEvaluator,jdbcType=INTEGER}, #{numOfCollections,jdbcType=INTEGER}, #{numOfRedVote,jdbcType=INTEGER}, 
+      #{numOfBlackVote,jdbcType=INTEGER}, #{score,jdbcType=INTEGER}, #{monthTicketToday,jdbcType=INTEGER}, 
+      #{monthTicket,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{monthTickerRank,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicSub">
+    insert into comic_sub
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="comicsId != null">
+        comics_id_,
+      </if>
+      <if test="popularity != null">
+        popularity_,
+      </if>
+      <if test="lastUpdateChapter != null">
+        last_update_chapter_,
+      </if>
+      <if test="numOfEvaluator != null">
+        num_of_evaluator_,
+      </if>
+      <if test="numOfCollections != null">
+        num_of_collections_,
+      </if>
+      <if test="numOfRedVote != null">
+        num_of_red_vote_,
+      </if>
+      <if test="numOfBlackVote != null">
+        num_of_black_vote_,
+      </if>
+      <if test="score != null">
+        score_,
+      </if>
+      <if test="monthTicketToday != null">
+        month_ticket_today_,
+      </if>
+      <if test="monthTicket != null">
+        month_ticket_,
+      </if>
+      <if test="createTime != null">
+        create_time_,
+      </if>
+      <if test="monthTickerRank != null">
+        month_ticker_rank_,
+      </if>
+      <if test="updateTime != null">
+        update_time_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="comicsId != null">
+        #{comicsId,jdbcType=INTEGER},
+      </if>
+      <if test="popularity != null">
+        #{popularity,jdbcType=BIGINT},
+      </if>
+      <if test="lastUpdateChapter != null">
+        #{lastUpdateChapter,jdbcType=INTEGER},
+      </if>
+      <if test="numOfEvaluator != null">
+        #{numOfEvaluator,jdbcType=INTEGER},
+      </if>
+      <if test="numOfCollections != null">
+        #{numOfCollections,jdbcType=INTEGER},
+      </if>
+      <if test="numOfRedVote != null">
+        #{numOfRedVote,jdbcType=INTEGER},
+      </if>
+      <if test="numOfBlackVote != null">
+        #{numOfBlackVote,jdbcType=INTEGER},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="monthTicketToday != null">
+        #{monthTicketToday,jdbcType=INTEGER},
+      </if>
+      <if test="monthTicket != null">
+        #{monthTicket,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="monthTickerRank != null">
+        #{monthTickerRank,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicSub">
+    update comic_sub
+    <set>
+      <if test="popularity != null">
+        popularity_ = #{popularity,jdbcType=BIGINT},
+      </if>
+      <if test="lastUpdateChapter != null">
+        last_update_chapter_ = #{lastUpdateChapter,jdbcType=INTEGER},
+      </if>
+      <if test="numOfEvaluator != null">
+        num_of_evaluator_ = #{numOfEvaluator,jdbcType=INTEGER},
+      </if>
+      <if test="numOfCollections != null">
+        num_of_collections_ = #{numOfCollections,jdbcType=INTEGER},
+      </if>
+      <if test="numOfRedVote != null">
+        num_of_red_vote_ = #{numOfRedVote,jdbcType=INTEGER},
+      </if>
+      <if test="numOfBlackVote != null">
+        num_of_black_vote_ = #{numOfBlackVote,jdbcType=INTEGER},
+      </if>
+      <if test="score != null">
+        score_ = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="monthTicketToday != null">
+        month_ticket_today_ = #{monthTicketToday,jdbcType=INTEGER},
+      </if>
+      <if test="monthTicket != null">
+        month_ticket_ = #{monthTicket,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time_ = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="monthTickerRank != null">
+        month_ticker_rank_ = #{monthTickerRank,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time_ = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where comics_id_ = #{comicsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hry.project.autodownloadpage.comic.model.ComicSub">
+    update comic_sub
+    set popularity_ = #{popularity,jdbcType=BIGINT},
+      last_update_chapter_ = #{lastUpdateChapter,jdbcType=INTEGER},
+      num_of_evaluator_ = #{numOfEvaluator,jdbcType=INTEGER},
+      num_of_collections_ = #{numOfCollections,jdbcType=INTEGER},
+      num_of_red_vote_ = #{numOfRedVote,jdbcType=INTEGER},
+      num_of_black_vote_ = #{numOfBlackVote,jdbcType=INTEGER},
+      score_ = #{score,jdbcType=INTEGER},
+      month_ticket_today_ = #{monthTicketToday,jdbcType=INTEGER},
+      month_ticket_ = #{monthTicket,jdbcType=INTEGER},
+      create_time_ = #{createTime,jdbcType=TIMESTAMP},
+      month_ticker_rank_ = #{monthTickerRank,jdbcType=INTEGER},
+      update_time_ = #{updateTime,jdbcType=TIMESTAMP}
+    where comics_id_ = #{comicsId,jdbcType=INTEGER}
+  </update>
+</mapper>

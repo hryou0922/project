@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hry.project.comic.mapper.ComicAuthorMapper">
+  <resultMap id="BaseResultMap" type="com.hry.project.autodownloadpage.comic.model.ComicAuthor">
+    <id column="id_" jdbcType="INTEGER" property="id" />
+    <result column="name_" jdbcType="VARCHAR" property="name" />
+    <result column="auth_notice_" jdbcType="VARCHAR" property="authNotice" />
+    <result column="type_" jdbcType="VARCHAR" property="type" />
+    <result column="num_of_work_" jdbcType="INTEGER" property="numOfWork" />
+    <result column="create_time_" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="author_image_" jdbcType="VARCHAR" property="authorImage" />
+    <result column="update_time_" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id_, name_, auth_notice_, type_, num_of_work_, create_time_, author_image_, update_time_
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comic_author
+    where id_ = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comic_author
+    where id_ = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hry.project.autodownloadpage.comic.model.ComicAuthor">
+    insert into comic_author (id_, name_, auth_notice_, 
+      type_, num_of_work_, create_time_, 
+      author_image_, update_time_)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{authNotice,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{numOfWork,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{authorImage,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicAuthor">
+    insert into comic_author
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id_,
+      </if>
+      <if test="name != null">
+        name_,
+      </if>
+      <if test="authNotice != null">
+        auth_notice_,
+      </if>
+      <if test="type != null">
+        type_,
+      </if>
+      <if test="numOfWork != null">
+        num_of_work_,
+      </if>
+      <if test="createTime != null">
+        create_time_,
+      </if>
+      <if test="authorImage != null">
+        author_image_,
+      </if>
+      <if test="updateTime != null">
+        update_time_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="authNotice != null">
+        #{authNotice,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="numOfWork != null">
+        #{numOfWork,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="authorImage != null">
+        #{authorImage,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hry.project.autodownloadpage.comic.model.ComicAuthor">
+    update comic_author
+    <set>
+      <if test="name != null">
+        name_ = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="authNotice != null">
+        auth_notice_ = #{authNotice,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type_ = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="numOfWork != null">
+        num_of_work_ = #{numOfWork,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time_ = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="authorImage != null">
+        author_image_ = #{authorImage,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time_ = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id_ = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hry.project.autodownloadpage.comic.model.ComicAuthor">
+    update comic_author
+    set name_ = #{name,jdbcType=VARCHAR},
+      auth_notice_ = #{authNotice,jdbcType=VARCHAR},
+      type_ = #{type,jdbcType=VARCHAR},
+      num_of_work_ = #{numOfWork,jdbcType=INTEGER},
+      create_time_ = #{createTime,jdbcType=TIMESTAMP},
+      author_image_ = #{authorImage,jdbcType=VARCHAR},
+      update_time_ = #{updateTime,jdbcType=TIMESTAMP}
+    where id_ = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
