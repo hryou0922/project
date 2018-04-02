@@ -7,11 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="autodownloadpage" />
+        <module name="csdnblog" />
+        <module name="simple" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="autodownloadpage" target="1.8" />
       <module name="project" target="1.8" />
+      <module name="simple" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
