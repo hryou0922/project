@@ -17,8 +17,9 @@ import java.util.regex.Pattern;
 public class CsdnBlogMain {
 
     public static void main(String[] args) {
-        String urlPrex = "https://blog.csdn.net/sunhf_csdn/article/list/";
-        // String urlPrex = "https://blog.csdn.net/hry2015/article/list/";
+        // 这个皮肤的博客暂时不支持抓取
+        // String urlPrex = "https://blog.csdn.net/sunhf_csdn/article/list/";
+        String urlPrex = "https://blog.csdn.net/hry2015/article/list/";
         int page = 10; // 参考的博客页面数
 
         CsdnBlogManger csdnBlogManger = new CsdnBlogManger(urlPrex, page);
