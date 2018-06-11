@@ -12,6 +12,7 @@
         <module>autodownloadpage</module>
         <module>csdnblog</module>
         <module>simple</module>
+        <module>translate</module>
     </modules>
 
     <properties>
