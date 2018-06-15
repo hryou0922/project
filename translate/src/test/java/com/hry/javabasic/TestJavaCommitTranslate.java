@@ -19,45 +19,51 @@ public class TestJavaCommitTranslate {
 
     public static void main(String[] args) throws IOException {
         String saveFile = "d://tmp/commint.txt";
-        String file = "D:\\eclipse_study\\source\\source\\java\\src\\main\\java\\java\\util\\concurrent\\locks\\AbstractQueuedSynchronizer.java";
-        int start = 341;
-        int end = 393;
+   //     String file = "D:\\eclipse_study\\source\\source\\java\\src\\main\\java\\java\\util\\concurrent\\locks\\AbstractQueuedSynchronizer.java";
+        String file = "D:\\DEV_TOOLS\\java_src\\jdk-e03f9868f7df\\src\\share\\classes\\java\\util\\concurrent\\locks\\ReentrantReadWriteLock.java";
+
 
         // 写入文本
         final List<String> writeFileList = new ArrayList<>();
 
-        List<String> segmentList = getLineFromFile(file, start, end);
-        segmentList.stream().forEach((a) -> {
-            Querier<AbstractTranslator> querierTrans = new Querier<>();                   // 获取查询器
-            querierTrans.setParams(LANG.EN, LANG.ZH, a);
-            querierTrans.attach(new GoogleTranslator());                                  // 向查询器中添加 Google 翻译器
-            List<String> result = querierTrans.execute();
-            writeFileList.add(a);
-            writeFileList.add(result.get(0));
-            System.out.println("test: " + a);
-            System.out.println("result: " + result);
-        });
+        List<String> segmentList = getLineFromFile(file);
+        FileUtils.writeLines(new File(saveFile), segmentList);
+
+//        segmentList.stream().forEach((a) -> {
+//            Querier<AbstractTranslator> querierTrans = new Querier<>();                   // 获取查询器
+//            querierTrans.setParams(LANG.EN, LANG.ZH, a);
+//            querierTrans.attach(new GoogleTranslator());                                  // 向查询器中添加 Google 翻译器
+//            List<String> result = querierTrans.execute();
+//            writeFileList.add(a);
+//            writeFileList.add(result.get(0));
+//            System.out.println("test: " + a);
+//            System.out.println("result: " + result);
+//        });
 
         // 保存本地
-        FileUtils.writeLines(new File(saveFile), writeFileList);
+    //    FileUtils.writeLines(new File(saveFile), writeFileList);
     }
 
     /**
      * 从文件中获取行
      *
      * @param file
-     * @param start
-     * @param end
      * @return
      * @throws IOException
      */
-    private static List<String> getLineFromFile(String file, int start, int end) throws IOException {
+    private static List<String> getLineFromFile(String file) throws IOException {
         List<String> lineList = FileUtils.readLines(new File(file), "utf-8");
 
         List<String> segmentList = new ArrayList<>();
         StringBuilder lineSb = new StringBuilder();
-        for(int i = start-1; i < ((lineList.size() > end) ? end : lineList.size()); i++){
-            String line = lineList.get(i).replace("*","").trim();
+        for(int i = 0; i < lineList.size(); i++){
+            String line =  lineList.get(i);
+            if(!line.contains("*")){
+                segmentList.add(lineSb.toString());
+                lineSb.delete(0,lineSb.length());
+                continue;
+            }
+            line = line.replace("*","").trim();
             if(line.isEmpty()){
                 segmentList.add(lineSb.toString());
                 lineSb.delete(0,lineSb.length());
