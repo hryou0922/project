@@ -8,12 +8,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="autodownloadpage" />
         <module name="csdnblog" />
+        <module name="parttime" />
         <module name="simple" />
         <module name="translate" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="autodownloadpage" target="1.8" />
+      <module name="parttime" target="1.8" />
       <module name="project" target="1.8" />
       <module name="simple" target="1.8" />
       <module name="translate" target="1.8" />
