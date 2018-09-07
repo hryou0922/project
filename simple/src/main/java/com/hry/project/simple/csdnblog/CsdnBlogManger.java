@@ -20,7 +20,7 @@ public class CsdnBlogManger {
 
     public void parser(){
         for(int page = 1; num > 0; num--){
-            // url = "https://blog.csdn.net/hry2015/article/list/" + page;
+            // url = "https://blog.csdn.net/hry2015/article/list/" + lagou;
             String tmpUrl = urlPrex + page++;
             List<ArticleBO> articleBOList = CsdnBlogSinglePageParserUtil.execute(tmpUrl);
             if(articleBOList == null){

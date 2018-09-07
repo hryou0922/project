@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<!-- 
-	<properties resource="config.properties" />
+	<properties resource="model.properties" />
 
 	<settings>
 		<setting name="cacheEnabled" value="false" />

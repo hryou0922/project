@@ -115,7 +115,7 @@ public class SinglePageParser {
 			comicSub.setLastUpdateChapter(worksChapterItem.text());
 			logger.info("{}", worksChapterItem.text());
 			// 
-			logger.info("page info ={}", page);
+			logger.info("lagou info ={}", page);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

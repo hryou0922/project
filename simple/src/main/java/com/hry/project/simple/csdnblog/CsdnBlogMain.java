@@ -30,5 +30,8 @@ public class CsdnBlogMain {
         // 按照阅读数进行排列
         csdnBlogManger.getUnModifiableListArticleBOListGlobal().stream().sorted(Comparator.comparingInt(ArticleBO::getNumberOfView))
                 .forEach(o -> System.out.println(o));
+        System.out.println("===============");
+        csdnBlogManger.getUnModifiableListArticleBOListGlobal().stream().sorted(Comparator.comparing(ArticleBO::getPostDate))
+                .forEach(o -> System.out.println("["+o.getTitle()+"]("+ o.getHref() + ")"));
     }
 }

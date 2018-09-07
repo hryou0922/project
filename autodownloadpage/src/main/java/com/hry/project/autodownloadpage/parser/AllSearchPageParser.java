@@ -26,7 +26,7 @@ public class AllSearchPageParser {
 	public void parser() throws IOException, InterruptedException {
 		int num = 400;
 		for (int i = 44; i <= num; i++) {
-			String url = "http://ac.qq.com/Comic/all/search/hot/page/" + i + "/";
+			String url = "http://ac.qq.com/Comic/all/search/hot/lagou/" + i + "/";
 			parser(url, i);
 			Thread.sleep(1000 * 2);
 		}

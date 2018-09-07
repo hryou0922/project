@@ -13,6 +13,7 @@
         <module>simple</module>
         <module>translate</module>
         <module>parttime</module>
+        <module>lagou</module>
     </modules>
 
     <properties>
