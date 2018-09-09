@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.stereotype.Component;
 
 @Component
+@Deprecated
 public class MongodbMsg {
 
     private final MongoDbFactory mongo;

@@ -24,7 +24,7 @@ public class LagouTimerScheduler {
         log.info("downloadPage--");
     }
 
-    @Scheduled(initialDelay=1000, fixedRate=300000)
+    @Scheduled(initialDelay=1000, fixedRate=30000)
     public void parserLocalJson() {
         positionParserSaveManager.execute();
         log.info("parserLocalJson--");
