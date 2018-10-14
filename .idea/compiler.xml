@@ -12,6 +12,7 @@
         <module name="parttime" />
         <module name="simple" />
         <module name="translate" />
+        <module name="zhihu" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -21,6 +22,7 @@
       <module name="project" target="1.8" />
       <module name="simple" target="1.8" />
       <module name="translate" target="1.8" />
+      <module name="zhihu" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
