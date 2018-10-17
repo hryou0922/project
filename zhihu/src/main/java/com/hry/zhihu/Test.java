@@ -1,5 +1,6 @@
 package com.hry.zhihu;
 
+import com.hry.zhihu.util.Char2ImgUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -12,14 +13,18 @@ import java.util.*;
 
 public class Test {
     public static void main(String[] args){
+
         RestTemplate restTemplate = new RestTemplate();
 //        String url = "https://www.zhihu.com/api/v4/questions/294088771/answers?include=data[*].is_normal,admin_closed_comment,reward_info,is_collapsed,annotation_action,annotation_detail,collapse_reason,is_sticky,collapsed_by,suggest_edit,comment_count,can_comment,content,editable_content,voteup_count,reshipment_settings,comment_permission,created_time,updated_time,review_info,relevant_info,question,excerpt,relationship.is_authorized,is_author,voting,is_thanked,is_nothelp;data[*].mark_infos[*].url;data[*].author.follower_count,badge[*].topics&offset=0&limit=120&sort_by=created";
         // 名称 pageId
 //        String name = "你听过哪些不反智的鸡汤";
 //        String pageId = "294088771";
 
-        String name = "你听过哪些反智的鸡汤";
-        String pageId = "65218492";
+        String name = "男生对女朋友可以心机深到什么程度-tmp";
+        String pageId = "47517195";
+
+        String pngPathRoot = "C:\\Users\\hry\\Desktop\\tmp\\other\\char2img\\"+pageId+"\\"+name + "\\";
+        new File(pngPathRoot).mkdirs();
 
         String url = url(pageId, 0);
         ResponseEntity<Answer> responseEntity = restTemplate.getForEntity(url, Answer.class);
@@ -35,7 +40,7 @@ public class Test {
         dataList.addAll(responseEntity.getBody().getData());
 
         // 后续继续访问
-        // total = 20;
+        // total = 500;
         for(int num = 20; num < total; num += 20){
             url = url(pageId, num);
             responseEntity = restTemplate.getForEntity(url, Answer.class);
@@ -44,7 +49,7 @@ public class Test {
 
         // 分析内容
         List<AnswerData> bigAnswerDataList = new ArrayList<>(); // 文章的长度过长
-        int contentLengthThreadshold = 500; // 文章长度
+        int contentLengthThreadshold = 600; // 文章长度
         int voteupCountThreshold = 10; // 赞
         int voteupCountAnswerNum = 0;
         Iterator<AnswerData> answerDataIterator = dataList.iterator();
@@ -96,6 +101,15 @@ public class Test {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // 生成img
+        // 生成内容
+        for(int i = 0; i < dataList.size(); i++ ){
+            AnswerData data = dataList.get(i);
+            String content =  data.getContent().replaceAll("<br>","")
+                    .replaceAll("<br />", "");
+            Char2ImgUtils.createImage(content,32 , new File(pngPathRoot + "\\" + i + ".png"),640);
+        }
     }
 
     // 生成内容
@@ -118,7 +132,7 @@ public class Test {
 
     public static String url(String pageId, int offset){
         String urlMessage = "https://www.zhihu.com/api/v4/questions/{0}/answers?include=data[*].is_normal,admin_closed_comment,reward_info,is_collapsed,annotation_action,annotation_detail,collapse_reason,is_sticky,collapsed_by,suggest_edit,comment_count,can_comment,content,editable_content,voteup_count,reshipment_settings,comment_permission,created_time,updated_time,review_info,relevant_info,question,excerpt,relationship.is_authorized,is_author,voting,is_thanked,is_nothelp;data[*].mark_infos[*].url;data[*].author.follower_count,badge[*].topics&offset={1}&limit=20&sort_by=created";
-        String url = MessageFormat.format(urlMessage,pageId,offset);
+        String url = MessageFormat.format(urlMessage,pageId,String.valueOf(offset));
         return url;
     }
 }
