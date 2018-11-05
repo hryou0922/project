@@ -1,8 +1,13 @@
 package com.hry.zhihu;
 
 import com.hry.zhihu.util.Char2ImgUtils;
+import com.hry.zhihu.util.GeneratePage;
 import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -20,8 +25,10 @@ public class Test {
 //        String name = "你听过哪些不反智的鸡汤";
 //        String pageId = "294088771";
 
-        String name = "男生对女朋友可以心机深到什么程度-tmp";
-        String pageId = "47517195";
+        String name = "网络小说里有哪些令人拍案称奇的智障桥段";
+        String pageId = "59595588";
+        int voteupCountThreshold = 5; // 赞
+        int contentLengthThreadshold = 300; // 文章长度
 
         String pngPathRoot = "C:\\Users\\hry\\Desktop\\tmp\\other\\char2img\\"+pageId+"\\"+name + "\\";
         new File(pngPathRoot).mkdirs();
@@ -40,7 +47,7 @@ public class Test {
         dataList.addAll(responseEntity.getBody().getData());
 
         // 后续继续访问
-        // total = 500;
+        //total = 500;
         for(int num = 20; num < total; num += 20){
             url = url(pageId, num);
             responseEntity = restTemplate.getForEntity(url, Answer.class);
@@ -49,14 +56,15 @@ public class Test {
 
         // 分析内容
         List<AnswerData> bigAnswerDataList = new ArrayList<>(); // 文章的长度过长
-        int contentLengthThreadshold = 600; // 文章长度
-        int voteupCountThreshold = 10; // 赞
+
+
         int voteupCountAnswerNum = 0;
         Iterator<AnswerData> answerDataIterator = dataList.iterator();
         while(answerDataIterator.hasNext()){
             AnswerData answerData = answerDataIterator.next();
             // 处理内容
-            String content = answerData.getContent().replaceAll("<p>","<br />").replace("</p>","").replaceAll("<figure>(.*)</figure>","");
+            String content = answerData.getContent().replaceAll("<p>","<br />").replace("</p>","").replaceAll("<figure>(.*)</figure>","")
+                    .replaceAll("(<br />)+","<br />");
             answerData.setContent(content);
 
             if(answerData.getVoteup_count() <=  voteupCountThreshold){
@@ -104,12 +112,15 @@ public class Test {
 
         // 生成img
         // 生成内容
-        for(int i = 0; i < dataList.size(); i++ ){
-            AnswerData data = dataList.get(i);
-            String content =  data.getContent().replaceAll("<br>","")
-                    .replaceAll("<br />", "");
-            Char2ImgUtils.createImage(content,32 , new File(pngPathRoot + "\\" + i + ".png"),640);
-        }
+//        for(int i = 0; i < dataList.size(); i++ ){
+//            AnswerData data = dataList.get(i);
+//            String content =  data.getContent().replaceAll("<br>","")
+//                    .replaceAll("<br />", "");
+//            Char2ImgUtils.createImage(content,32 , new File(pngPathRoot + "\\" + i + ".png"),640);
+//        }
+
+        // 上传文章
+        generate(dataList, name);
     }
 
     // 生成内容
@@ -135,4 +146,28 @@ public class Test {
         String url = MessageFormat.format(urlMessage,pageId,String.valueOf(offset));
         return url;
     }
+
+
+    public static void generate( List<AnswerData> answerDataList, String titleName){
+        String cookie = "ccid=263a11f4018ecd2eca267e10e0c031b1; UM_distinctid=16668278eb31dd-0d5fb130af83f6-8383268-e1000-16668278eb55d6; sso_uid_tt=d3c1f83fa623bea8762c126274404d9e; toutiao_sso_user=75d455d6fbde8c028ec81169edfd15a9; sso_login_status=1; sessionid=607c11d8a0c7b383a0f35977ad3c457c; _mp_test_key_1=93cee2248abd631a63bad77db4dfd0fa; uid_tt=1853dea8796a40852f5e2ed5c39350ef; uuid=\"w:c41582fb05b648f28a5a43b9ea85b2e9\"; tt_im_token=1539345792910678793567441543526038082753779389693883707710580625; _ga=GA1.2.908201833.1539347059; _ba=BA0.2-20181013-5110e-4aj2ButvOQ0WfekENwDm; _mp_auth_key=a3d7be0dd54f6aa94c7282a01ccfb382; _ga=GA1.3.908201833.1539347059; __tea_sdk__ssid=8080974e-b431-491e-bb57-1503b37e7fe6; tt_webid=6612070268485600782; __tea_sdk__user_unique_id=105182348856; ptcn_no=98c1222dd41fc8c152496cef10eefae0";
+        // 添加记录
+        GeneratePage generatePage = new GeneratePage(cookie, titleName);
+        int contentLengthThreadShold = 1600;
+        System.out.println("=========数据大小===========" + answerDataList.size());
+        StringBuilder sbContent = new StringBuilder();
+        for(AnswerData answerData : answerDataList){
+            sbContent.append("<p>").append(answerData.getContent()).append("</p>");
+            sbContent.append("<p>=</p>");
+            if(sbContent.length() > contentLengthThreadShold){
+                generatePage.generatePage(sbContent.toString());
+                sbContent.delete( 0, sbContent.length() );
+                try {
+                    Thread.sleep(1000 * 3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
