@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="autodownloadpage" />
         <module name="csdnblog" />
+        <module name="fund" />
         <module name="lagou" />
         <module name="parttime" />
         <module name="simple" />
@@ -17,6 +18,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="autodownloadpage" target="1.8" />
+      <module name="fund" target="1.8" />
       <module name="lagou" target="1.8" />
       <module name="parttime" target="1.8" />
       <module name="project" target="1.8" />

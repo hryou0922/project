@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/autodownloadpage/autodownloadpage.iml" filepath="$PROJECT_DIR$/autodownloadpage/autodownloadpage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fund/fund.iml" filepath="$PROJECT_DIR$/fund/fund.iml" />
       <module fileurl="file://$PROJECT_DIR$/lagou/lagou.iml" filepath="$PROJECT_DIR$/lagou/lagou.iml" />
       <module fileurl="file://$PROJECT_DIR$/parttime/parttime.iml" filepath="$PROJECT_DIR$/parttime/parttime.iml" />
       <module fileurl="file://$PROJECT_DIR$/project.iml" filepath="$PROJECT_DIR$/project.iml" />

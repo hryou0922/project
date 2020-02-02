@@ -15,6 +15,7 @@
         <module>parttime</module>
         <module>lagou</module>
         <module>zhihu</module>
+        <module>fund</module>
     </modules>
 
     <properties>

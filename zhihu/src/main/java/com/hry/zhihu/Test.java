@@ -25,8 +25,8 @@ public class Test {
 //        String name = "你听过哪些不反智的鸡汤";
 //        String pageId = "294088771";
 
-        String name = "网络小说里有哪些令人拍案称奇的智障桥段";
-        String pageId = "59595588";
+        String name = "富二代有哪些身不由己的事情";
+        String pageId = "282906593";
         int voteupCountThreshold = 5; // 赞
         int contentLengthThreadshold = 300; // 文章长度
 
