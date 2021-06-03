@@ -1,12 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="war" name="parttime:war">
     <output-path>$PROJECT_DIR$/parttime/target</output-path>
-    <properties id="maven-jee-properties">
-      <options>
-        <module>parttime</module>
-        <packaging>war</packaging>
-      </options>
-    </properties>
     <root id="archive" name="parttime.war">
       <element id="artifact" artifact-name="parttime:war exploded" />
     </root>
