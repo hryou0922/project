@@ -1,0 +1,10 @@
+app:
+  id: ipass-simu
+# port
+server:
+  port: 10801
+  servlet:
+    context-path: /dictation
+#apollo:
+#  bootstrap:
+#    enabled: true

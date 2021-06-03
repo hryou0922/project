@@ -1,0 +1,17 @@
+# DataSource Config
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:D:/tmp/db/dictation.sqlite
+    #username: root
+    #password: root
+mybatis-plus:
+  global-config:
+    db-config:
+      select-strategy: not_empty
+  configuration:  # 打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #  扫描xml包下面的xml文件
+  # mapper-locations: 'classpath: com/hry/component/mybatisplus/mapper/**Mapper.xml'
+  # 配置 MyBatis Plus 自动扫描我们定义的枚举类型 支持统配符 * 或者 ; 分割
+  # typeEnumsPackage: im.yixin.simu.client.ipasssimu.enums

@@ -6,18 +6,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="autodownloadpage" />
+        <module name="parttime" />
         <module name="csdnblog" />
+        <module name="translate" />
         <module name="fund" />
         <module name="lagou" />
-        <module name="parttime" />
-        <module name="simple" />
-        <module name="translate" />
         <module name="zhihu" />
+        <module name="autodownloadpage" />
+        <module name="dictation" />
+        <module name="simple" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="autodownloadpage" target="1.8" />
+      <module name="dictation" target="1.8" />
       <module name="fund" target="1.8" />
       <module name="lagou" target="1.8" />
       <module name="parttime" target="1.8" />
@@ -26,5 +28,17 @@
       <module name="translate" target="1.8" />
       <module name="zhihu" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="autodownloadpage" options="-parameters" />
+      <module name="dictation" options="-parameters" />
+      <module name="fund" options="-parameters" />
+      <module name="lagou" options="-parameters" />
+      <module name="parttime" options="-parameters" />
+      <module name="simple" options="-parameters" />
+      <module name="translate" options="-parameters" />
+      <module name="zhihu" options="-parameters" />
+    </option>
   </component>
 </project>

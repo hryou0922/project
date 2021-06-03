@@ -16,6 +16,7 @@
         <module>lagou</module>
         <module>zhihu</module>
         <module>fund</module>
+        <module>dictation</module>
     </modules>
 
     <properties>
