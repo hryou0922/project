@@ -18,7 +18,7 @@ public class VoiceUtils {
         try {
             audioInputStream = AudioSystem.getAudioInputStream(new File(file));
             audioFormat = audioInputStream.getFormat();
-            logger.info("文件[{}],每秒播放帧数：{},每秒播放帧数:{},总帧数：{},音频时长（秒）：{} ",
+            logger.debug("文件[{}],每秒播放帧数：{},每秒播放帧数:{},总帧数：{},音频时长（秒）：{} ",
                     file, audioFormat.getSampleRate(),audioInputStream.getFrameLength(),
                     audioInputStream.getFrameLength() / audioFormat.getSampleRate());
             dataLine_info = new DataLine.Info(SourceDataLine.class, audioFormat);

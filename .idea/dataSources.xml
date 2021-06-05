@@ -6,7 +6,7 @@
       <synchronize>true</synchronize>
       <remarks>听写</remarks>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:/tmp/db/dictation.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:/db/dictation.sqlite</jdbc-url>
       <driver-properties>
         <property name="enable_load_extension" value="true" />
       </driver-properties>

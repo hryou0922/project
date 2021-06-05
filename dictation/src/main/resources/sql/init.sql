@@ -1,19 +1,19 @@
 
 -- 设备分组和配置
-CREATE TABLE group_config
+CREATE TABLE word
 (
     id BIGINT(20) NOT NULL primary key ,
-    name VARCHAR(64) not NULL ,
-    type int not null ,
-	create_time timestamp not null ,
-	last_run_time timestamp    ,
-	next_run_time timestamp   ,
-	dead_time timestamp    ,
-	next_interval int not null ,
-	run_time_range VARCHAR(64),
-	enable int not null default 1 ,
-	des VARCHAR(256)
+    grade int not null ,
+	  unit int not null ,
+	  article VARCHAR(64) not null,
+	  word VARCHAR(24) not null UNIQUE KEY ,
+	  voice_file VARCHAR(24) not null,
+	  des VARCHAR(256)
 );
+
+
+
+
 
 -- 设备分组和配置
 CREATE TABLE group_config

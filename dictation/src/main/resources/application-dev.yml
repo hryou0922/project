@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:D:/tmp/db/dictation.sqlite
+    url: jdbc:sqlite:D:/db/dictation.sqlite
     #username: root
     #password: root
 mybatis-plus:

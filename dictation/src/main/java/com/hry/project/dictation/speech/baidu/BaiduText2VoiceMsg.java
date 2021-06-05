@@ -17,6 +17,7 @@ import java.net.URL;
 public class BaiduText2VoiceMsg {
     private static final Logger logger = LoggerFactory.getLogger(BaiduText2VoiceMsg.class);
 
+
     /**
      * 填写网页上申请的appkey
      */
@@ -28,6 +29,11 @@ public class BaiduText2VoiceMsg {
     private final String secretKey = "d59wELkaMyKFEgt0BkE3z9GNV6bAkDGf";
 
     /**
+     * 可以使用https
+     */
+    private final String url = "http://tsn.baidu.com/text2audio";
+
+    /**
      *  // 发音人选择, 基础音库：0为度小美，1为度小宇，3为度逍遥，4为度丫丫，
      // 精品音库：5为度小娇，103为度米朵，106为度博文，110为度小童，111为度小萌，默认为度小美
      */
@@ -35,7 +41,7 @@ public class BaiduText2VoiceMsg {
     /**
      *  // 语速，取值0-15，默认为5中语速
      */
-    private final int spd = 1;
+    private final int spd = 5;
     /**
      *  // 音调，取值0-15，默认为5中语调
      */
@@ -50,28 +56,43 @@ public class BaiduText2VoiceMsg {
      */
     private final int aue = 6;
 
-    public final String url = "http://tsn.baidu.com/text2audio"; // 可以使用https
 
     private String cuid = "1234567JAVA";
 
     private String token;
 
+    /**
+     * 录音跟目录
+     */
+    private String rootDir;
 
+    public BaiduText2VoiceMsg(String rootDir) {
+        this.rootDir = rootDir;
+        // 创建目录
+        new File(rootDir).mkdirs();
+    }
 
     /**
-     * // text 的内容为"欢迎使用百度语音合成"的urlencode,utf-8 编码
+     * / text 的内容为"欢迎使用百度语音合成"的urlencode,utf-8 编码
      // 可以百度搜索"urlencode"
-     private final String text = "你好啊";
-     * @throws IOException
-     * @throws DemoException
+     * @param text
+     * @param relativeDir 相对目录：如 /2024/12/
+     * @return 如果执行成功，则返回对象，否则返回null
      */
-    public void text2wav(String text) {
+    public VoiceInfoResultVo text2wav(String text, String relativeDir) {
         if(!StringUtils.hasText(text)){
-            return;
+            return null;
         }
         if(!StringUtils.hasText(token)){
             refreshToken();
         }
+        if(StringUtils.hasText(relativeDir)){
+            // 创建目录
+            boolean mkdirResult = new File(rootDir + File.separator + relativeDir).mkdirs();
+            System.out.println(rootDir + File.separator + relativeDir + " " +mkdirResult);
+        }
+
+        VoiceInfoResultVo voiceInfoResultVo = null;
         // 此处2次urlencode， 确保特殊字符被正确编码
         String params = "tex=" + ConnUtil.urlEncode(ConnUtil.urlEncode(text));
         params += "&per=" + per;
@@ -95,11 +116,13 @@ public class BaiduText2VoiceMsg {
             if (contentType.contains("audio/")) {
                 byte[] bytes = ConnUtil.getResponseBytes(conn);
                 String format = getFormat(aue);
-                File file = new File("result2." + format); // 打开mp3文件即可播放
+                File file = new File(rootDir + File.separator + relativeDir + File.separator + text + "." + format);
                 FileOutputStream os = new FileOutputStream(file);
                 os.write(bytes);
                 os.close();
                 logger.info("audio file write to " + file.getAbsolutePath());
+                voiceInfoResultVo = new VoiceInfoResultVo();
+                voiceInfoResultVo.setVoiceFilePath(File.separator + relativeDir + File.separator + text + "." + format);
             } else {
                 logger.error("ERROR: content-type= " + contentType);
                 String res = ConnUtil.getResponseString(conn);
@@ -110,6 +133,7 @@ public class BaiduText2VoiceMsg {
         } catch (DemoException e) {
             logger.error("[{}]语音转换失败", text, e);
         }
+        return voiceInfoResultVo;
     }
 
     /**

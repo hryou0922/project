@@ -21,7 +21,7 @@ public class CodeGenerator {
         // 包路径
         String parentPackage = "com.hry.project.dictation";
         // 指定表名（可以同时操作多个表，使用 , 隔开）（需要修改）
-        String[] tables = new String[]{"group_config"};
+        String[] tables = new String[]{"word"};
 
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
@@ -66,7 +66,7 @@ public class CodeGenerator {
 //        dsc.setPassword("root");
 //        mpg.setDataSource(dsc);
         // sqlite
-        dsc.setUrl("jdbc:sqlite:D:/tmp/db/dictation.sqlite");
+        dsc.setUrl("jdbc:sqlite:D:/db/dictation.sqlite");
         dsc.setDriverName("org.sqlite.JDBC");
 //        dsc.setUsername("root");
 //        dsc.setPassword("root");

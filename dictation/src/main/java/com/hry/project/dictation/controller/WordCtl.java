@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author hry
- * @since 2021-06-03
+ * @since 2021-06-04
  */
 @RestController
-@RequestMapping("/group-config-model")
-public class GroupConfigCtl {
+@RequestMapping("/word-model")
+public class WordCtl {
 
 }
 
