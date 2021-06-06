@@ -1,9 +1,13 @@
 package com.hry.project.dictation.controller;
 
 
+import com.hry.project.dictation.model.WordModel;
+import com.hry.project.dictation.service.WordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,6 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/word-model")
 public class WordCtl {
+    @Autowired
+    private WordService wordService;
+
+    @RequestMapping(value = "list")
+    public List<WordModel> list(){
+        return wordService.list();
+    }
 
 }
 

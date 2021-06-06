@@ -11,6 +11,8 @@ public class VoicePlayMsgTest extends BaseTest {
     @Test
     public void a(){
     //    voicePlayMsg.execute(2,6, "古诗二首");
-        voicePlayMsg.execute(2,6, "雷雨");
+    //    voicePlayMsg.execute(2,6, "要是你在野外迷了路");
+     //   voicePlayMsg.execute(2,6, "太空生活趣事多");
+        voicePlayMsg.execute(2,6, "语文园地六");
     }
 }
