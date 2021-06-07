@@ -71,6 +71,19 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/word',
+    component: Layout,
+    redirect: '/word',
+    children: [
+    {
+      path: 'dashboard',
+      component: () => import('@/views/dashboard/index'),
+    name: 'Dashboard',
+    meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+  }
+  ]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
