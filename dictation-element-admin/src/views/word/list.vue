@@ -2,10 +2,15 @@
   <div class="app-container">
       <!-- 查询条件 -->
     <div class="filter-container">
+
+      <el-select v-model="listQuery.grade" placeholder="年级" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in gradeOptions" :key="item" :label="item+'年级'" :value="item" />
+      </el-select>
+      <el-select v-model="listQuery.unit" placeholder="单元" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in unitOptions" :key="item" :label="item+'单元'" :value="item" />
+      </el-select>
       <el-input v-model="listQuery.article" placeholder="文章名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-<!--      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">-->
-<!--        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />-->
-<!--      </el-select>-->
+
 <!--      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">-->
 <!--        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />-->
 <!--      </el-select>-->
@@ -14,6 +19,12 @@
 <!--      </el-select>-->
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
+      </el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handlePlay">
+        录音播放
+      </el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleStop">
+        停止
       </el-button>
 <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
 <!--        Add-->
@@ -114,7 +125,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/word'
+import { fetchList, stop, play } from '@/api/word'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -135,6 +146,8 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      gradeOptions: [2, 3],
+      unitOptions: [1,2,3,4,5,6,7,8],
       listQuery: {
         grade: undefined,
         unit: undefined,
@@ -160,7 +173,20 @@ export default {
     handleFilter() {
       this.listQuery.pageNum = 1
       this.getList()
+    },
+    // 播放
+    handlePlay() {
+      play(this.listQuery).then(response => {
+        console.log("播放")
+      })
+    },
+    // 停止
+    handleStop() {
+      stop(this.listQuery).then(response => {
+        console.log("播放")
+      })
     }
+
   }
 }
 </script>

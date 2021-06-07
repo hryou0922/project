@@ -16,9 +16,22 @@ public class SaveWordInDb extends BaseTest {
     private WordService wordService;
 
     @Test
+    public void saveWordFromFileTmp(){
+        // D:\study\project\dictation\src\main\resources\word\word.csv
+        String file = "src\\main\\resources\\word\\word_tmp.csv";
+        saveIntoDb(file);
+    }
+
+    @Test
     public void saveWordFromFile(){
         // D:\study\project\dictation\src\main\resources\word\word.csv
         String file = "src\\main\\resources\\word\\word.csv";
+        saveIntoDb(file);
+    }
+
+
+
+    private void saveIntoDb(String file) {
         try {
             List<String> lines = FileUtils.readLines(new File(file), "utf-8");
             int newAdd = 0;
@@ -58,6 +71,5 @@ public class SaveWordInDb extends BaseTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

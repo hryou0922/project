@@ -8,6 +8,23 @@ export function fetchList(query) {
   })
 }
 
+export function play(query) {
+  return request({
+    url: '/word/play',
+    method: 'post',
+    params: query
+  })
+}
+
+export function stop(query) {
+  return request({
+    url: '/word/stop',
+    method: 'get',
+    params: query
+  })
+}
+
+
 // export function fetchList(token) {
 //   return request({
 //     url: '/user/info',

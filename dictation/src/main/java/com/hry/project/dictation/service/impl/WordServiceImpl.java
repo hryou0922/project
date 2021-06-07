@@ -39,7 +39,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, WordModel> implemen
         queryWrapper.like(StringUtils.hasLength(qry.getArticle()), "article", qry.getArticle());
 
         Page<WordModel> pageQry = new Page<>();
-        pageQry.setMaxLimit(qry.getPageSize().longValue());
+        pageQry.setSize(qry.getPageSize().longValue());
         pageQry.setCurrent(qry.getPageNum());
 
         Page<WordModel> page = page(pageQry, queryWrapper);

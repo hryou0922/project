@@ -51,29 +51,36 @@ public class VoicePlayMsg {
 
         List<WordModel> wordModelList = wordService.list(queryWrapper);
         for(WordModel wordModel : wordModelList){
-            String word = wordModel.getWord();
-            String voiceFile = wordModel.getVoiceFile();
-            if(!StringUtils.hasText(voiceFile)){
-                text2Voice(wordModel);
-                // 重新获取新的录音文件地址
-                voiceFile = wordService.selectByWord(word).getVoiceFile();
-            }
-            if(StringUtils.hasText(voiceFile)){
-                String file = rootDir + File.separator + voiceFile;
-                logger.info("词语=[{}]，路径=[{}]", word, file);
-                int t = playNum;
-                while(t-- > 0 ) {
-                    VoiceUtils.play(file);
-                }
-            }
+            playOneWord(wordModel);
+        }
 
-            try {
-                Thread.sleep(word.length() * sleepSencond * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    }
+
+    public void playOneWord(WordModel wordModel){
+        String word = wordModel.getWord();
+        if(!StringUtils.hasLength(word)){
+            return;
+        }
+        String voiceFile = wordModel.getVoiceFile();
+        if(!StringUtils.hasText(voiceFile)){
+            text2Voice(wordModel);
+            // 重新获取新的录音文件地址
+            voiceFile = wordService.selectByWord(word).getVoiceFile();
+        }
+        if(StringUtils.hasText(voiceFile)){
+            String file = rootDir + File.separator + voiceFile;
+            logger.info("词语=[{}]，路径=[{}]", word, file);
+            int t = playNum;
+            while(t-- > 0 ) {
+                VoiceUtils.play(file);
             }
         }
 
+        try {
+            Thread.sleep(word.length() * sleepSencond * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
