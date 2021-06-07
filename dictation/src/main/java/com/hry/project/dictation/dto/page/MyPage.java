@@ -11,9 +11,9 @@ import java.util.Collections;
  */
 public class MyPage<T> extends CommonRsp {
 
-    private Integer totalCount = 0;//记录总数
+    private Integer total = 0;//记录总数
 
-    private Collection<T> rows = Collections.emptyList();//本次返回的数据列表
+    private Collection<T> items = Collections.emptyList();//本次返回的数据列表
 
     public static <T> MyPage<T> create(Collection<T> rows, Integer total) {
         if (CollectionUtils.isEmpty(rows)) {
@@ -21,11 +21,11 @@ public class MyPage<T> extends CommonRsp {
         }
 
         MyPage<T> page = new MyPage<>();
-        page.setRows(rows);
+        page.setItems(rows);
         if (total == null) {
             total = rows.size();
         }
-        page.setTotalCount(total);
+        page.setTotal(total);
         return page;
     }
 
@@ -44,19 +44,19 @@ public class MyPage<T> extends CommonRsp {
         this.setMessage(message);
     }
 
-    public Integer getTotalCount() {
-        return totalCount;
+    public Integer getTotal() {
+        return total;
     }
 
-    public void setTotalCount(Integer totalCount) {
-        this.totalCount = totalCount;
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 
-    public Collection<T> getRows() {
-        return rows;
+    public Collection<T> getItems() {
+        return items;
     }
 
-    public void setRows(Collection<T> rows) {
-        this.rows = rows;
+    public void setItems(Collection<T> items) {
+        this.items = items;
     }
 }

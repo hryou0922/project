@@ -71,19 +71,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/word',
-    component: Layout,
-    redirect: '/word',
-    children: [
-    {
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-    name: 'Dashboard',
-    meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-  }
-  ]
-  },
-  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -231,6 +218,38 @@ export const asyncRoutes = [
         component: () => import('@/views/example/list'),
         name: 'ArticleList',
         meta: { title: 'Article List', icon: 'list' }
+      }
+    ]
+  },
+
+  {
+    path: '/word',
+    component: Layout,
+    redirect: '/word/list',
+    name: 'Word',
+    meta: {
+      title: '词语管理',
+      icon: 'el-icon-s-help'
+    },
+    children: [
+      {
+        path: 'create',
+        component: () => import('@/views/word/create'),
+        name: 'CreateWord',
+        meta: { title: '创建词语', icon: 'edit' }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/word/edit'),
+        name: 'EditWord',
+        meta: { title: '编辑词语', noCache: true, activeMenu: '/word/list' },
+        hidden: true
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/word/list'),
+        name: 'WordList',
+        meta: { title: '词语列表', icon: 'list' }
       }
     ]
   },

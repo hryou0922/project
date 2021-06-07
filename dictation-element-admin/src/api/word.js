@@ -3,16 +3,15 @@ import request from '@/utils/request'
 export function fetchList(query) {
   return request({
     url: '/word/list',
-    method: 'get',
+    method: 'post',
     params: query
   })
 }
 
-
-export function searchUser(name) {
-  return request({
-    url: '/vue-element-admin/search/user',
-    method: 'get',
-    params: { name }
-  })
-}
+// export function fetchList(token) {
+//   return request({
+//     url: '/user/info',
+//     method: 'get',
+//     params: { token }
+//   })
+// }

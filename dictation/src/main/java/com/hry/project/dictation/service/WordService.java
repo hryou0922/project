@@ -1,7 +1,9 @@
 package com.hry.project.dictation.service;
 
-import com.hry.project.dictation.model.WordModel;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hry.project.dictation.dto.page.MyPage;
+import com.hry.project.dictation.dto.req.word.WordQry;
+import com.hry.project.dictation.model.WordModel;
 
 /**
  * <p>
@@ -14,4 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface WordService extends IService<WordModel> {
 
     WordModel selectByWord(String word);
+
+    MyPage<WordModel> queryPage(WordQry qry);
 }
