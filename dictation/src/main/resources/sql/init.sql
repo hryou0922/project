@@ -4,11 +4,11 @@ CREATE TABLE word
 (
     id BIGINT(20) NOT NULL primary key ,
     grade int not null ,
-	  unit int not null ,
-	  article VARCHAR(64) not null,
-	  word VARCHAR(24) not null UNIQUE KEY ,
-	  voice_file VARCHAR(24) not null,
-	  des VARCHAR(256)
+    unit int not null ,
+    article VARCHAR(64) not null,
+    word VARCHAR(24) not null UNIQUE ,
+    voice_file VARCHAR(24) not null,
+    des VARCHAR(256)
 );
 
 

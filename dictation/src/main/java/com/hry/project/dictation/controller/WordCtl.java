@@ -18,7 +18,7 @@ import java.util.List;
  * @since 2021-06-04
  */
 @RestController
-@RequestMapping("/word-model")
+@RequestMapping("/word")
 public class WordCtl {
     @Autowired
     private WordService wordService;
