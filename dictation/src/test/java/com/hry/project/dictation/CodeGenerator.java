@@ -21,7 +21,7 @@ public class CodeGenerator {
         // 包路径
         String parentPackage = "com.hry.project.dictation";
         // 指定表名（可以同时操作多个表，使用 , 隔开）（需要修改）
-        String[] tables = new String[]{"word", "dictation_his_tmp"};
+        String[] tables = new String[]{"word", "dictation_his_tmp","dictation_his"};
 
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();

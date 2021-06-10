@@ -1,9 +1,11 @@
 package com.hry.project.dictation.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -11,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author hry
- * @since 2021-06-04
+ * @since 2021-06-10
  */
 @TableName("word")
 public class WordModel implements Serializable {
@@ -30,6 +32,12 @@ public class WordModel implements Serializable {
     private String word;
 
     private String voiceFile;
+
+    private Integer lastResult;
+
+    private Integer level;
+
+    private Date levelTime;
 
     private String des;
 
@@ -82,6 +90,30 @@ public class WordModel implements Serializable {
         this.voiceFile = voiceFile;
     }
 
+    public Integer getLastResult() {
+        return lastResult;
+    }
+
+    public void setLastResult(Integer lastResult) {
+        this.lastResult = lastResult;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Date getLevelTime() {
+        return levelTime;
+    }
+
+    public void setLevelTime(Date levelTime) {
+        this.levelTime = levelTime;
+    }
+
     public String getDes() {
         return des;
     }
@@ -99,6 +131,9 @@ public class WordModel implements Serializable {
         ", article=" + article +
         ", word=" + word +
         ", voiceFile=" + voiceFile +
+        ", lastResult=" + lastResult +
+        ", level=" + level +
+        ", levelTime=" + levelTime +
         ", des=" + des +
         "}";
     }

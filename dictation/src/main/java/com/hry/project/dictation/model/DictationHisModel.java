@@ -15,10 +15,17 @@ import java.util.Date;
  * @author hry
  * @since 2021-06-10
  */
-@TableName("dictation_his_tmp")
-public class DictationHisTmpModel implements Serializable {
+@TableName("dictation_his")
+public class DictationHisModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 听写的结果，成功或失败
+     */
+    public static final int DICTATION_RESULT_SUCCESS = 1;
+    public static final int DICTATION_RESULT_FAIL = 0;
+
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
@@ -84,7 +91,7 @@ public class DictationHisTmpModel implements Serializable {
 
     @Override
     public String toString() {
-        return "DictationHisTmpModel{" +
+        return "DictationHisModel{" +
         "id=" + id +
         ", createTime=" + createTime +
         ", groupId=" + groupId +

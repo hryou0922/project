@@ -1,6 +1,7 @@
 package com.hry.project.dictation.service;
 
 import com.hry.project.dictation.dto.page.MyPage;
+import com.hry.project.dictation.dto.req.word.DictationHisTmpBatchUpdateReq;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
 import com.hry.project.dictation.model.DictationHisTmpModel;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -16,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface DictationHisTmpService extends IService<DictationHisTmpModel> {
 
     MyPage<DictationHisTmpModel> queryPage(DictationHisTmpQry qry);
+
+    void batchUpdate(DictationHisTmpBatchUpdateReq req);
 }

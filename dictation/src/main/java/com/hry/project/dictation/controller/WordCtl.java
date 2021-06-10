@@ -4,8 +4,11 @@ package com.hry.project.dictation.controller;
 import com.hry.project.dictation.dto.page.CommonRsp;
 import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.WordQry;
+import com.hry.project.dictation.model.DictationHisModel;
+import com.hry.project.dictation.model.DictationHisTmpModel;
 import com.hry.project.dictation.model.WordModel;
 import com.hry.project.dictation.msg.VoicePlayMsg;
+import com.hry.project.dictation.service.DictationHisTmpService;
 import com.hry.project.dictation.service.WordService;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,6 +40,8 @@ public class WordCtl {
 
     @Autowired
     private WordService wordService;
+    @Autowired
+    private DictationHisTmpService dictationHisTmpService;
     @Autowired
     private VoicePlayMsg voicePlayMsg;
 
@@ -84,6 +90,12 @@ public class WordCtl {
                                     }
                                     if (wordModel != null) {
                                         voicePlayMsg.playOneWord(wordModel);
+                                        // dictationHisTmpService
+                                        DictationHisTmpModel model = new DictationHisTmpModel();
+                                        model.setWord(wordModel.getWord());
+                                        model.setCreateTime(new Date());
+                                        model.setResult(DictationHisModel.DICTATION_RESULT_SUCCESS);
+                                        dictationHisTmpService.save(model);
                                     }
                                 }
                             }finally {

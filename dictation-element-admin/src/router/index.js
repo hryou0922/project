@@ -250,6 +250,12 @@ export const asyncRoutes = [
         component: () => import('@/views/word/list'),
         name: 'WordList',
         meta: { title: '词语列表', icon: 'list' }
+      },
+      {
+        path: 'dictation-his-tmp',
+        component: () => import('@/views/word/dictation-his-tmp'),
+        name: 'Dictation-hist-tmp',
+        meta: { title: '听写记录结果临时表', icon: 'list' }
       }
     ]
   },
