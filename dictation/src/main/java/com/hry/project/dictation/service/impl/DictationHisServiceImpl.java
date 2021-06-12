@@ -1,11 +1,15 @@
 package com.hry.project.dictation.service.impl;
 
-import com.hry.project.dictation.model.DictationHisModel;
-import com.hry.project.dictation.mapper.DictationHisMapper;
-import com.hry.project.dictation.service.DictationHisService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hry.project.dictation.utils.CheckUtil;
+import com.hry.project.dictation.dto.page.MyPage;
+import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
+import com.hry.project.dictation.mapper.DictationHisMapper;
+import com.hry.project.dictation.model.DictationHisModel;
+import com.hry.project.dictation.service.DictationHisService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * <p>
@@ -18,12 +22,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class DictationHisServiceImpl extends ServiceImpl<DictationHisMapper, DictationHisModel> implements DictationHisService {
 
+
     @Override
-    public void updateDictationResult(String word, int result){
-        CheckUtil.checkNotEmpty("word", word);
+    public MyPage<DictationHisModel> queryPage(DictationHisTmpQry qry) {
+        QueryWrapper<DictationHisModel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(StringUtils.hasLength(qry.getWord()) , "word", qry.getWord());
+        queryWrapper.eq(qry.getResult() != null, "result", qry.getResult());
+        queryWrapper.orderByDesc("create_time");
 
-        // 更新word的最后听写结果
+        Page<DictationHisModel> pageQry = new Page<>();
+        pageQry.setSize(qry.getPageSize().longValue());
+        pageQry.setCurrent(qry.getPageNum());
 
-        //
+
+        Page<DictationHisModel> page = page(pageQry, queryWrapper);
+
+        MyPage<DictationHisModel> myPage = MyPage.create(page.getRecords());
+        myPage.setTotal((int) page.getTotal());
+        return myPage;
     }
+
 }

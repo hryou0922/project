@@ -2,15 +2,10 @@
   <div class="app-container">
       <!-- 查询条件 -->
     <div class="filter-container">
-
-      <el-select v-model="listQuery.grade" placeholder="年级" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in gradeOptions" :key="item" :label="item+'年级'" :value="item" />
+      <el-input v-model="listQuery.word" placeholder="词语" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.result" placeholder="听写结果" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in resultOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
       </el-select>
-      <el-select v-model="listQuery.unit" placeholder="单元" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in unitOptions" :key="item" :label="item+'单元'" :value="item" />
-      </el-select>
-      <el-input v-model="listQuery.article" placeholder="文章标题" style="width: 120px;" class="filter-item"  />
-      <el-input v-model="listQuery.word" placeholder="词语" style="width: 120px;" class="filter-item"  />
 
 <!--      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">-->
 <!--        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />-->
@@ -18,15 +13,10 @@
 <!--      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">-->
 <!--        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />-->
 <!--      </el-select>-->
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handlePlay">
-        录音播放
-      </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleStop">
-        停止
-      </el-button>
+
 <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
 <!--        Add-->
 <!--      </el-button>-->
@@ -38,8 +28,14 @@
 <!--      </el-checkbox>-->
     </div>
 
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="id" width="200" v-if="false">
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%"
+              @selection-change="handleSelectionChange" >
+      <el-table-column
+        type="selection"
+        width="55" >
+      </el-table-column>
+
+      <el-table-column align="center" label="id" width="200"  v-if="false">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
@@ -51,57 +47,32 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 
-      <el-table-column width="80px" align="center" label="年级">
+      <el-table-column width="240px" align="center" label="时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.grade }} 年级</span>
+          <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="单元">
+      <el-table-column width="120px" align="center" label="分组编号">
         <template slot-scope="scope">
-          <span>{{ scope.row.unit }} 单元</span>
+          <span>{{ scope.row.groupId }} </span>
         </template>
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="文章标题">
-        <template slot-scope="scope">
-          <span>{{ scope.row.article }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="词语">
+      <el-table-column width="120px" align="center" label="词语">
         <template slot-scope="scope">
           <span>{{ scope.row.word }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="听写次数">
+      <el-table-column label="听写结果" class-name="status-col" width="100">
         <template slot-scope="scope">
-          <span>{{ scope.row.total }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="120px" align="center" label="熟练度级别">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.level | levelStatusFilter">
-            <span>{{ scope.row.level | levelFilter}}</span>
+          <el-tag :type="scope.row.result | statusFilter">
+            {{ scope.row.result | resultFilter }}
           </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="最后听写时间">
-        <template slot-scope="scope">
-
-            <span>{{ scope.row.levelTime }}</span>
-
-        </template>
-      </el-table-column>
-
-      <el-table-column width="360px" align="center" label="录音文件路径">
-        <template slot-scope="scope">
-          <span>{{ scope.row.voiceFile }}</span>
-        </template>
-      </el-table-column>
 
       <el-table-column width="120px" align="center" label="描述">
         <template slot-scope="scope">
@@ -148,23 +119,20 @@
 </template>
 
 <script>
-import { fetchList, stop, play } from '@/api/word'
+import { fetchList} from '@/api/dictation-his'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { parseTime } from '@/utils'
 
-const levelOptions = [
-  { key: -3, display_name: '极度需要练习' },
-  { key: -2, display_name: '需要练习' },
-  { key: -1, display_name: '不及格' },
-  { key: 0, display_name: '待测试' },
-  { key: 1, display_name: '及格' },
-  { key: 2, display_name: '良' },
-  { key: 3, display_name: '优秀' }
+const resultOptions = [
+  { key: 1, display_name: '正确' },
+  { key: 0, display_name: '错误' }
 ]
 
-const levelTypeKeyValue = levelOptions.reduce((acc, cur) => {
+const resultTypeKeyValue = resultOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
   return acc
 }, {})
+
 
 export default {
   name: 'WordList',
@@ -172,26 +140,13 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
+        1: 'success',
+        0: 'danger'
       }
       return statusMap[status]
     },
-    levelStatusFilter(status) {
-      const levelStatusMap = {
-        '3': 'success',
-        '2': 'success',
-        '1': 'info',
-        '0': 'info',
-        '-1': 'danger',
-        '-2': 'danger',
-        '-3': 'danger'
-      }
-      return levelStatusMap[status]
-    },
-    levelFilter(type) {
-      return levelTypeKeyValue[type]
+    resultFilter(type) {
+      return resultTypeKeyValue[type]
     }
   },
   data() {
@@ -199,12 +154,11 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      gradeOptions: [2, 3],
-      unitOptions: [1,2,3,4,5,6,7,8],
+      // 批量选择
+      multipleSelection: [],
+      resultOptions,
       listQuery: {
-        grade: undefined,
-        unit: undefined,
-        article: undefined,
+        result: undefined,
         word: undefined,
         pageNum: 1,
         pageSize: 20
@@ -228,19 +182,6 @@ export default {
       this.listQuery.pageNum = 1
       this.getList()
     },
-    // 播放
-    handlePlay() {
-      play(this.listQuery).then(response => {
-        console.log("播放")
-      })
-    },
-    // 停止
-    handleStop() {
-      stop(this.listQuery).then(response => {
-        console.log("播放")
-      })
-    }
-
   }
 }
 </script>

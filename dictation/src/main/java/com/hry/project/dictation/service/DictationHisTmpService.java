@@ -19,4 +19,9 @@ public interface DictationHisTmpService extends IService<DictationHisTmpModel> {
     MyPage<DictationHisTmpModel> queryPage(DictationHisTmpQry qry);
 
     void batchUpdate(DictationHisTmpBatchUpdateReq req);
+
+    /**
+     * 处理临时表记录
+     */
+    void archive( DictationHisTmpBatchUpdateReq req);
 }

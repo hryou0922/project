@@ -1,7 +1,9 @@
 package com.hry.project.dictation.service;
 
-import com.hry.project.dictation.model.DictationHisModel;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hry.project.dictation.dto.page.MyPage;
+import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
+import com.hry.project.dictation.model.DictationHisModel;
 
 /**
  * <p>
@@ -13,10 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DictationHisService extends IService<DictationHisModel> {
 
-    /**
-     * 更新听写结果
-     * @param word
-     * @param result
-     */
-    void updateDictationResult(String word, int result);
+    MyPage<DictationHisModel> queryPage(DictationHisTmpQry qry);
 }

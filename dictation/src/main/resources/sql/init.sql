@@ -11,6 +11,7 @@ CREATE TABLE word
     last_result int not null default 0 ,
     level int ,
     level_time timestamp,
+    total int,
     des VARCHAR(256)
 );
 

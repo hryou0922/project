@@ -18,6 +18,8 @@
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-check" @click="handleBatchUpdate(1)">批量修改为正确</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-close" @click="handleBatchUpdate(0)">批量修改为错误</el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-close" @click="handleBatchUpdate(99)">批量删除</el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-close" @click="handleArchive">归档</el-button>
 
 <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
 <!--        Add-->
@@ -37,7 +39,7 @@
         width="55">
       </el-table-column>
 
-      <el-table-column align="center" label="id" width="200">
+      <el-table-column align="center" label="id" width="200" v-if="false">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
@@ -184,13 +186,13 @@ export default {
       this.multipleSelection = val
     },
 
-    // 批量修改为正确
+    // 批量操作
     handleBatchUpdate(e) {
       if (!this.multipleSelection || this.multipleSelection.length < 1) {
-        this.$message({ type: 'error', message: '请选择要删除的记录' })
+        this.$message({ type: 'error', message: '请选择要处理的记录' })
         return
       }
-      this.$confirm('即将批量修改为正确所选记录, 是否继续?', '提示', {
+      this.$confirm('即将批量修改/删除正确所选记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -204,7 +206,7 @@ export default {
           result: e
         }
         batchUpdate(param).then((response) => {
-          var message = '删除成功!'
+          var message = '操作成功!'
           this.$message({
             type: 'success',
             message: message
@@ -222,20 +224,37 @@ export default {
 
 
     // 搜索
-    handleFilter() {
-      this.listQuery.pageNum = 1
-      this.getList()
-    },
-    // 播放
-    handlePlay() {
-      play(this.listQuery).then(response => {
-        console.log("播放")
-      })
-    },
-    // 停止
-    handleStop() {
-      stop(this.listQuery).then(response => {
-        console.log("播放")
+    handleArchive() {
+      if (!this.multipleSelection || this.multipleSelection.length < 1) {
+        this.$message({ type: 'error', message: '请选择要处理的记录' })
+        return
+      }
+
+      this.$confirm('即将归档所选记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const idsList = []
+        this.multipleSelection.forEach((item, index) => {
+          idsList.push(item.id)
+        })
+        const param = {
+          ids: idsList
+        }
+        archive(param).then((response) => {
+          var message = '操作成功!'
+          this.$message({
+            type: 'success',
+            message: message
+          })
+          this.getList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
       })
     }
 

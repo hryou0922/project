@@ -37,6 +37,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, WordModel> implemen
         queryWrapper.eq(qry.getGrade() != null , "grade", qry.getGrade());
         queryWrapper.eq(qry.getUnit() != null, "unit", qry.getUnit());
         queryWrapper.like(StringUtils.hasLength(qry.getArticle()), "article", qry.getArticle());
+        queryWrapper.like(StringUtils.hasLength(qry.getWord()), "word", qry.getWord());
 
         Page<WordModel> pageQry = new Page<>();
         pageQry.setSize(qry.getPageSize().longValue());

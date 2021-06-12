@@ -256,6 +256,12 @@ export const asyncRoutes = [
         component: () => import('@/views/word/dictation-his-tmp'),
         name: 'Dictation-hist-tmp',
         meta: { title: '听写记录结果临时表', icon: 'list' }
+      },
+      {
+        path: 'dictation-his',
+        component: () => import('@/views/word/dictation-his'),
+        name: 'Dictation-hist',
+        meta: { title: '听写记录结果表', icon: 'list' }
       }
     ]
   },

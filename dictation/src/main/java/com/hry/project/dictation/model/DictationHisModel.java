@@ -25,6 +25,8 @@ public class DictationHisModel implements Serializable {
      */
     public static final int DICTATION_RESULT_SUCCESS = 1;
     public static final int DICTATION_RESULT_FAIL = 0;
+    // 直接删除
+    public static final int DICTATION_RESULT_DELETE = 99;
 
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)

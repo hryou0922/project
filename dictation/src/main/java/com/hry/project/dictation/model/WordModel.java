@@ -13,7 +13,7 @@ import java.util.Date;
  * </p>
  *
  * @author hry
- * @since 2021-06-10
+ * @since 2021-06-11
  */
 @TableName("word")
 public class WordModel implements Serializable {
@@ -38,6 +38,8 @@ public class WordModel implements Serializable {
     private Integer level;
 
     private Date levelTime;
+
+    private Integer total;
 
     private String des;
 
@@ -114,6 +116,14 @@ public class WordModel implements Serializable {
         this.levelTime = levelTime;
     }
 
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
     public String getDes() {
         return des;
     }
@@ -134,6 +144,7 @@ public class WordModel implements Serializable {
         ", lastResult=" + lastResult +
         ", level=" + level +
         ", levelTime=" + levelTime +
+        ", total=" + total +
         ", des=" + des +
         "}";
     }

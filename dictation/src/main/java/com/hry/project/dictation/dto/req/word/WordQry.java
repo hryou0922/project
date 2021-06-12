@@ -14,6 +14,8 @@ public class WordQry extends AbstractQry {
 
     private String article;
 
+    private String word;
+
     public Integer getGrade() {
         return grade;
     }
@@ -36,5 +38,13 @@ public class WordQry extends AbstractQry {
 
     public void setArticle(String article) {
         this.article = article;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
     }
 }

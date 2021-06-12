@@ -16,10 +16,11 @@ export function batchUpdate(data) {
   })
 }
 
-export function archive() {
+export function archive(data) {
   return request({
     url: '/dictation-his-tmp/archive',
-    method: 'get'
+    method: 'post',
+    data
   })
 }
 

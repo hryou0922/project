@@ -57,8 +57,10 @@ public class DictationHisTmpCtl {
      *  将所有记录归档
      * @return
      */
-    @RequestMapping(value = "archive",  method = RequestMethod.GET)
-    public CommonRsp archive(){
+    @RequestMapping(value = "archive",  method = RequestMethod.POST)
+    public CommonRsp archive(@RequestBody DictationHisTmpBatchUpdateReq req){
+        logger.info("归档操作");
+        dictationHisTmpService.archive(req);
         return  CommonRsp.getOkCommonRsp();
     }
 

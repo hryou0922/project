@@ -6,12 +6,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpBatchUpdateReq;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
+import com.hry.project.dictation.enums.FamiliarLevelEnum;
+import com.hry.project.dictation.mapper.DictationHisMapper;
 import com.hry.project.dictation.mapper.DictationHisTmpMapper;
+import com.hry.project.dictation.model.DictationHisModel;
 import com.hry.project.dictation.model.DictationHisTmpModel;
+import com.hry.project.dictation.model.WordModel;
 import com.hry.project.dictation.service.DictationHisTmpService;
+import com.hry.project.dictation.service.WordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +31,12 @@ import java.util.List;
  */
 @Service
 public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMapper, DictationHisTmpModel> implements DictationHisTmpService {
+    @Autowired
+    private DictationHisTmpMapper dictationHisTmpMapper;
+    @Autowired
+    private DictationHisMapper dictationHisMapper;
+    @Autowired
+    private WordService wordService;
 
     @Override
     public MyPage<DictationHisTmpModel> queryPage(DictationHisTmpQry qry) {
@@ -49,14 +62,66 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
         int result = req.getResult();
         List<Long> idList = req.getIds();
         if(idList != null){
-            for(Long id : idList){
-                if(id != null) {
-                    DictationHisTmpModel tmp = new DictationHisTmpModel();
-                    tmp.setId(id);
-                    tmp.setResult(result);
-                    baseMapper.updateById(tmp);
+            if(result == DictationHisModel.DICTATION_RESULT_DELETE){
+                // 执行批量删除
+                baseMapper.deleteBatchIds(idList);
+            }else {
+                // 更新正确、错误
+                for (Long id : idList) {
+                    if (id != null) {
+                        DictationHisTmpModel tmp = new DictationHisTmpModel();
+                        tmp.setId(id);
+                        tmp.setResult(result);
+                        baseMapper.updateById(tmp);
+                    }
                 }
             }
+        }
+    }
+
+    @Override
+    public void archive( DictationHisTmpBatchUpdateReq req) {
+        List<DictationHisTmpModel> list = this.listByIds(req.getIds());
+        for(DictationHisTmpModel tmpModel : list){
+            int result = tmpModel.getResult();
+            long dictationHisModelCreateTime = tmpModel.getCreateTime().getTime();
+            String word = tmpModel.getWord();
+            long id = tmpModel.getId();
+            // 本次听写是成功还是失败
+            boolean isDitationSucess = (tmpModel.getResult() != null
+                    && tmpModel.getResult() == DictationHisModel.DICTATION_RESULT_SUCCESS) ? true : false;
+
+            // 更新词语表状态
+            WordModel dbModel = wordService.selectByWord(word);
+            if(dbModel != null){
+                Date oldDate = dbModel.getLevelTime();
+                // 是否已经被处理：根据时间进行判断
+                if(oldDate == null || oldDate.getTime() < dictationHisModelCreateTime ){
+                    // 数据未被处理，则进行处理，词语听写总数和最后状态进行更新
+                    Integer total = dbModel.getTotal();
+                    total = total == null ? 1 : total++;
+                    dbModel.setTotal(total);
+                    Integer newNextLevel = FamiliarLevelEnum.getNextLevel(dbModel.getLastResult(), isDitationSucess).getLevel();
+                    dbModel.setLevel(newNextLevel);
+                    dbModel.setLevelTime(tmpModel.getCreateTime());
+                    // 更新状态
+                    wordService.updateById(dbModel);
+                }
+            }
+
+            if(dictationHisMapper.selectById(id) == null) {
+                // 写入正式表表
+                DictationHisModel hisModel = new DictationHisModel();
+                hisModel.setId(tmpModel.getId());
+                hisModel.setCreateTime(tmpModel.getCreateTime());
+                hisModel.setGroupId(tmpModel.getGroupId());
+                hisModel.setWord(tmpModel.getWord());
+                hisModel.setResult(tmpModel.getResult());
+                hisModel.setDes(tmpModel.getDes());
+                dictationHisMapper.insert(hisModel);
+            }
+            // TODO 删除已经处理的记录
+            dictationHisTmpMapper.deleteById(tmpModel.getId());
         }
     }
 

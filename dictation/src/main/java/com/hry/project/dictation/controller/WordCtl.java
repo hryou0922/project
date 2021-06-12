@@ -54,7 +54,7 @@ public class WordCtl {
 
     @RequestMapping(value = "list")
     public MyPage<WordModel> list(@ModelAttribute WordQry qry){
-        logger.info("收到登录请求:{}", CommonJsonUtils.toJsonString(qry));
+        logger.info("收到请求:{}", CommonJsonUtils.toJsonString(qry));
 
         return wordService.queryPage(qry);
     }
