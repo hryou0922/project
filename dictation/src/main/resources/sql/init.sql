@@ -39,6 +39,28 @@ CREATE TABLE dictation_his
 );
 CREATE INDEX index_dictation_his_word ON dictation_his (word);
 
+-- 词语组
+CREATE TABLE word_group
+(
+  id BIGINT(20) NOT NULL primary key  ,
+  create_time timestamp not null default CURRENT_TIMESTAMP ,
+  name VARCHAR(32) not null ,
+  word_total int ,
+  pass_rate int ,
+  good_rate int ,
+  excellent_rate int ,
+  result_time timestamp ,
+  des VARCHAR(256)
+);
+
+-- 组包含的词语
+CREATE TABLE word_group_list
+(
+  group_id BIGINT(20) NOT NULL,
+  word VARCHAR(24) not null
+);
+CREATE INDEX index_word_group_list_groupId ON word_group_list (group_id);
+
 
 -- 设备分组和配置
 CREATE TABLE group_config

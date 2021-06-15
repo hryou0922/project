@@ -16,4 +16,11 @@ import com.hry.project.dictation.model.DictationHisModel;
 public interface DictationHisService extends IService<DictationHisModel> {
 
     MyPage<DictationHisModel> queryPage(DictationHisTmpQry qry);
+
+    /**
+     * 根据升序读取词语表
+     * @param qry
+     * @return
+     */
+    MyPage<DictationHisModel> queryPageOrderWordAsc(DictationHisTmpQry qry);
 }

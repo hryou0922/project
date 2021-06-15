@@ -21,7 +21,7 @@ public class CodeGenerator {
         // 包路径
         String parentPackage = "com.hry.project.dictation";
         // 指定表名（可以同时操作多个表，使用 , 隔开）（需要修改）
-        String[] tables = new String[]{"word", "dictation_his_tmp","dictation_his"};
+        String[] tables = new String[]{"word", "dictation_his_tmp","dictation_his", "word_group", "word_group_list"};
 
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
@@ -48,7 +48,7 @@ public class CodeGenerator {
 
         // 设置名字：名称必须有 %s 需要做为占位符
         gc.setControllerName("%sCtl");
-        gc.setServiceName("%sService");
+        gc.setServiceName("I%sService");
         gc.setServiceImplName("%sServiceImpl");
         gc.setMapperName("%sMapper");
         gc.setEntityName("%sModel");

@@ -42,4 +42,19 @@ public class DictationHisServiceImpl extends ServiceImpl<DictationHisMapper, Dic
         return myPage;
     }
 
+    @Override
+    public MyPage<DictationHisModel> queryPageOrderWordAsc(DictationHisTmpQry qry) {
+        QueryWrapper<DictationHisModel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByAsc("create_time");
+
+        Page<DictationHisModel> pageQry = new Page<>();
+        pageQry.setSize(qry.getPageSize().longValue());
+        pageQry.setCurrent(qry.getPageNum());
+
+        Page<DictationHisModel> page = page(pageQry, queryWrapper);
+        MyPage<DictationHisModel> myPage = MyPage.create(page.getRecords());
+        myPage.setTotal((int) page.getTotal());
+        return myPage;
+    }
+
 }

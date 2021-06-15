@@ -2,6 +2,8 @@ package com.hry.project.dictation.dto.req.word;
 
 import com.hry.project.dictation.dto.req.AbstractQry;
 
+import java.util.List;
+
 /**
  * 词语查询
  * @author: huangrongyou@yixin.im
@@ -15,6 +17,8 @@ public class WordQry extends AbstractQry {
     private String article;
 
     private String word;
+
+    private List<Integer> levels;
 
     public Integer getGrade() {
         return grade;
@@ -46,5 +50,13 @@ public class WordQry extends AbstractQry {
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public List<Integer> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<Integer> levels) {
+        this.levels = levels;
     }
 }
