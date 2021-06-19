@@ -12,14 +12,17 @@ import com.hry.project.dictation.mapper.DictationHisTmpMapper;
 import com.hry.project.dictation.model.DictationHisModel;
 import com.hry.project.dictation.model.DictationHisTmpModel;
 import com.hry.project.dictation.model.WordModel;
-import com.hry.project.dictation.service.DictationHisTmpService;
-import com.hry.project.dictation.service.WordService;
+import com.hry.project.dictation.service.IDictationHisTmpService;
+import com.hry.project.dictation.service.IWordGroupService;
+import com.hry.project.dictation.service.IWordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -30,13 +33,15 @@ import java.util.List;
  * @since 2021-06-08
  */
 @Service
-public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMapper, DictationHisTmpModel> implements DictationHisTmpService {
+public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMapper, DictationHisTmpModel> implements IDictationHisTmpService {
     @Autowired
     private DictationHisTmpMapper dictationHisTmpMapper;
     @Autowired
     private DictationHisMapper dictationHisMapper;
     @Autowired
-    private WordService wordService;
+    private IWordService wordService;
+    @Autowired
+    private IWordGroupService wordGroupService;
 
     @Override
     public MyPage<DictationHisTmpModel> queryPage(DictationHisTmpQry qry) {
@@ -82,10 +87,16 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
     @Override
     public void archive( DictationHisTmpBatchUpdateReq req) {
         List<DictationHisTmpModel> list = this.listByIds(req.getIds());
+        // 保存
+        Set<Long> groupIdSet = new HashSet<>();
         for(DictationHisTmpModel tmpModel : list){
             Integer tmpResult = tmpModel.getResult();
             long dictationHisModelCreateTime = tmpModel.getCreateTime().getTime();
             String word = tmpModel.getWord();
+            Long groupId = tmpModel.getGroupId();
+            if(groupId != null){
+                groupIdSet.add(groupId);
+            }
             long id = tmpModel.getId();
             // 本次听写是成功还是失败
             boolean isDitationSucess = (tmpResult != null
@@ -110,8 +121,9 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
                 }
             }
 
+            // 写入正式表
             if(dictationHisMapper.selectById(id) == null) {
-                // 写入正式表表
+                // 写入正式表
                 DictationHisModel hisModel = new DictationHisModel();
                 hisModel.setId(tmpModel.getId());
                 hisModel.setCreateTime(tmpModel.getCreateTime());
@@ -121,9 +133,13 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
                 hisModel.setDes(tmpModel.getDes());
                 dictationHisMapper.insert(hisModel);
             }
+
             // TODO 删除已经处理的记录
             dictationHisTmpMapper.deleteById(tmpModel.getId());
         }
+
+        // TODO 更新组表统计信息
+        wordGroupService.updateGroupInfo(groupIdSet.toArray(new Long[0]));
     }
 
 }

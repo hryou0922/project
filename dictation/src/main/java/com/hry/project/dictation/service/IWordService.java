@@ -13,7 +13,7 @@ import com.hry.project.dictation.model.WordModel;
  * @author hry
  * @since 2021-06-04
  */
-public interface WordService extends IService<WordModel> {
+public interface IWordService extends IService<WordModel> {
 
     WordModel selectByWord(String word);
 

@@ -7,7 +7,7 @@ import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
 import com.hry.project.dictation.mapper.DictationHisMapper;
 import com.hry.project.dictation.model.DictationHisModel;
-import com.hry.project.dictation.service.DictationHisService;
+import com.hry.project.dictation.service.IDictationHisService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
  * @since 2021-06-08
  */
 @Service
-public class DictationHisServiceImpl extends ServiceImpl<DictationHisMapper, DictationHisModel> implements DictationHisService {
+public class DictationHisServiceImpl extends ServiceImpl<DictationHisMapper, DictationHisModel> implements IDictationHisService {
 
 
     @Override

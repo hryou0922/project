@@ -5,7 +5,7 @@ import com.hry.project.dictation.dto.UserInfoRsp;
 import com.hry.project.dictation.dto.UserReq;
 import com.hry.project.dictation.dto.UserLoginDto;
 import com.hry.project.dictation.dto.page.CommonEntity;
-import com.hry.project.dictation.service.WordService;
+import com.hry.project.dictation.service.IWordService;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class UserCtl {
     private static final Logger logger = LoggerFactory.getLogger(UserCtl.class);
 
     @Autowired
-    private WordService wordService;
+    private IWordService wordService;
 
     /**
      * 登录

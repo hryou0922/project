@@ -6,7 +6,7 @@ import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpBatchUpdateReq;
 import com.hry.project.dictation.model.DictationHisTmpModel;
-import com.hry.project.dictation.service.DictationHisTmpService;
+import com.hry.project.dictation.service.IDictationHisTmpService;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class DictationHisTmpCtl {
     private static final Logger logger = LoggerFactory.getLogger(DictationHisTmpCtl.class);
 
     @Autowired
-    private DictationHisTmpService dictationHisTmpService;
+    private IDictationHisTmpService dictationHisTmpService;
 
     /**
      * 查询列表

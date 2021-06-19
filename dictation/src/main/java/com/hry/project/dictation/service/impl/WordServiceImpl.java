@@ -7,7 +7,7 @@ import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.WordQry;
 import com.hry.project.dictation.mapper.WordMapper;
 import com.hry.project.dictation.model.WordModel;
-import com.hry.project.dictation.service.WordService;
+import com.hry.project.dictation.service.IWordService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
  * @since 2021-06-04
  */
 @Service
-public class WordServiceImpl extends ServiceImpl<WordMapper, WordModel> implements WordService {
+public class WordServiceImpl extends ServiceImpl<WordMapper, WordModel> implements IWordService {
     @Override
     public WordModel selectByWord(String word) {
         if(!StringUtils.hasText(word)){

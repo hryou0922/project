@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author hry
  * @since 2021-06-08
  */
-public interface DictationHisTmpService extends IService<DictationHisTmpModel> {
+public interface IDictationHisTmpService extends IService<DictationHisTmpModel> {
 
     MyPage<DictationHisTmpModel> queryPage(DictationHisTmpQry qry);
 

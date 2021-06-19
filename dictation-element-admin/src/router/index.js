@@ -172,6 +172,56 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/word',
+    component: Layout,
+    redirect: '/word/list',
+    name: 'Word',
+    meta: {
+      title: '词语管理',
+      icon: 'el-icon-s-help'
+    },
+    children: [
+      {
+        path: 'create',
+        component: () => import('@/views/word/create'),
+        name: 'CreateWord',
+        meta: { title: '创建词语', icon: 'edit' }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/word/edit'),
+        name: 'EditWord',
+        meta: { title: '编辑词语', noCache: true, activeMenu: '/word/list' },
+        hidden: true
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/word/list'),
+        name: 'WordList',
+        meta: { title: '词语列表', icon: 'list' }
+      },
+      {
+        path: 'dictation-his-tmp',
+        component: () => import('@/views/word/dictation-his-tmp'),
+        name: 'Dictation-hist-tmp',
+        meta: { title: '听写记录结果临时表', icon: 'list' }
+      },
+      {
+        path: 'dictation-his',
+        component: () => import('@/views/word/dictation-his'),
+        name: 'Dictation-hist',
+        meta: { title: '听写记录结果表', icon: 'list' }
+      },
+      {
+        path: 'gp-list',
+        component: () => import('@/views/word/gp-list'),
+        name: 'Group-list',
+        meta: { title: '组管理', icon: 'list' }
+      },
+    ]
+  },
+
+  {
     path: '/icon',
     component: Layout,
     children: [
@@ -222,49 +272,7 @@ export const asyncRoutes = [
     ]
   },
 
-  {
-    path: '/word',
-    component: Layout,
-    redirect: '/word/list',
-    name: 'Word',
-    meta: {
-      title: '词语管理',
-      icon: 'el-icon-s-help'
-    },
-    children: [
-      {
-        path: 'create',
-        component: () => import('@/views/word/create'),
-        name: 'CreateWord',
-        meta: { title: '创建词语', icon: 'edit' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/word/edit'),
-        name: 'EditWord',
-        meta: { title: '编辑词语', noCache: true, activeMenu: '/word/list' },
-        hidden: true
-      },
-      {
-        path: 'list',
-        component: () => import('@/views/word/list'),
-        name: 'WordList',
-        meta: { title: '词语列表', icon: 'list' }
-      },
-      {
-        path: 'dictation-his-tmp',
-        component: () => import('@/views/word/dictation-his-tmp'),
-        name: 'Dictation-hist-tmp',
-        meta: { title: '听写记录结果临时表', icon: 'list' }
-      },
-      {
-        path: 'dictation-his',
-        component: () => import('@/views/word/dictation-his'),
-        name: 'Dictation-hist',
-        meta: { title: '听写记录结果表', icon: 'list' }
-      }
-    ]
-  },
+
 
   {
     path: '/tab',

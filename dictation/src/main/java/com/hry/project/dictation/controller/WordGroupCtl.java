@@ -3,10 +3,11 @@ package com.hry.project.dictation.controller;
 
 import com.hry.project.dictation.dto.page.CommonRsp;
 import com.hry.project.dictation.dto.page.MyPage;
-import com.hry.project.dictation.dto.req.word.WordQry;
+import com.hry.project.dictation.dto.req.word.WordGroupQry;
+import com.hry.project.dictation.model.WordGroupModel;
 import com.hry.project.dictation.model.WordModel;
 import com.hry.project.dictation.msg.IWordPlayMsg;
-import com.hry.project.dictation.service.IWordService;
+import com.hry.project.dictation.service.IWordGroupService;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,24 +25,38 @@ import java.util.Collection;
  * </p>
  *
  * @author hry
- * @since 2021-06-04
+ * @since 2021-06-15
  */
 @RestController
-@RequestMapping("/word")
-public class WordCtl {
-    private static final Logger logger = LoggerFactory.getLogger(WordCtl.class);
+@RequestMapping("/word-group")
+public class WordGroupCtl {
+    private static final Logger logger = LoggerFactory.getLogger(DictationHisTmpCtl.class);
 
     @Autowired
-    private IWordService wordService;
+    private IWordGroupService wordGroupService;
     @Autowired
     private IWordPlayMsg wordPlayMsg;
 
-
+    /**
+     * 查询组列表
+     * @param qry
+     * @return
+     */
     @RequestMapping(value = "list")
-    public MyPage<WordModel> list(@ModelAttribute WordQry qry){
-        logger.info("收到请求:{}", CommonJsonUtils.toJsonString(qry));
+    public MyPage<WordGroupModel> list(@ModelAttribute WordGroupQry qry){
+        logger.info("收到查询请求:{}", CommonJsonUtils.toJsonString(qry));
+        return wordGroupService.queryWordGroupPage(qry);
+    }
 
-        return wordService.queryPage(qry);
+    /**
+     * 查询组里的词语列表
+     * @param qry
+     * @return
+     */
+    @RequestMapping(value = "word-list")
+    public MyPage<WordModel> listWord(@ModelAttribute WordGroupQry qry){
+        logger.info("收到查询请求:{}", CommonJsonUtils.toJsonString(qry));
+        return wordGroupService.queryWordGroupListPage(qry);
     }
 
     /**
@@ -50,11 +65,11 @@ public class WordCtl {
      * @return
      */
     @RequestMapping(value = "play")
-    public CommonRsp play(@ModelAttribute WordQry qry){
+    public CommonRsp play(@ModelAttribute WordGroupQry qry){
         logger.info("收到play请求:{}", CommonJsonUtils.toJsonString(qry));
 
         // 播放全部符合要求的内容
-        MyPage<WordModel> myPage = wordService.queryPage(qry);
+        MyPage<WordModel> myPage = wordGroupService.queryWordGroupListPage(qry);
         if (myPage != null) {
             Collection<WordModel> iterms = myPage.getItems();
             wordPlayMsg.play(iterms);
@@ -72,5 +87,6 @@ public class WordCtl {
         wordPlayMsg.stop();
         return CommonRsp.getOkCommonRsp();
     }
+
 }
 

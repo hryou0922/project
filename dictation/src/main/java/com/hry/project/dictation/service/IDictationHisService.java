@@ -13,7 +13,7 @@ import com.hry.project.dictation.model.DictationHisModel;
  * @author hry
  * @since 2021-06-08
  */
-public interface DictationHisService extends IService<DictationHisModel> {
+public interface IDictationHisService extends IService<DictationHisModel> {
 
     MyPage<DictationHisModel> queryPage(DictationHisTmpQry qry);
 

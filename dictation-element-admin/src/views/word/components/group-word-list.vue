@@ -3,26 +3,10 @@
       <!-- 查询条件 -->
     <div class="filter-container">
 
-      <el-select v-model="listQuery.grade" placeholder="年级" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in gradeOptions" :key="item" :label="item+'年级'" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.unit" placeholder="单元" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in unitOptions" :key="item" :label="item+'单元'" :value="item" />
-      </el-select>
-      <el-input v-model="listQuery.article" placeholder="文章标题" style="width: 120px;" class="filter-item"  />
-      <el-input v-model="listQuery.word" placeholder="词语" style="width: 120px;" class="filter-item"  />
-      <el-select v-model="listQuery.levels" placeholder="熟练度级别" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in levelOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-      </el-select>
+      <el-input v-model="listQuery.groupId" placeholder="分组id" style="width: 200px;" class="filter-item"  />
 
-<!--      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">-->
-<!--        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />-->
-<!--      </el-select>-->
-<!--      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">-->
-<!--        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />-->
-<!--      </el-select>-->
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        Search
+        搜索
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handlePlay">
         录音播放
@@ -151,7 +135,7 @@
 </template>
 
 <script>
-import { fetchList, stop, play } from '@/api/word'
+import { fetchWordList, stop, play } from '@/api/word-group'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const levelOptions = [
@@ -170,7 +154,8 @@ const levelTypeKeyValue = levelOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'WordList',
+  name: 'GroupWordList',
+  props: ['groupId'],
   components: { Pagination },
   filters: {
     statusFilter(status) {
@@ -205,10 +190,7 @@ export default {
       gradeOptions: [2, 3],
       unitOptions: [1,2,3,4,5,6,7,8],
       listQuery: {
-        grade: undefined,
-        unit: undefined,
-        article: undefined,
-        word: undefined,
+        groupId: this.groupId,
         pageNum: 1,
         pageSize: 20
       }
@@ -220,7 +202,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      fetchWordList(this.listQuery).then(response => {
         this.list = response.items
         this.total = response.total
         this.listLoading = false

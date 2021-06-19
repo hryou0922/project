@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class SaveWordInDb extends BaseTest {
+public class SaveWordInDb2 extends BaseTest {
     @Autowired
     private IWordService wordService;
 
@@ -51,6 +51,14 @@ public class SaveWordInDb extends BaseTest {
                 if(part.length >= 5) {
                     desc = part[4];
                 }
+
+                // 创建组
+                // WordGroupModel wordGroupModel =
+
+                // 创建组列表
+
+                // 存入词语表
+
 
                 WordModel wordModel = new WordModel();
                 wordModel.setGrade(grade);

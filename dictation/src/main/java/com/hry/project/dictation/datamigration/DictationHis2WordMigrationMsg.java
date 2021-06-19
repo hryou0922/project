@@ -5,8 +5,8 @@ import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
 import com.hry.project.dictation.enums.FamiliarLevelEnum;
 import com.hry.project.dictation.model.DictationHisModel;
 import com.hry.project.dictation.model.WordModel;
-import com.hry.project.dictation.service.DictationHisService;
-import com.hry.project.dictation.service.WordService;
+import com.hry.project.dictation.service.IDictationHisService;
+import com.hry.project.dictation.service.IWordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +23,9 @@ import java.util.Date;
 @Component
 public class DictationHis2WordMigrationMsg {
     @Autowired
-    private DictationHisService dictationHisService;
+    private IDictationHisService dictationHisService;
     @Autowired
-    private WordService wordService;
+    private IWordService wordService;
 
     /**
      *  正序读取历史表，并逐步更新词语的熟练度信息

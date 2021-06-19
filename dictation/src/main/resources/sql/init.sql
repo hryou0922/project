@@ -3,9 +3,6 @@
 CREATE TABLE word
 (
     id BIGINT(20) NOT NULL primary key ,
-    grade int not null ,
-    unit int not null ,
-    article VARCHAR(64) not null,
     word VARCHAR(24) not null UNIQUE ,
     voice_file VARCHAR(24) not null,
     last_result int not null default 0 ,
@@ -44,7 +41,8 @@ CREATE TABLE word_group
 (
   id BIGINT(20) NOT NULL primary key  ,
   create_time timestamp not null default CURRENT_TIMESTAMP ,
-  name VARCHAR(32) not null ,
+  name VARCHAR(32) not null unique,
+  type int not null default 1,
   word_total int ,
   pass_rate int ,
   good_rate int ,

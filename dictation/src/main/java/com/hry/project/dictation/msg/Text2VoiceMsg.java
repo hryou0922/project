@@ -1,7 +1,7 @@
 package com.hry.project.dictation.msg;
 
 import com.hry.project.dictation.model.WordModel;
-import com.hry.project.dictation.service.WordService;
+import com.hry.project.dictation.service.IWordService;
 import com.hry.project.dictation.speech.baidu.BaiduText2VoiceMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,7 @@ public class Text2VoiceMsg {
     private String rootDir;
 
     @Autowired
-    private WordService wordService;
+    private IWordService wordService;
 
 
     private BaiduText2VoiceMsg baiduText2VoiceMsg;
