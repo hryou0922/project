@@ -4,12 +4,15 @@ import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
 import com.hry.project.dictation.enums.FamiliarLevelEnum;
 import com.hry.project.dictation.model.DictationHisModel;
+import com.hry.project.dictation.model.WordGroupModel;
 import com.hry.project.dictation.model.WordModel;
 import com.hry.project.dictation.service.IDictationHisService;
+import com.hry.project.dictation.service.IWordGroupService;
 import com.hry.project.dictation.service.IWordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -26,6 +29,9 @@ public class DictationHis2WordMigrationMsg {
     private IDictationHisService dictationHisService;
     @Autowired
     private IWordService wordService;
+    @Autowired
+    private IWordGroupService wordGroupService;
+
 
     /**
      *  正序读取历史表，并逐步更新词语的熟练度信息
@@ -61,8 +67,18 @@ public class DictationHis2WordMigrationMsg {
                     wordService.updateById(dbModel);
                 }
             }
+        }
+    }
 
+    /**
+     * 更新组信息
+     */
+    public void updateWordGroupStaticInfo(){
+        ArrayList<Long> groudIdList = new ArrayList<>();
+       for(WordGroupModel model : wordGroupService.list()){
+           groudIdList.add(model.getId());
         }
 
+        wordGroupService.updateGroupInfo(groudIdList.toArray(new Long[0]));
     }
 }

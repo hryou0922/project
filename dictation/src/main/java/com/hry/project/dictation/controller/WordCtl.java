@@ -57,7 +57,7 @@ public class WordCtl {
         MyPage<WordModel> myPage = wordService.queryPage(qry);
         if (myPage != null) {
             Collection<WordModel> iterms = myPage.getItems();
-            wordPlayMsg.play(iterms);
+            wordPlayMsg.play(iterms, null);
         }
 
         return CommonRsp.getOkCommonRsp();

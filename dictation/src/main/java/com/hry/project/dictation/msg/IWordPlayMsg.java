@@ -10,7 +10,12 @@ import java.util.Collection;
  */
 public interface IWordPlayMsg {
 
-  void play(Collection<WordModel> wordModels);
+  /**
+   * 播放录音
+   * @param wordModels
+   * @param groupId  组id，可为空
+   */
+  void play(Collection<WordModel> wordModels, Long groupId);
 
   void stop();
 }

@@ -40,7 +40,7 @@ public class WordPlayMsgImpl implements IWordPlayMsg {
 
 
     @Override
-    public void play(Collection<WordModel> iterms) {
+    public void play(Collection<WordModel> iterms, Long groupId) {
         if(play.get()){
             logger.info("正在播放...");
         }
@@ -62,6 +62,7 @@ public class WordPlayMsgImpl implements IWordPlayMsg {
                                 // dictationHisTmpService
                                 DictationHisTmpModel model = new DictationHisTmpModel();
                                 model.setWord(wordModel.getWord());
+                                model.setGroupId(groupId);
                                 model.setCreateTime(new Date());
                                 model.setResult(DictationHisModel.DICTATION_RESULT_SUCCESS);
                                 dictationHisTmpService.save(model);

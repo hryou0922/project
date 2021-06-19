@@ -4,6 +4,7 @@ CREATE TABLE word
 (
     id BIGINT(20) NOT NULL primary key ,
     word VARCHAR(24) not null UNIQUE ,
+    type int default 1,
     voice_file VARCHAR(24) not null,
     last_result int not null default 0 ,
     level int ,

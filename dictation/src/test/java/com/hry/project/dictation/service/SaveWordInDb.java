@@ -1,6 +1,9 @@
 package com.hry.project.dictation.service;
 
 import com.hry.project.dictation.BaseTest;
+import com.hry.project.dictation.mapper.WordGroupListMapper;
+import com.hry.project.dictation.model.WordGroupListModel;
+import com.hry.project.dictation.model.WordGroupModel;
 import com.hry.project.dictation.model.WordModel;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.apache.commons.io.FileUtils;
@@ -9,11 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public class SaveWordInDb extends BaseTest {
     @Autowired
     private IWordService wordService;
+    @Autowired
+    private IWordGroupService wordGroupService;
+    @Autowired
+    private WordGroupListMapper wordGroupListMapper;
 
     @Test
     public void saveWordFromFileTmp(){
@@ -42,20 +50,38 @@ public class SaveWordInDb extends BaseTest {
                     break;
                 }
                 String[] part = line.split("\\s+");
-                int grade = Integer.parseInt(part[0]);
-                int unit = Integer.parseInt(part[1]);
-                String article = part[2];
-                String word = part[3];
+                String groupName = part[0];
+                String word = part[1];
 
+                Integer type = null;
+                if(part.length >= 3){
+                    type = Integer.parseInt(part[2]);
+                }
                 String desc = "";
-                if(part.length >= 5) {
-                    desc = part[4];
+                if(part.length >= 4) {
+                    desc = part[3];
                 }
 
+                // 添加组
+                WordGroupModel wordGroupModel = wordGroupService.selectWrodGroupByGroupName(groupName);
+                if(wordGroupModel == null) {
+                    wordGroupModel = new WordGroupModel();
+                    wordGroupModel.setCreateTime(new Date());
+                    wordGroupModel.setName(groupName);
+                    wordGroupService.save(wordGroupModel);
+                }
+                long groupId = wordGroupModel.getId();
+                // 添加组词语列表
+                if(!wordGroupService.isWordInGroup(groupId, word)){
+                    WordGroupListModel wordGroupListModel = new WordGroupListModel();
+                    wordGroupListModel.setGroupId(groupId);
+                    wordGroupListModel.setWord(word);
+                    wordGroupListMapper.insert(wordGroupListModel);
+                }
+
+                // 添加词语表
                 WordModel wordModel = new WordModel();
-                wordModel.setGrade(grade);
-                wordModel.setUnit(unit);
-                wordModel.setArticle(article);
+                wordModel.setType(type);
                 wordModel.setWord(word);
                 wordModel.setVoiceFile(desc);
                 System.out.println(i + " " + CommonJsonUtils.toJsonString(wordModel));

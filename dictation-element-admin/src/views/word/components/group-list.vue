@@ -2,7 +2,7 @@
   <div class="app-container">
       <!-- 查询条件 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="文章标题" style="width: 120px;" class="filter-item"  />
+      <el-input v-model="listQuery.name" placeholder="文章标题" style="width: 220px;" class="filter-item"  />
 
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
@@ -11,21 +11,10 @@
     </div>
 
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="id" width="200"  >
-        <template slot-scope="scope">
-          <span @click="toBatchDetailTab(scope.row.id)" class="link-type">{{ scope.row.id }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="180px" align="center" label="创建日期">
-        <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
-        </template>
-      </el-table-column>
 
       <el-table-column width="280px" align="center" label="名称">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span @click="toBatchDetailTab(scope.row.id)" class="link-type">{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
@@ -43,7 +32,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="60px" align="center" label="良率">
+      <el-table-column width="80px" align="center" label="良率">
         <template slot-scope="scope">
           <el-tag :type="scope.row.goodRate | rateFilter">
             <span>{{ scope.row.goodRate }}%</span>
@@ -62,6 +51,12 @@
       <el-table-column width="180px" align="center" label="统计最后更新时间">
         <template slot-scope="scope">
           <span>{{ scope.row.resultTime }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="180px" align="center" label="创建日期">
+        <template slot-scope="scope">
+          <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
 

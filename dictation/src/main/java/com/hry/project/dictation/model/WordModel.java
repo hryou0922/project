@@ -13,7 +13,7 @@ import java.util.Date;
  * </p>
  *
  * @author hry
- * @since 2021-06-11
+ * @since 2021-06-19
  */
 @TableName("word")
 public class WordModel implements Serializable {
@@ -23,13 +23,9 @@ public class WordModel implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    private Integer grade;
-
-    private Integer unit;
-
-    private String article;
-
     private String word;
+
+    private Integer type;
 
     private String voiceFile;
 
@@ -52,36 +48,20 @@ public class WordModel implements Serializable {
         this.id = id;
     }
 
-    public Integer getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Integer grade) {
-        this.grade = grade;
-    }
-
-    public Integer getUnit() {
-        return unit;
-    }
-
-    public void setUnit(Integer unit) {
-        this.unit = unit;
-    }
-
-    public String getArticle() {
-        return article;
-    }
-
-    public void setArticle(String article) {
-        this.article = article;
-    }
-
     public String getWord() {
         return word;
     }
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getVoiceFile() {
@@ -136,10 +116,8 @@ public class WordModel implements Serializable {
     public String toString() {
         return "WordModel{" +
         "id=" + id +
-        ", grade=" + grade +
-        ", unit=" + unit +
-        ", article=" + article +
         ", word=" + word +
+        ", type=" + type +
         ", voiceFile=" + voiceFile +
         ", lastResult=" + lastResult +
         ", level=" + level +

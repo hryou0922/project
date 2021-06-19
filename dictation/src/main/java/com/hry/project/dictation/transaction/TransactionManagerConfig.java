@@ -1,6 +1,5 @@
 package com.hry.project.dictation.transaction;
 
-import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.Advisor;
@@ -8,7 +7,6 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.interceptor.*;
@@ -19,11 +17,13 @@ import java.util.Map;
 
 /**
  * 配置全局事务
+ *
+ * TODO 测试方便，先关闭事物吧，正式用再开启
  * @author: huangrongyou@yixin.im
  * @date: 2021/6/1 17:16
  */
-@Aspect
-@Configuration
+// @Aspect
+// @Configuration
 public class TransactionManagerConfig {
     private final static Logger logger = LoggerFactory.getLogger(TransactionManagerConfig.class);
     private static final int AOP_TIME_OUT = 5;

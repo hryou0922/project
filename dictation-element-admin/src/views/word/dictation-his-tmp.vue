@@ -57,7 +57,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="120px" align="center" label="分组编号">
+      <el-table-column width="220px" align="center" label="分组编号">
         <template slot-scope="scope">
           <span>{{ scope.row.groupId }} </span>
         </template>

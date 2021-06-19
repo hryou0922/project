@@ -13,7 +13,7 @@ import java.util.Date;
  * </p>
  *
  * @author hry
- * @since 2021-06-15
+ * @since 2021-06-19
  */
 @TableName("word_group")
 public class WordGroupModel implements Serializable {
@@ -26,6 +26,8 @@ public class WordGroupModel implements Serializable {
     private Date createTime;
 
     private String name;
+
+    private Integer type;
 
     private Integer wordTotal;
 
@@ -62,6 +64,14 @@ public class WordGroupModel implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public Integer getWordTotal() {
@@ -118,6 +128,7 @@ public class WordGroupModel implements Serializable {
         "id=" + id +
         ", createTime=" + createTime +
         ", name=" + name +
+        ", type=" + type +
         ", wordTotal=" + wordTotal +
         ", passRate=" + passRate +
         ", goodRate=" + goodRate +

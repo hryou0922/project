@@ -19,6 +19,8 @@ import java.util.List;
  */
 public interface IWordGroupService extends IService<WordGroupModel> {
 
+    WordGroupModel selectWrodGroupByGroupName(String name);
+
     /**
      * 查询分组
      * @param qry
@@ -32,6 +34,14 @@ public interface IWordGroupService extends IService<WordGroupModel> {
      * @return
      */
     MyPage<WordModel> queryWordGroupListPage(WordGroupQry qry);
+
+    /**
+     * 判断
+     * @param groupId
+     * @param word
+     * @return
+     */
+    boolean isWordInGroup(long groupId, String word);
 
     /**
      * 保存组

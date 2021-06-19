@@ -16,4 +16,9 @@ public class DictationHis2WordMigrationMsgTest extends BaseTest {
     public void dictationHist2Word(){
         dictationHis2WordMigrationMsg.dictationHist2Word();
     }
+
+    @Test
+    public void updateWordGroupStaticInfo(){
+        dictationHis2WordMigrationMsg.updateWordGroupStaticInfo();
+    }
 }

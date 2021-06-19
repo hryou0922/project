@@ -33,6 +33,15 @@ public class WordGroupServiceImpl extends ServiceImpl<WordGroupMapper, WordGroup
     @Autowired
     private WordGroupListMapper wordGroupListMapper;
 
+    @Override
+    public WordGroupModel selectWrodGroupByGroupName(String name) {
+        if(!StringUtils.hasText(name)){
+            return null;
+        }
+        QueryWrapper<WordGroupModel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", name);
+        return baseMapper.selectOne(queryWrapper);
+    }
 
     @Override
     public MyPage<WordGroupModel> queryWordGroupPage(WordGroupQry qry) {
@@ -75,6 +84,21 @@ public class WordGroupServiceImpl extends ServiceImpl<WordGroupMapper, WordGroup
     }
 
     @Override
+    public boolean isWordInGroup(long groupId, String word) {
+        CheckUtil.checkNotEmpty("word", word);
+
+        QueryWrapper<WordGroupListModel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(true, "group_id", groupId);
+        queryWrapper.eq(true, "word", word);
+
+        if(wordGroupListMapper.selectList(queryWrapper).size() == 0){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
     public void save(WordGroupModel entity, List<WordGroupListModel> listModelList) {
         CheckUtil.checkNotEmpty("name", entity.getName());
         if(listModelList == null || listModelList.size() == 0){
@@ -103,6 +127,7 @@ public class WordGroupServiceImpl extends ServiceImpl<WordGroupMapper, WordGroup
                     // 获取groupId 所有的记录，并进行统计
                     WordGroupQry wordGroupQry = new WordGroupQry();
                     wordGroupQry.setGroupId(groupId);
+                    wordGroupQry.setPageSize(Integer.MAX_VALUE);
                     int total = 0;
                     int passNum = 0;
                     int gooNum = 0;
@@ -110,13 +135,24 @@ public class WordGroupServiceImpl extends ServiceImpl<WordGroupMapper, WordGroup
 
                     for(WordModel wordModel : queryWordGroupListPage(wordGroupQry).getItems()){
                         total++;
-                        FamiliarLevelEnum level = FamiliarLevelEnum.valueOfType(wordModel.getLevel());
-                        if(level != null){
-                            switch (level){
-                                case PASS: passNum++; break;
-                                case GOOD: passNum++; gooNum++; break;
-                                case EXCELLENT: passNum++; gooNum++; excellentNum++; break;
-                                default:
+                        if(wordModel.getLevel() != null) {
+                            FamiliarLevelEnum level = FamiliarLevelEnum.valueOfType(wordModel.getLevel());
+                            if (level != null) {
+                                switch (level) {
+                                    case PASS:
+                                        passNum++;
+                                        break;
+                                    case GOOD:
+                                        passNum++;
+                                        gooNum++;
+                                        break;
+                                    case EXCELLENT:
+                                        passNum++;
+                                        gooNum++;
+                                        excellentNum++;
+                                        break;
+                                    default:
+                                }
                             }
                         }
                     }
@@ -124,10 +160,11 @@ public class WordGroupServiceImpl extends ServiceImpl<WordGroupMapper, WordGroup
                     WordGroupModel updateWordGroupModel = new WordGroupModel();
                     updateWordGroupModel.setId(groupId);
                     updateWordGroupModel.setWordTotal(total);
-                    updateWordGroupModel.setPassRate(passNum/total);
-                    updateWordGroupModel.setGoodRate(gooNum/total);
-                    updateWordGroupModel.setExcellentRate(excellentNum/total);
+                    updateWordGroupModel.setPassRate(passNum*100/total);
+                    updateWordGroupModel.setGoodRate(gooNum*100/total);
+                    updateWordGroupModel.setExcellentRate(excellentNum*100/total);
                     updateWordGroupModel.setResultTime(new Date());
+                    baseMapper.updateById(updateWordGroupModel);
                 }
             }
         }

@@ -3,13 +3,13 @@
       <!-- 查询条件 -->
     <div class="filter-container">
 
-      <el-select v-model="listQuery.grade" placeholder="年级" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in gradeOptions" :key="item" :label="item+'年级'" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.unit" placeholder="单元" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in unitOptions" :key="item" :label="item+'单元'" :value="item" />
-      </el-select>
-      <el-input v-model="listQuery.article" placeholder="文章标题" style="width: 120px;" class="filter-item"  />
+<!--      <el-select v-model="listQuery.grade" placeholder="年级" clearable style="width: 90px" class="filter-item">-->
+<!--        <el-option v-for="item in gradeOptions" :key="item" :label="item+'年级'" :value="item" />-->
+<!--      </el-select>-->
+<!--      <el-select v-model="listQuery.unit" placeholder="单元" clearable style="width: 90px" class="filter-item">-->
+<!--        <el-option v-for="item in unitOptions" :key="item" :label="item+'单元'" :value="item" />-->
+<!--      </el-select>-->
+<!--      <el-input v-model="listQuery.article" placeholder="文章标题" style="width: 120px;" class="filter-item"  />-->
       <el-input v-model="listQuery.word" placeholder="词语" style="width: 120px;" class="filter-item"  />
       <el-select v-model="listQuery.levels" placeholder="熟练度级别" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in levelOptions" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -54,23 +54,23 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 
-      <el-table-column width="80px" align="center" label="年级">
-        <template slot-scope="scope">
-          <span>{{ scope.row.grade }} 年级</span>
-        </template>
-      </el-table-column>
+<!--      <el-table-column width="80px" align="center" label="年级">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ scope.row.grade }} 年级</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
-      <el-table-column width="80px" align="center" label="单元">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unit }} 单元</span>
-        </template>
-      </el-table-column>
+<!--      <el-table-column width="80px" align="center" label="单元">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ scope.row.unit }} 单元</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
-      <el-table-column width="180px" align="center" label="文章标题">
-        <template slot-scope="scope">
-          <span>{{ scope.row.article }}</span>
-        </template>
-      </el-table-column>
+<!--      <el-table-column width="180px" align="center" label="文章标题">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ scope.row.article }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
       <el-table-column width="100px" align="center" label="词语">
         <template slot-scope="scope">

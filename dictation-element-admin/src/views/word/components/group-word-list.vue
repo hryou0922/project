@@ -38,24 +38,6 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 
-      <el-table-column width="80px" align="center" label="年级">
-        <template slot-scope="scope">
-          <span>{{ scope.row.grade }} 年级</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="80px" align="center" label="单元">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unit }} 单元</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="180px" align="center" label="文章标题">
-        <template slot-scope="scope">
-          <span>{{ scope.row.article }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column width="100px" align="center" label="词语">
         <template slot-scope="scope">
           <span>{{ scope.row.word }}</span>
@@ -84,7 +66,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="360px" align="center" label="录音文件路径">
+      <el-table-column width="180px" align="center" label="录音文件路径">
         <template slot-scope="scope">
           <span>{{ scope.row.voiceFile }}</span>
         </template>

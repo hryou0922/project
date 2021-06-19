@@ -89,12 +89,13 @@ public class VoicePlayMsg {
      * @return
      */
     private void text2Voice(WordModel model){
-        int grade = model.getGrade();
-        int unit = model.getUnit();
-        String article = model.getArticle();
+//        int grade = model.getGrade();
+//        int unit = model.getUnit();
+//        String article = model.getArticle();
         String word = model.getWord();
 
-        String relativeDir = "/" + grade + "/" + unit + "/" + article + "/";
+      //  String relativeDir = "/" + grade + "/" + unit + "/" + article + "/";
+        String relativeDir = "/";
         VoiceInfoResultVo voiceInfoResultVo = baiduText2VoiceMsg.text2wav(word, relativeDir);
         if(voiceInfoResultVo != null){
             // 语音创建成功

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author hry
- * @since 2021-06-15
+ * @since 2021-06-19
  */
 @TableName("word_group_list")
 public class WordGroupListModel implements Serializable {

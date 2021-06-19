@@ -72,7 +72,7 @@ public class WordGroupCtl {
         MyPage<WordModel> myPage = wordGroupService.queryWordGroupListPage(qry);
         if (myPage != null) {
             Collection<WordModel> iterms = myPage.getItems();
-            wordPlayMsg.play(iterms);
+            wordPlayMsg.play(iterms, qry.getGroupId());
         }
 
         return CommonRsp.getOkCommonRsp();
