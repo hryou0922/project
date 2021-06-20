@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.WordGroupQry;
 import com.hry.project.dictation.enums.FamiliarLevelEnum;
+import com.hry.project.dictation.enums.WordGroupEnum;
 import com.hry.project.dictation.mapper.WordGroupListMapper;
 import com.hry.project.dictation.mapper.WordGroupMapper;
 import com.hry.project.dictation.model.WordGroupListModel;
@@ -13,6 +14,7 @@ import com.hry.project.dictation.model.WordGroupModel;
 import com.hry.project.dictation.model.WordModel;
 import com.hry.project.dictation.service.IWordGroupService;
 import com.hry.project.dictation.utils.CheckUtil;
+import com.hry.project.dictation.utils.CommonDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -72,6 +74,9 @@ public class WordGroupServiceImpl extends ServiceImpl<WordGroupMapper, WordGroup
 
         QueryWrapper<WordModel> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(qry.getGroupId() != null, "group_id", qry.getGroupId());
+        // 词语列表
+        List<String> wordList = qry.getWordList();
+        queryWrapper.in(wordList != null && wordList.size() > 0 , "a.word", wordList);
 
         Page<WordModel> pageQry = new Page<>();
         pageQry.setSize(qry.getPageSize().longValue());
@@ -96,6 +101,43 @@ public class WordGroupServiceImpl extends ServiceImpl<WordGroupMapper, WordGroup
         }else {
             return true;
         }
+    }
+
+    @Override
+    public void creatTmpWordGroup(String groupName, List<String> wordList){
+        CheckUtil.checkNotEmpty("name", groupName);
+        if(wordList == null || wordList.size() == 0){
+            throw new RuntimeException("每个组里的词语列表不能为空");
+        }
+        // 组名
+        groupName =  groupName + "." + CommonDateUtils.dateTime2String(new Date());
+        // 创建临时组
+        WordGroupModel wordGroupModel = new WordGroupModel();
+        wordGroupModel.setCreateTime(new Date());
+        wordGroupModel.setWordTotal(wordList.size());
+        wordGroupModel.setName(groupName);
+        wordGroupModel.setType(WordGroupEnum.TMP_GROUP.getType());
+        baseMapper.insert(wordGroupModel);
+
+        // 创建词语列表
+        for(String word : wordList){
+            WordGroupListModel wordGroupListModel = new WordGroupListModel();
+            wordGroupListModel.setGroupId(wordGroupModel.getId());
+            wordGroupListModel.setWord(word);
+            wordGroupListMapper.insert(wordGroupListModel);
+        }
+
+    }
+
+    @Override
+    public void deleteWordGroupById(long groupId){
+        // 删除词语列表
+        QueryWrapper<WordGroupListModel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(true, "group_id", groupId);
+        wordGroupListMapper.delete(queryWrapper);
+
+        // 删除组
+        baseMapper.deleteById(groupId);
     }
 
     @Override

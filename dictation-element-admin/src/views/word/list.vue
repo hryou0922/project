@@ -6,12 +6,9 @@
 <!--      <el-select v-model="listQuery.grade" placeholder="年级" clearable style="width: 90px" class="filter-item">-->
 <!--        <el-option v-for="item in gradeOptions" :key="item" :label="item+'年级'" :value="item" />-->
 <!--      </el-select>-->
-<!--      <el-select v-model="listQuery.unit" placeholder="单元" clearable style="width: 90px" class="filter-item">-->
-<!--        <el-option v-for="item in unitOptions" :key="item" :label="item+'单元'" :value="item" />-->
-<!--      </el-select>-->
 <!--      <el-input v-model="listQuery.article" placeholder="文章标题" style="width: 120px;" class="filter-item"  />-->
       <el-input v-model="listQuery.word" placeholder="词语" style="width: 120px;" class="filter-item"  />
-      <el-select v-model="listQuery.levels" placeholder="熟练度级别" clearable style="width: 90px" class="filter-item">
+      <el-select v-model="listQuery.levels" placeholder="熟练度级别" multiple   clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in levelOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
 
@@ -30,6 +27,9 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleStop">
         停止
       </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleCreateTmpWordGroup">
+        创建临时组
+      </el-button>
 <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
 <!--        Add-->
 <!--      </el-button>-->
@@ -41,36 +41,18 @@
 <!--      </el-checkbox>-->
     </div>
 
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%"
+              @selection-change="handleSelectionChange">
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
+
       <el-table-column align="center" label="id" width="200" v-if="false">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-
-<!--      <el-table-column width="180px" align="center" label="Date">-->
-<!--        <template slot-scope="scope">-->
-<!--          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-
-<!--      <el-table-column width="80px" align="center" label="年级">-->
-<!--        <template slot-scope="scope">-->
-<!--          <span>{{ scope.row.grade }} 年级</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-
-<!--      <el-table-column width="80px" align="center" label="单元">-->
-<!--        <template slot-scope="scope">-->
-<!--          <span>{{ scope.row.unit }} 单元</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-
-<!--      <el-table-column width="180px" align="center" label="文章标题">-->
-<!--        <template slot-scope="scope">-->
-<!--          <span>{{ scope.row.article }}</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
 
       <el-table-column width="100px" align="center" label="词语">
         <template slot-scope="scope">
@@ -151,7 +133,7 @@
 </template>
 
 <script>
-import { fetchList, stop, play } from '@/api/word'
+import { fetchList, stop, play, createTmpWordGroup } from '@/api/word'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const levelOptions = [
@@ -202,12 +184,11 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      gradeOptions: [2, 3],
-      unitOptions: [1,2,3,4,5,6,7,8],
+      levelOptions: levelOptions,
+      // 批量选择
+      multipleSelection: [],
       listQuery: {
-        grade: undefined,
-        unit: undefined,
-        article: undefined,
+        levels: undefined,
         word: undefined,
         pageNum: 1,
         pageSize: 20
@@ -218,6 +199,11 @@ export default {
     this.getList()
   },
   methods: {
+    //  在table中添加selection-change的处理函数,回调函数可以拿到选中的数组
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
+
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
@@ -230,6 +216,43 @@ export default {
     handleFilter() {
       this.listQuery.pageNum = 1
       this.getList()
+    },
+    // 创建临时组
+    handleCreateTmpWordGroup() {
+      if (!this.multipleSelection || this.multipleSelection.length < 1) {
+        this.$message({ type: 'error', message: '请选择要处理的记录' })
+        return
+      }
+
+      this.$confirm('即将根据所选记录创建临时组, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const wordList = []
+        this.multipleSelection.forEach((item, index) => {
+          wordList.push(item.word)
+        })
+        const param = {
+          wordList: wordList
+        }
+        createTmpWordGroup(param).then((response) => {
+          var message = '操作成功!'
+          this.$message({
+            type: 'success',
+            message: message
+          })
+          this.getList()
+        })
+      }).catch((e) => {
+        console.log(e, 'catch')
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+
+
     },
     // 播放
     handlePlay() {

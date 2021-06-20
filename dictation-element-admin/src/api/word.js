@@ -1,18 +1,26 @@
 import request from '@/utils/request'
 
-export function fetchList(query) {
+export function fetchList(data) {
   return request({
     url: '/word/list',
     method: 'post',
-    params: query
+    data
   })
 }
 
-export function play(query) {
+export function createTmpWordGroup(data) {
+  return request({
+    url: '/word-group/create-tmp-word-group',
+    method: 'post',
+    data
+  })
+}
+
+export function play(data) {
   return request({
     url: '/word/play',
     method: 'post',
-    params: query
+    data
   })
 }
 

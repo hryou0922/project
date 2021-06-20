@@ -23,7 +23,6 @@
     data() {
       return {
         groupId: '',
-        dateValues: '',
         activeName: 'groupList'
       }
     },
@@ -31,12 +30,12 @@
       // this.$store.dispatch('clearPageNum')
     },
     methods: {
-      handleClick(tab, event) {
-        console.log(tab, event);
-        if(tab.name == 'groupWordList'){
-          this.groupId = ''
-        }
-      },
+      // handleClick(tab, event) {
+      //   console.log(tab, event);
+      //   if(tab.name == 'groupWordList'){
+      //       // this.groupId = ''
+      //   }
+      // },
       showBatchDetailTab(id){
         this.groupId = id;
         this.activeName = 'groupWordList'

@@ -11,10 +11,7 @@ import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -38,7 +35,7 @@ public class WordCtl {
 
 
     @RequestMapping(value = "list")
-    public MyPage<WordModel> list(@ModelAttribute WordQry qry){
+    public MyPage<WordModel> list(@RequestBody WordQry qry){
         logger.info("收到请求:{}", CommonJsonUtils.toJsonString(qry));
 
         return wordService.queryPage(qry);
@@ -50,7 +47,7 @@ public class WordCtl {
      * @return
      */
     @RequestMapping(value = "play")
-    public CommonRsp play(@ModelAttribute WordQry qry){
+    public CommonRsp play(@RequestBody WordQry qry){
         logger.info("收到play请求:{}", CommonJsonUtils.toJsonString(qry));
 
         // 播放全部符合要求的内容

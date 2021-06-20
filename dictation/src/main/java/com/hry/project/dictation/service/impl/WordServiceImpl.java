@@ -11,6 +11,8 @@ import com.hry.project.dictation.service.IWordService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -34,10 +36,11 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, WordModel> implemen
     @Override
     public MyPage<WordModel> queryPage(WordQry qry) {
         QueryWrapper<WordModel> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(qry.getGrade() != null , "grade", qry.getGrade());
-        queryWrapper.eq(qry.getUnit() != null, "unit", qry.getUnit());
-        queryWrapper.like(StringUtils.hasLength(qry.getArticle()), "article", qry.getArticle());
         queryWrapper.like(StringUtils.hasLength(qry.getWord()), "word", qry.getWord());
+
+        List<Integer> levels = qry.getLevels();
+        queryWrapper.in(levels != null && levels.size() !=0, "level", levels);
+
 
         Page<WordModel> pageQry = new Page<>();
         pageQry.setSize(qry.getPageSize().longValue());

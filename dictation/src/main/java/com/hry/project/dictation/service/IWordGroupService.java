@@ -44,6 +44,19 @@ public interface IWordGroupService extends IService<WordGroupModel> {
     boolean isWordInGroup(long groupId, String word);
 
     /**
+     * 创建一个临时听写组
+     * @param groupName
+     * @param wordList
+     */
+    void creatTmpWordGroup(String groupName, List<String> wordList);
+
+    /**
+     * 删除组
+     * @param groupId
+     */
+    void deleteWordGroupById(long groupId);
+
+    /**
      * 保存组
      * @param entity
      * @param listModelList

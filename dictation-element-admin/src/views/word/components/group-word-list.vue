@@ -25,7 +25,13 @@
 <!--      </el-checkbox>-->
     </div>
 
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%"
+              @selection-change="handleSelectionChange">
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
+
       <el-table-column align="center" label="id" width="200" v-if="false">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
@@ -169,11 +175,10 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      gradeOptions: [2, 3],
-      unitOptions: [1,2,3,4,5,6,7,8],
       listQuery: {
         groupId: this.groupId,
         pageNum: 1,
+        wordList: [],
         pageSize: 20
       }
     }
@@ -206,7 +211,16 @@ export default {
       stop(this.listQuery).then(response => {
         console.log("播放")
       })
-    }
+    },
+    //  在table中添加selection-change的处理函数,回调函数可以拿到选中的数组
+    handleSelectionChange (val) {
+      this.listQuery.wordList = [];
+      val.forEach((item, index) => {
+        this.listQuery.wordList.push(item.word)
+        console.log(item);
+        console.log(this.listQuery.wordList);
+      })
+    },
 
   }
 }

@@ -66,6 +66,17 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            Edit
+          </el-button>
+          <el-button v-if="row.type=='2'" size="mini" type="danger" @click="handleDelete(row,$index)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize" @pagination="getList" />
@@ -73,7 +84,7 @@
 </template>
 
 <script>
-import { fetchList} from '@/api/word-group'
+import { fetchList, deleteWordGroup} from '@/api/word-group'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const levelOptions = [
@@ -130,7 +141,7 @@ export default {
       listQuery: {
         name: undefined,
         pageNum: 1,
-        pageSize: 20
+        pageSize: 5
       }
     }
   },
@@ -151,6 +162,34 @@ export default {
       this.listQuery.pageNum = 1
       this.getList()
     },
+    // 删除
+    handleDelete(row, index) {
+      this.$confirm('是否删除所选记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const param = {
+          groupId : row.id
+        }
+        deleteWordGroup(param).then((response) => {
+          var message = '操作成功!'
+          this.$message({
+            type: 'success',
+            message: message
+          })
+          this.list.splice(index, 1)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除操作'
+        })
+      })
+    },
+
+
+    // 切换tab时调用响应的方法
     toBatchDetailTab(id) {
       this.$emit('showBatchDetail', id,this.dateValues)
     }

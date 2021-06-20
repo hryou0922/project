@@ -8,19 +8,27 @@ export function fetchList(query) {
   })
 }
 
-export function fetchWordList(query) {
+export function deleteWordGroup(data) {
   return request({
-    url: '/word-group/word-list',
+    url: '/word-group/delete-word-group',
     method: 'post',
-    params: query
+    data
   })
 }
 
-export function play(query) {
+export function fetchWordList(data) {
+  return request({
+    url: '/word-group/word-list',
+    method: 'post',
+    data
+  })
+}
+
+export function play(data) {
   return request({
     url: '/word-group/play',
     method: 'post',
-    params: query
+    data
   })
 }
 
