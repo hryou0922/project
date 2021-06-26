@@ -83,13 +83,28 @@ public class BaiduText2VoiceMsg {
         if(!StringUtils.hasText(text)){
             return null;
         }
-        if(!StringUtils.hasText(token)){
-            refreshToken();
+
+        // 文件格式
+        String format = getFormat(aue);
+
+        // 文件相对路径
+        String voiceFilePath = File.separator + relativeDir + File.separator + text + "." + format;
+
+        // 如果文件已经存在，则立即返回
+        if(new File(rootDir + voiceFilePath).exists()){
+            VoiceInfoResultVo voiceInfoResultVo = new VoiceInfoResultVo();
+            voiceInfoResultVo.setVoiceFilePath(voiceFilePath);
+            return voiceInfoResultVo;
         }
+
         if(StringUtils.hasText(relativeDir)){
             // 创建目录
             boolean mkdirResult = new File(rootDir + File.separator + relativeDir).mkdirs();
             System.out.println(rootDir + File.separator + relativeDir + " " +mkdirResult);
+        }
+
+        if(!StringUtils.hasText(token)){
+            refreshToken();
         }
 
         VoiceInfoResultVo voiceInfoResultVo = null;
@@ -115,14 +130,14 @@ public class BaiduText2VoiceMsg {
             String contentType = conn.getContentType();
             if (contentType.contains("audio/")) {
                 byte[] bytes = ConnUtil.getResponseBytes(conn);
-                String format = getFormat(aue);
-                File file = new File(rootDir + File.separator + relativeDir + File.separator + text + "." + format);
+
+                File file = new File(rootDir + voiceFilePath);
                 FileOutputStream os = new FileOutputStream(file);
                 os.write(bytes);
                 os.close();
                 logger.info("audio file write to " + file.getAbsolutePath());
                 voiceInfoResultVo = new VoiceInfoResultVo();
-                voiceInfoResultVo.setVoiceFilePath(File.separator + relativeDir + File.separator + text + "." + format);
+                voiceInfoResultVo.setVoiceFilePath(voiceFilePath);
             } else {
                 logger.error("ERROR: content-type= " + contentType);
                 String res = ConnUtil.getResponseString(conn);

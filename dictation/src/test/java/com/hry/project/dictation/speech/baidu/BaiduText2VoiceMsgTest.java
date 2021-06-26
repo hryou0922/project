@@ -9,9 +9,9 @@ public class BaiduText2VoiceMsgTest {
     public void a (){
         String dir = "D:\\tmp\\tmp2";
         BaiduText2VoiceMsg baiduText2VoiceMsg = new BaiduText2VoiceMsg(dir);
-        VoiceInfoResultVo voiceInfoResultVo = baiduText2VoiceMsg.text2wav("飞机飞来了","2012");
+        VoiceInfoResultVo voiceInfoResultVo = baiduText2VoiceMsg.text2wav("飞机2飞来了","2012");
         System.out.println(CommonJsonUtils.toJsonString(voiceInfoResultVo));
-        VoiceInfoResultVo voiceInfoResultVo12 =  baiduText2VoiceMsg.text2wav("你好", "");
-        System.out.println(CommonJsonUtils.toJsonString(voiceInfoResultVo12));
+//        VoiceInfoResultVo voiceInfoResultVo12 =  baiduText2VoiceMsg.text2wav("你好", "");
+//        System.out.println(CommonJsonUtils.toJsonString(voiceInfoResultVo12));
     }
 }
