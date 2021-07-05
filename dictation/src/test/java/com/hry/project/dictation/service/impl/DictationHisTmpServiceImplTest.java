@@ -1,8 +1,8 @@
 package com.hry.project.dictation.service.impl;
 
 import com.hry.project.dictation.BaseTest;
+import com.hry.project.dictation.constant.Constants;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpBatchUpdateReq;
-import com.hry.project.dictation.model.DictationHisModel;
 import com.hry.project.dictation.model.DictationHisTmpModel;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -47,7 +47,7 @@ public class DictationHisTmpServiceImplTest extends BaseTest {
                 tmp.setCreateTime(new Date());
                 // tmp.setGroupId();
                 tmp.setWord("黄莺");
-                tmp.setResult(DictationHisModel.DICTATION_RESULT_FAIL);
+                tmp.setResult(Constants.RESULT_FAIL);
                 tmp.setDes("");
 
                 list.add(tmp);

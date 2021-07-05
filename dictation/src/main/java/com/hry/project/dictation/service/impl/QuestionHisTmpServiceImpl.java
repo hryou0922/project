@@ -5,17 +5,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hry.project.dictation.constant.Constants;
 import com.hry.project.dictation.dto.page.MyPage;
-import com.hry.project.dictation.dto.req.word.DictationHisTmpBatchUpdateReq;
-import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
+import com.hry.project.dictation.dto.req.question.QuestionHisTmpBatchUpdateReq;
+import com.hry.project.dictation.dto.req.question.QuestionHisTmpQry;
 import com.hry.project.dictation.enums.FamiliarLevelEnum;
-import com.hry.project.dictation.mapper.DictationHisMapper;
-import com.hry.project.dictation.mapper.DictationHisTmpMapper;
-import com.hry.project.dictation.model.DictationHisModel;
-import com.hry.project.dictation.model.DictationHisTmpModel;
-import com.hry.project.dictation.model.WordModel;
-import com.hry.project.dictation.service.IDictationHisTmpService;
-import com.hry.project.dictation.service.IWordGroupService;
-import com.hry.project.dictation.service.IWordService;
+import com.hry.project.dictation.mapper.QuestionHisMapper;
+import com.hry.project.dictation.mapper.QuestionHisTmpMapper;
+import com.hry.project.dictation.model.QuestionHisModel;
+import com.hry.project.dictation.model.QuestionHisTmpModel;
+import com.hry.project.dictation.model.QuestionModel;
+import com.hry.project.dictation.service.IQuestionGroupService;
+import com.hry.project.dictation.service.IQuestionHisTmpService;
+import com.hry.project.dictation.service.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -31,40 +31,42 @@ import java.util.Set;
  * </p>
  *
  * @author hry
- * @since 2021-06-08
+ * @since 2021-06-28
  */
 @Service
-public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMapper, DictationHisTmpModel> implements IDictationHisTmpService {
+public class QuestionHisTmpServiceImpl extends ServiceImpl<QuestionHisTmpMapper, QuestionHisTmpModel> implements IQuestionHisTmpService {
+
     @Autowired
-    private DictationHisTmpMapper dictationHisTmpMapper;
+    private QuestionHisTmpMapper questionHisTmpMapper;
     @Autowired
-    private DictationHisMapper dictationHisMapper;
+    private QuestionHisMapper questionHisMapper;
     @Autowired
-    private IWordService wordService;
+    private IQuestionService questionService;
     @Autowired
-    private IWordGroupService wordGroupService;
+    private IQuestionGroupService questionGroupService;
+
 
     @Override
-    public MyPage<DictationHisTmpModel> queryPage(DictationHisTmpQry qry) {
-        QueryWrapper<DictationHisTmpModel> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(StringUtils.hasLength(qry.getWord()) , "word", qry.getWord());
+    public MyPage<QuestionHisTmpModel> queryPage(QuestionHisTmpQry qry) {
+        QueryWrapper<QuestionHisTmpModel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(StringUtils.hasLength(qry.getTopic()) , "topic", qry.getTopic());
         queryWrapper.eq(qry.getResult() != null, "result", qry.getResult());
         queryWrapper.orderByDesc("create_time");
 
-        Page<DictationHisTmpModel> pageQry = new Page<>();
+        Page<QuestionHisTmpModel> pageQry = new Page<>();
         pageQry.setSize(qry.getPageSize().longValue());
         pageQry.setCurrent(qry.getPageNum());
 
 
-        Page<DictationHisTmpModel> page = page(pageQry, queryWrapper);
+        Page<QuestionHisTmpModel> page = page(pageQry, queryWrapper);
 
-        MyPage<DictationHisTmpModel> myPage = MyPage.create(page.getRecords());
+        MyPage<QuestionHisTmpModel> myPage = MyPage.create(page.getRecords());
         myPage.setTotal((int) page.getTotal());
         return myPage;
     }
 
     @Override
-    public void batchUpdate(DictationHisTmpBatchUpdateReq req){
+    public void batchUpdate(QuestionHisTmpBatchUpdateReq req) {
         int result = req.getResult();
         List<Long> idList = req.getIds();
         if(idList != null){
@@ -75,7 +77,7 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
                 // 更新正确、错误
                 for (Long id : idList) {
                     if (id != null) {
-                        DictationHisTmpModel tmp = new DictationHisTmpModel();
+                        QuestionHisTmpModel tmp = new QuestionHisTmpModel();
                         tmp.setId(id);
                         tmp.setResult(result);
                         baseMapper.updateById(tmp);
@@ -86,14 +88,14 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
     }
 
     @Override
-    public void archive( DictationHisTmpBatchUpdateReq req) {
-        List<DictationHisTmpModel> list = this.listByIds(req.getIds());
+    public void archive(QuestionHisTmpBatchUpdateReq req) {
+        List<QuestionHisTmpModel> list = this.listByIds(req.getIds());
         // 保存
         Set<Long> groupIdSet = new HashSet<>();
-        for(DictationHisTmpModel tmpModel : list){
+        for(QuestionHisTmpModel tmpModel : list){
             Integer tmpResult = tmpModel.getResult();
             long dictationHisModelCreateTime = tmpModel.getCreateTime().getTime();
-            String word = tmpModel.getWord();
+            String questionId = tmpModel.getQuestionId();
             Long groupId = tmpModel.getGroupId();
             if(groupId != null){
                 groupIdSet.add(groupId);
@@ -104,7 +106,7 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
                     && tmpResult == Constants.RESULT_SUCCESS) ? true : false;
 
             // 更新词语表状态
-            WordModel dbModel = wordService.selectByWord(word);
+            QuestionModel dbModel = questionService.getById(questionId);
             if(dbModel != null){
                 Date oldDate = dbModel.getLevelTime();
                 // 是否已经被处理：根据时间进行判断
@@ -118,29 +120,30 @@ public class DictationHisTmpServiceImpl extends ServiceImpl<DictationHisTmpMappe
                     dbModel.setLastResult(tmpResult);
                     dbModel.setLevelTime(tmpModel.getCreateTime());
                     // 更新状态
-                    wordService.updateById(dbModel);
+                    questionService.updateById(dbModel);
                 }
             }
 
             // 写入正式表
-            if(dictationHisMapper.selectById(id) == null) {
+            if(questionHisMapper.selectById(id) == null) {
                 // 写入正式表
-                DictationHisModel hisModel = new DictationHisModel();
+                QuestionHisModel hisModel = new QuestionHisModel();
                 hisModel.setId(tmpModel.getId());
                 hisModel.setCreateTime(tmpModel.getCreateTime());
                 hisModel.setGroupId(tmpModel.getGroupId());
-                hisModel.setWord(tmpModel.getWord());
+                hisModel.setQuestionId(questionId);
+                hisModel.setTopic(tmpModel.getTopic());
                 hisModel.setResult(tmpModel.getResult());
                 hisModel.setDes(tmpModel.getDes());
-                dictationHisMapper.insert(hisModel);
+                questionHisMapper.insert(hisModel);
             }
 
             // 删除已经处理的记录
-            dictationHisTmpMapper.deleteById(tmpModel.getId());
+            questionHisTmpMapper.deleteById(tmpModel.getId());
         }
 
         // 更新组表统计信息
-        wordGroupService.updateGroupInfo(groupIdSet.toArray(new Long[0]));
+        questionGroupService.updateGroupInfo(groupIdSet.toArray(new Long[0]));
     }
 
 }

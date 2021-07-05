@@ -1,4 +1,4 @@
-package com.hry.project.dictation.controller;
+package com.hry.project.dictation.controller.word;
 
 
 import com.hry.project.dictation.dto.page.MyPage;

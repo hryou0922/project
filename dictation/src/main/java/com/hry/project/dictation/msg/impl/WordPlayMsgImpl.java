@@ -1,6 +1,6 @@
 package com.hry.project.dictation.msg.impl;
 
-import com.hry.project.dictation.model.DictationHisModel;
+import com.hry.project.dictation.constant.Constants;
 import com.hry.project.dictation.model.DictationHisTmpModel;
 import com.hry.project.dictation.model.WordModel;
 import com.hry.project.dictation.msg.IWordPlayMsg;
@@ -64,7 +64,7 @@ public class WordPlayMsgImpl implements IWordPlayMsg {
                                 model.setWord(wordModel.getWord());
                                 model.setGroupId(groupId);
                                 model.setCreateTime(new Date());
-                                model.setResult(DictationHisModel.DICTATION_RESULT_SUCCESS);
+                                model.setResult(Constants.RESULT_SUCCESS);
                                 dictationHisTmpService.save(model);
                             }
                         }

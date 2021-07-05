@@ -13,10 +13,10 @@ import java.util.Date;
  * </p>
  *
  * @author hry
- * @since 2021-06-10
+ * @since 2021-07-05
  */
-@TableName("dictation_his")
-public class DictationHisModel implements Serializable {
+@TableName("question_his_tmp")
+public class QuestionHisTmpModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,9 @@ public class DictationHisModel implements Serializable {
 
     private Long groupId;
 
-    private String word;
+    private String questionId;
+
+    private String topic;
 
     private Integer result;
 
@@ -58,12 +60,20 @@ public class DictationHisModel implements Serializable {
         this.groupId = groupId;
     }
 
-    public String getWord() {
-        return word;
+    public String getQuestionId() {
+        return questionId;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     public Integer getResult() {
@@ -84,11 +94,12 @@ public class DictationHisModel implements Serializable {
 
     @Override
     public String toString() {
-        return "DictationHisModel{" +
+        return "QuestionHisTmpModel{" +
         "id=" + id +
         ", createTime=" + createTime +
         ", groupId=" + groupId +
-        ", word=" + word +
+        ", questionId=" + questionId +
+        ", topic=" + topic +
         ", result=" + result +
         ", des=" + des +
         "}";

@@ -60,7 +60,84 @@ CREATE TABLE word_group_list
 );
 CREATE INDEX index_word_group_list_groupId ON word_group_list (group_id);
 
+--- ============== 题目
+--drop table question;
+--drop table question_his_tmp;
+--drop table question_his;
+--drop table question_group;
+--drop table question_group_list;
 
+
+-- 题目表
+CREATE TABLE question
+(
+    id VARCHAR(32) NOT NULL primary key ,
+    type int default 1,
+    topic VARCHAR(256) not null,
+    voice_need int default 0,
+    voice_file VARCHAR(24),
+    content VARCHAR(1024),
+    answer VARCHAR(1024),
+    last_result int not null default 0 ,
+    level int ,
+    level_time timestamp,
+    total int,
+    des VARCHAR(256)
+);
+
+-- 题目临时历史表
+CREATE TABLE question_his_tmp
+(
+    id BIGINT(20) NOT NULL primary key  ,
+    create_time timestamp not null default CURRENT_TIMESTAMP ,
+    group_id BIGINT(20),
+    question_id VARCHAR(32) not null ,
+    topic VARCHAR(256) not null,
+    result int not null default 1,
+    des VARCHAR(256)
+);
+
+
+-- 题目历史表
+CREATE TABLE question_his
+(
+    id BIGINT(20) NOT NULL primary key  ,
+    create_time timestamp not null default CURRENT_TIMESTAMP ,
+    group_id BIGINT(20),
+    question_id VARCHAR(32) not null ,
+    topic VARCHAR(256) not null,
+    result int not null default 1,
+    des VARCHAR(256)
+);
+CREATE INDEX index_dictation_his_topic_md5 ON question_his (id);
+
+-- 题目组
+CREATE TABLE question_group
+(
+    id BIGINT(20) NOT NULL primary key  ,
+    create_time timestamp not null default CURRENT_TIMESTAMP ,
+    name VARCHAR(32) not null unique,
+    type int not null default 1,
+    total int ,
+    pass_rate int ,
+    good_rate int ,
+    excellent_rate int ,
+    result_time timestamp ,
+    status int ,
+    des VARCHAR(256)
+);
+
+-- 组包含的词语
+CREATE TABLE question_group_list
+(
+    group_id BIGINT(20) NOT NULL,
+    question_id VARCHAR(32) not null
+);
+CREATE INDEX index_question_group_list_groupId ON question_group_list (group_id);
+
+
+
+--- 临时================================
 -- 设备分组和配置
 CREATE TABLE group_config
 (

@@ -1,5 +1,6 @@
 package com.hry.project.dictation.datamigration;
 
+import com.hry.project.dictation.constant.Constants;
 import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
 import com.hry.project.dictation.enums.FamiliarLevelEnum;
@@ -47,7 +48,7 @@ public class DictationHis2WordMigrationMsg {
             long id = tmpModel.getId();
             // 本次听写是成功还是失败
             boolean isDitationSucess = (tmpResult != null
-                    && tmpResult == DictationHisModel.DICTATION_RESULT_SUCCESS) ? true : false;
+                    && tmpResult == Constants.RESULT_SUCCESS) ? true : false;
 
             // 更新词语表状态
             WordModel dbModel = wordService.selectByWord(word);
