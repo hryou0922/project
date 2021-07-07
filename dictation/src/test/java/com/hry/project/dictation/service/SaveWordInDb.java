@@ -37,8 +37,6 @@ public class SaveWordInDb extends BaseTest {
         saveIntoDb(file);
     }
 
-
-
     private void saveIntoDb(String file) {
         try {
             List<String> lines = FileUtils.readLines(new File(file), "utf-8");

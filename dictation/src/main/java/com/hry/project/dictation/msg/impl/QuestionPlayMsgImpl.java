@@ -1,12 +1,12 @@
 package com.hry.project.dictation.msg.impl;
 
 import com.hry.project.dictation.constant.Constants;
-import com.hry.project.dictation.model.DictationHisTmpModel;
-import com.hry.project.dictation.model.WordModel;
+import com.hry.project.dictation.model.QuestionHisTmpModel;
+import com.hry.project.dictation.model.QuestionModel;
+import com.hry.project.dictation.msg.IQuestionPlayMsg;
 import com.hry.project.dictation.msg.IVoicePlayMsg;
-import com.hry.project.dictation.msg.IWordPlayMsg;
-import com.hry.project.dictation.service.IDictationHisTmpService;
-import com.hry.project.dictation.service.IWordService;
+import com.hry.project.dictation.service.IQuestionHisTmpService;
+import com.hry.project.dictation.service.IQuestionService;
 import com.hry.project.dictation.speech.baidu.VoiceInfoResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,23 +23,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author: huangrongyou@yixin.im
- * @date: 2021/6/15 19:23
+ * @date: 2021/7/6 9:52
  */
 @Component
-public class WordPlayMsgImpl implements IWordPlayMsg {
-    private static final Logger logger = LoggerFactory.getLogger(WordPlayMsgImpl.class);
+public class QuestionPlayMsgImpl implements IQuestionPlayMsg {
+    private static final Logger logger = LoggerFactory.getLogger(QuestionPlayMsgImpl.class);
 
-    @Value("${self.voice.rootdir:D:\\db\\voice}")
+    @Value("${self.voice.rootdir:D:\\db\\voice\\topic}")
     private String rootDir;
-    @Value("${self.voice.playnum: 4}")
+    @Value("${self.voice.playnum: 2}")
     private int playNum;
-    @Value("${self.voice.sleep: 5}")
+    @Value("${self.voice.sleep: 20}")
     private int sleepSencond;
 
     @Autowired
-    private IDictationHisTmpService dictationHisTmpService;
+    private IQuestionHisTmpService questionHisTmpService;
     @Autowired
-    private IWordService wordService;
+    private IQuestionService questionService;
 
     private IVoicePlayMsg voicePlayMsg;
 
@@ -56,42 +56,42 @@ public class WordPlayMsgImpl implements IWordPlayMsg {
         voicePlayMsg = new VoicePlayMsgImpl(rootDir, playNum, sleepSencond);
     }
 
-
     @Override
-    public void play(Collection<WordModel> iterms, Long groupId) {
+    public void play(Collection<QuestionModel> questionModels, Long groupId) {
         if(play.get()){
             logger.info("正在播放...");
         }
 
-        if (iterms != null) {
+        if (questionModels != null) {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         // 设置正在播放
                         play.set(true);
-                        for (WordModel wordModel : iterms) {
+                        for (QuestionModel questionModel : questionModels) {
                             if (!play.get()) {
                                 logger.info("收到停止播放，停止播放.");
                                 break;
                             }
-                            if (wordModel != null) {
-                                VoiceInfoResultVo voiceInfoResultVo = voicePlayMsg.playOneWord(wordModel.getWord(), wordModel.getVoiceFile());
+                            if (questionModel != null) {
+                                VoiceInfoResultVo voiceInfoResultVo = voicePlayMsg.playOneWord(questionModel.getTopic(), questionModel.getVoiceFile());
                                 if(voiceInfoResultVo != null){
                                     // 语音创建成功，更新目录
-                                    WordModel updateModel = new WordModel();
-                                    updateModel.setId(wordModel.getId());
+                                    QuestionModel updateModel = new QuestionModel();
+                                    updateModel.setId(questionModel.getId());
                                     updateModel.setVoiceFile(voiceInfoResultVo.getVoiceFilePath());
-                                    wordService.updateById(updateModel);
+                                    questionService.updateById(updateModel);
                                 }
 
-                                // dictationHisTmpService
-                                DictationHisTmpModel model = new DictationHisTmpModel();
-                                model.setWord(wordModel.getWord());
+                                // 临时表
+                                QuestionHisTmpModel model = new QuestionHisTmpModel();
+                                model.setQuestionId(questionModel.getId());
+                                model.setTopic(questionModel.getTopic());
                                 model.setGroupId(groupId);
                                 model.setCreateTime(new Date());
                                 model.setResult(Constants.RESULT_SUCCESS);
-                                dictationHisTmpService.save(model);
+                                questionHisTmpService.save(model);
                             }
                         }
                     }finally {

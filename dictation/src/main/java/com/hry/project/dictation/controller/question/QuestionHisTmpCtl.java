@@ -3,10 +3,10 @@ package com.hry.project.dictation.controller.question;
 
 import com.hry.project.dictation.dto.page.CommonRsp;
 import com.hry.project.dictation.dto.page.MyPage;
-import com.hry.project.dictation.dto.req.word.DictationHisTmpBatchUpdateReq;
-import com.hry.project.dictation.dto.req.word.DictationHisTmpQry;
-import com.hry.project.dictation.model.DictationHisTmpModel;
-import com.hry.project.dictation.service.IDictationHisTmpService;
+import com.hry.project.dictation.dto.req.question.QuestionHisTmpBatchUpdateReq;
+import com.hry.project.dictation.dto.req.question.QuestionHisTmpQry;
+import com.hry.project.dictation.model.QuestionHisTmpModel;
+import com.hry.project.dictation.service.IQuestionHisTmpService;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class QuestionHisTmpCtl {
     private static final Logger logger = LoggerFactory.getLogger(QuestionHisTmpCtl.class);
 
     @Autowired
-    private IDictationHisTmpService dictationHisTmpService;
+    private IQuestionHisTmpService questionHisTmpService;
 
     /**
      * 查询列表
@@ -35,9 +35,9 @@ public class QuestionHisTmpCtl {
      * @return
      */
     @RequestMapping(value = "list")
-    public MyPage<DictationHisTmpModel> list(@ModelAttribute DictationHisTmpQry qry){
+    public MyPage<QuestionHisTmpModel> list(@ModelAttribute QuestionHisTmpQry qry){
         logger.info("收到查询请求:{}", CommonJsonUtils.toJsonString(qry));
-        return dictationHisTmpService.queryPage(qry);
+        return questionHisTmpService.queryPage(qry);
     }
 
     /**
@@ -46,9 +46,9 @@ public class QuestionHisTmpCtl {
      * @return
      */
     @RequestMapping(value = "batch_update", method = RequestMethod.POST)
-    public CommonRsp batchUpdate(@RequestBody DictationHisTmpBatchUpdateReq req){
+    public CommonRsp batchUpdate(@RequestBody QuestionHisTmpBatchUpdateReq req){
         logger.info("收到更新请求: {}", CommonJsonUtils.toJsonString(req));
-        dictationHisTmpService.batchUpdate(req);
+        questionHisTmpService.batchUpdate(req);
         return  CommonRsp.getOkCommonRsp();
     }
 
@@ -58,9 +58,9 @@ public class QuestionHisTmpCtl {
      * @return
      */
     @RequestMapping(value = "archive",  method = RequestMethod.POST)
-    public CommonRsp archive(@RequestBody DictationHisTmpBatchUpdateReq req){
+    public CommonRsp archive(@RequestBody QuestionHisTmpBatchUpdateReq req){
         logger.info("归档操作");
-        dictationHisTmpService.archive(req);
+        questionHisTmpService.archive(req);
         return  CommonRsp.getOkCommonRsp();
     }
 

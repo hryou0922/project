@@ -1,7 +1,9 @@
 package com.hry.project.dictation.service;
 
-import com.hry.project.dictation.model.QuestionHisModel;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hry.project.dictation.dto.page.MyPage;
+import com.hry.project.dictation.dto.req.question.QuestionHisTmpQry;
+import com.hry.project.dictation.model.QuestionHisModel;
 
 /**
  * <p>
@@ -13,4 +15,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IQuestionHisService extends IService<QuestionHisModel> {
 
+    MyPage<QuestionHisModel> queryPage(QuestionHisTmpQry qry);
+
+    /**
+     * 根据升序读取词语表
+     * @param qry
+     * @return
+     */
+    MyPage<QuestionHisModel> queryPageOrderAsc(QuestionHisTmpQry qry);
 }

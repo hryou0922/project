@@ -109,6 +109,18 @@
             <version>4.5.13</version>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.7.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+
         <!-- ========== 开始测试依赖 jar ============= -->
         <!-- 测试模块，包括JUnit、Hamcrest、Mockito -->
         <dependency>
