@@ -222,6 +222,57 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/question',
+    component: Layout,
+    redirect: '/question/list',
+    name: 'Question',
+    meta: {
+      title: '题目管理',
+      icon: 'el-icon-s-help'
+    },
+    children: [
+      // {
+      //   path: 'create',
+      //   component: () => import('@/views/question/create'),
+      //   name: 'CreateQuestion',
+      //   meta: { title: '题目问题', icon: 'edit' }
+      // },
+      // {
+      //   path: 'edit/:id(\\d+)',
+      //   component: () => import('@/views/question/edit'),
+      //   name: 'EditQuestion',
+      //   meta: { title: '编辑题目', noCache: true, activeMenu: '/word/list' },
+      //   hidden: true
+      // },
+      {
+        path: 'list',
+        component: () => import('@/views/question/list'),
+        name: 'QuestionList',
+        meta: { title: '题目列表', icon: 'list' }
+      },
+      {
+        path: 'dictation-his-tmp',
+        component: () => import('@/views/question/question-his-tmp'),
+        name: 'Dictation-hist-tmp',
+        meta: { title: '题目复习记录结果临时表', icon: 'list' }
+      },
+      {
+        path: 'dictation-his',
+        component: () => import('@/views/question/question-his'),
+        name: 'Dictation-hist',
+        meta: { title: '题目复习记录结果表', icon: 'list' }
+      },
+      // {
+      //   path: 'gp-list',
+      //   component: () => import('@/views/question/gp-list'),
+      //   name: 'Group-list',
+      //   meta: { title: '组管理', icon: 'list' }
+      // },
+    ]
+  },
+
+
+  {
     path: '/icon',
     component: Layout,
     children: [

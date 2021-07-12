@@ -53,7 +53,7 @@ public class WordPlayMsgImpl implements IWordPlayMsg {
     @PostConstruct
     public void init() {
         // 初始化
-        voicePlayMsg = new VoicePlayMsgImpl(rootDir, playNum, sleepSencond);
+        voicePlayMsg = new VoicePlayMsgImpl(rootDir, playNum, sleepSencond, true);
     }
 
 

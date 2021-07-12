@@ -16,10 +16,6 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-check" @click="handleBatchUpdate(1)">批量修改为正确</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-close" @click="handleBatchUpdate(0)">批量修改为错误</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-close" @click="handleBatchUpdate(99)">批量删除</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-close" @click="handleArchive">归档</el-button>
 
 <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
 <!--        Add-->
@@ -33,13 +29,13 @@
     </div>
 
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%"
-              @selection-change="handleSelectionChange">
+              @selection-change="handleSelectionChange" >
       <el-table-column
         type="selection"
-        width="55">
+        width="55" >
       </el-table-column>
 
-      <el-table-column align="center" label="id" width="200" v-if="false">
+      <el-table-column align="center" label="id" width="200"  v-if="false">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
@@ -51,21 +47,21 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 
-      <el-table-column width="240px" align="center" label="时间">
+      <el-table-column width="200px" align="center" label="时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="220px" align="center" label="分组编号">
+      <el-table-column width="120px" align="center" label="分组编号">
         <template slot-scope="scope">
           <span>{{ scope.row.groupId }} </span>
         </template>
       </el-table-column>
 
-      <el-table-column width="120px" align="center" label="词语">
+      <el-table-column width="350px" align="center" label="题目">
         <template slot-scope="scope">
-          <span>{{ scope.row.word }}</span>
+          <span>{{ scope.row.topic }}</span>
         </template>
       </el-table-column>
 
@@ -123,7 +119,7 @@
 </template>
 
 <script>
-import { fetchList, batchUpdate , archive } from '@/api/dictation-his-tmp'
+import { fetchList} from '@/api/question-his'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { parseTime } from '@/utils'
 
@@ -139,7 +135,7 @@ const resultTypeKeyValue = resultOptions.reduce((acc, cur) => {
 
 
 export default {
-  name: 'WordList',
+  name: 'QuestionHisList',
   components: { Pagination },
   filters: {
     statusFilter(status) {
@@ -181,90 +177,11 @@ export default {
         this.listLoading = false
       })
     },
-
     // 搜索
     handleFilter() {
       this.listQuery.pageNum = 1
       this.getList()
     },
-
-    //  在table中添加selection-change的处理函数,回调函数可以拿到选中的数组
-    handleSelectionChange (val) {
-      this.multipleSelection = val
-    },
-
-    // 批量操作
-    handleBatchUpdate(e) {
-      if (!this.multipleSelection || this.multipleSelection.length < 1) {
-        this.$message({ type: 'error', message: '请选择要处理的记录' })
-        return
-      }
-      this.$confirm('即将批量修改/删除正确所选记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const idsList = []
-        this.multipleSelection.forEach((item, index) => {
-          idsList.push(item.id)
-        })
-        const param = {
-          ids: idsList,
-          result: e
-        }
-        batchUpdate(param).then((response) => {
-          var message = '操作成功!'
-          this.$message({
-            type: 'success',
-            message: message
-          })
-          this.getList()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消批量操作'
-        })
-      })
-    },
-
-
-
-    // 搜索
-    handleArchive() {
-      if (!this.multipleSelection || this.multipleSelection.length < 1) {
-        this.$message({ type: 'error', message: '请选择要处理的记录' })
-        return
-      }
-
-      this.$confirm('即将归档所选记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const idsList = []
-        this.multipleSelection.forEach((item, index) => {
-          idsList.push(item.id)
-        })
-        const param = {
-          ids: idsList
-        }
-        archive(param).then((response) => {
-          var message = '操作成功!'
-          this.$message({
-            type: 'success',
-            message: message
-          })
-          this.getList()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消操作'
-        })
-      })
-    }
-
   }
 }
 </script>

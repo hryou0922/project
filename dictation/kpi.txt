@@ -1,0 +1,6 @@
+1. 从jira下载excel
+2. 打开excel，并另存为excel，如果不这么做，则解析时会报错
+3. kpi2-t.xls：xls处理后，删除空行，子任务，缺陷，第一行有值
+
+1. http://jira.netease.com/browse/IPAAS-1645 带上cookie即可
+

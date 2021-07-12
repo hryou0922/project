@@ -33,7 +33,7 @@ public class QuestionPlayMsgImpl implements IQuestionPlayMsg {
     private String rootDir;
     @Value("${self.voice.playnum: 2}")
     private int playNum;
-    @Value("${self.voice.sleep: 20}")
+    @Value("${self.voice.sleep: 5}")
     private int sleepSencond;
 
     @Autowired
@@ -53,7 +53,7 @@ public class QuestionPlayMsgImpl implements IQuestionPlayMsg {
     @PostConstruct
     public void init() {
         // 初始化
-        voicePlayMsg = new VoicePlayMsgImpl(rootDir, playNum, sleepSencond);
+        voicePlayMsg = new VoicePlayMsgImpl(rootDir, playNum, sleepSencond, false);
     }
 
     @Override

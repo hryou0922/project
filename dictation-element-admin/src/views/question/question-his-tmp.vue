@@ -51,21 +51,21 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 
-      <el-table-column width="240px" align="center" label="时间">
+      <el-table-column width="200px" align="center" label="时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="220px" align="center" label="分组编号">
+      <el-table-column width="120px" align="center" label="分组编号">
         <template slot-scope="scope">
           <span>{{ scope.row.groupId }} </span>
         </template>
       </el-table-column>
 
-      <el-table-column width="120px" align="center" label="词语">
+      <el-table-column width="350px" align="center" label="题目">
         <template slot-scope="scope">
-          <span>{{ scope.row.word }}</span>
+          <span>{{ scope.row.topic }}</span>
         </template>
       </el-table-column>
 
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { fetchList, batchUpdate , archive } from '@/api/dictation-his-tmp'
+import { fetchListTmp, batchUpdate , archive } from '@/api/question-his'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { parseTime } from '@/utils'
 
@@ -139,7 +139,7 @@ const resultTypeKeyValue = resultOptions.reduce((acc, cur) => {
 
 
 export default {
-  name: 'WordList',
+  name: 'QuestionTmpList',
   components: { Pagination },
   filters: {
     statusFilter(status) {
@@ -175,13 +175,12 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      fetchListTmp(this.listQuery).then(response => {
         this.list = response.items
         this.total = response.total
         this.listLoading = false
       })
     },
-
     // 搜索
     handleFilter() {
       this.listQuery.pageNum = 1

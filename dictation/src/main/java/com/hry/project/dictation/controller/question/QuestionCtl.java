@@ -5,7 +5,7 @@ import com.hry.project.dictation.dto.page.CommonRsp;
 import com.hry.project.dictation.dto.page.MyPage;
 import com.hry.project.dictation.dto.req.question.QuestionQry;
 import com.hry.project.dictation.model.QuestionModel;
-import com.hry.project.dictation.msg.IWordPlayMsg;
+import com.hry.project.dictation.msg.IQuestionPlayMsg;
 import com.hry.project.dictation.service.IQuestionService;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
@@ -33,7 +34,7 @@ public class QuestionCtl {
     @Autowired
     private IQuestionService questionService;
     @Autowired
-    private IWordPlayMsg wordPlayMsg;
+    private IQuestionPlayMsg questionPlayMsg;
 
 
     @RequestMapping(value = "list")
@@ -56,20 +57,20 @@ public class QuestionCtl {
         if (myPage != null) {
             Collection<QuestionModel> iterms = myPage.getItems();
             // TODO 增加播放代码
-            // wordPlayMsg.play(iterms, null);
+            questionPlayMsg.play(iterms, null);
         }
 
         return CommonRsp.getOkCommonRsp();
     }
 
-//    /**
-//     * 停止播放
-//     * @return
-//     */
-//    @RequestMapping(value = "stop", method = RequestMethod.GET)
-//    public CommonRsp stopPlay(){
-//        wordPlayMsg.stop();
-//        return CommonRsp.getOkCommonRsp();
-//    }
+    /**
+     * 停止播放
+     * @return
+     */
+    @RequestMapping(value = "stop", method = RequestMethod.GET)
+    public CommonRsp stopPlay(){
+        questionPlayMsg.stop();
+        return CommonRsp.getOkCommonRsp();
+    }
 }
 

@@ -19,10 +19,18 @@ public class VoicePlayMsgImpl implements IVoicePlayMsg {
     private String rootDir;
     private int playNum;
     private int sleepSencond;
+    private boolean isPerWordSleepTime;
 
     private BaiduText2VoiceMsg baiduText2VoiceMsg;
 
-    public VoicePlayMsgImpl(String rootDir, int playNum, int sleepSencond) {
+    /**
+     *
+     * @param rootDir
+     * @param playNum
+     * @param sleepSencond
+     * @param isPerWordSleepTime 如果true，则播放一个词语，则每个字，sleepSencond；如果false，则播放无论多个字，则休息sleepSencond
+     */
+    public VoicePlayMsgImpl(String rootDir, int playNum, int sleepSencond, boolean isPerWordSleepTime) {
         this.baiduText2VoiceMsg = new BaiduText2VoiceMsg(rootDir);
         this.rootDir = rootDir;
         this.playNum = playNum;
@@ -43,6 +51,7 @@ public class VoicePlayMsgImpl implements IVoicePlayMsg {
             }
             // 文本转换为语音文件
             voiceInfoResultVo = baiduText2VoiceMsg.text2wav(text, relativeDir);
+            voiceFile = voiceInfoResultVo.getVoiceFilePath();
         }
         if(StringUtils.hasText(voiceFile)){
             String file = rootDir + File.separator + voiceFile;
@@ -54,11 +63,24 @@ public class VoicePlayMsgImpl implements IVoicePlayMsg {
         }
 
         try {
-            Thread.sleep(text.length() * sleepSencond * 1000);
+            Thread.sleep(getSleepTime(text));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         return voiceInfoResultVo;
+    }
+
+    /**
+     * 获取播放一个词语休息时间
+     * @param text
+     * @return
+     */
+    private int getSleepTime(String text) {
+        if(isPerWordSleepTime) {
+            return text.length() * sleepSencond * 1000;
+        }else {
+            return sleepSencond * 1000;
+        }
     }
 }
