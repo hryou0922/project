@@ -44,13 +44,13 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 
-      <el-table-column width="100px" align="center" label="词语">
+      <el-table-column width="300px" align="center" label="题目" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
-          <span>{{ scope.row.word }}</span>
+          <span>{{ scope.row.topic }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="听写次数">
+      <el-table-column width="80px" align="center" label="复习次数">
         <template slot-scope="scope">
           <span>{{ scope.row.total }}</span>
         </template>
@@ -72,7 +72,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="录音文件路径">
+      <el-table-column width="180px" align="center" label="录音文件路径" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <span>{{ scope.row.voiceFile }}</span>
         </template>
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { fetchWordList, stop, play } from '@/api/word-group'
+import { fetchQuestionList, stop, play } from '@/api/question-group'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const levelOptions = [
@@ -189,7 +189,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchWordList(this.listQuery).then(response => {
+      fetchQuestionList(this.listQuery).then(response => {
         this.list = response.items
         this.total = response.total
         this.listLoading = false

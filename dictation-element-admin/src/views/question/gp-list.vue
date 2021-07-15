@@ -5,7 +5,7 @@
       <el-tab-pane label="组列表" name="groupList">
         <group-list v-if="activeName == 'groupList'" @showBatchDetail="showBatchDetailTab" />
       </el-tab-pane>
-      <el-tab-pane label="组词语列表" name="groupWordList">
+      <el-tab-pane label="组题目列表" name="groupWordList">
         <group-word-list v-if="activeName == 'groupWordList'" :group-id="groupId" />
 <!--        <group-word-list v-if="activeName == 'groupWordList'" :batch-id="batchId" :date-value="dateValues" />-->
       </el-tab-pane>
@@ -15,7 +15,7 @@
 
 <script>
   import groupList from './components/group-list'
-  import groupWordList from './components/group-word-list'
+  import groupWordList from './components/group-question-list'
 
   export default {
     name: 'gp-list',

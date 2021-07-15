@@ -8,7 +8,7 @@ export function fetchList(query) {
   })
 }
 
-export function deleteWordGroup(data) {
+export function deleteQuestionGroup(data) {
   return request({
     url: '/question-group/delete-question-group',
     method: 'post',
@@ -16,7 +16,7 @@ export function deleteWordGroup(data) {
   })
 }
 
-export function fetchWordList(data) {
+export function fetchQuestionList(data) {
   return request({
     url: '/question-group/question-list',
     method: 'post',

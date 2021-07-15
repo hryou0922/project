@@ -20,7 +20,7 @@ public class QuestionGroupQry extends AbstractQry {
     /**
      * 词语列表
      */
-    private List<String> wordList;
+    private List<String> questionList;
 
     public Long getGroupId() {
         return groupId;
@@ -38,11 +38,11 @@ public class QuestionGroupQry extends AbstractQry {
         this.name = name;
     }
 
-    public List<String> getWordList() {
-        return wordList;
+    public List<String> getQuestionList() {
+        return questionList;
     }
 
-    public void setWordList(List<String> wordList) {
-        this.wordList = wordList;
+    public void setQuestionList(List<String> questionList) {
+        this.questionList = questionList;
     }
 }

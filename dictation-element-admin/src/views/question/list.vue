@@ -34,7 +34,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="300px" align="center" label="题目">
+      <el-table-column width="300px" align="center" label="题目" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <span>{{ scope.row.topic }}</span>
         </template>
@@ -65,7 +65,7 @@
 
 
 
-      <el-table-column width="180px" align="center" label="录音文件路径">
+      <el-table-column width="180px" align="center" label="录音文件路径" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <span>{{ scope.row.voiceFile }}</span>
         </template>
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import { fetchList, play, stop } from '@/api/question'
+import { fetchList, play, stop, createTmpQuestionGroup } from '@/api/question'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const levelOptions = [
@@ -218,14 +218,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const wordList = []
+        const questionList = []
         this.multipleSelection.forEach((item, index) => {
-          wordList.push(item.word)
+          questionList.push(item.id)
         })
         const param = {
-          wordList: wordList
+          questionList: questionList
         }
-        createTmpWordGroup(param).then((response) => {
+        createTmpQuestionGroup(param).then((response) => {
           var message = '操作成功!'
           this.$message({
             type: 'success',

@@ -4,11 +4,11 @@ package com.hry.project.dictation.controller.question;
 import com.hry.project.dictation.controller.word.DictationHisTmpCtl;
 import com.hry.project.dictation.dto.page.CommonRsp;
 import com.hry.project.dictation.dto.page.MyPage;
-import com.hry.project.dictation.dto.req.word.WordGroupQry;
-import com.hry.project.dictation.model.WordGroupModel;
-import com.hry.project.dictation.model.WordModel;
-import com.hry.project.dictation.msg.IWordPlayMsg;
-import com.hry.project.dictation.service.IWordGroupService;
+import com.hry.project.dictation.dto.req.question.QuestionGroupQry;
+import com.hry.project.dictation.model.QuestionGroupModel;
+import com.hry.project.dictation.model.QuestionModel;
+import com.hry.project.dictation.msg.IQuestionPlayMsg;
+import com.hry.project.dictation.service.IQuestionGroupService;
 import com.hry.project.dictation.utils.CheckUtil;
 import com.hry.project.dictation.utils.CommonJsonUtils;
 import org.slf4j.Logger;
@@ -33,9 +33,9 @@ public class QuestionGroupCtl {
     private static final Logger logger = LoggerFactory.getLogger(DictationHisTmpCtl.class);
 
     @Autowired
-    private IWordGroupService wordGroupService;
+    private IQuestionGroupService questionGroupService;
     @Autowired
-    private IWordPlayMsg wordPlayMsg;
+    private IQuestionPlayMsg questionPlayMsg;
 
     /**
      * 查询组列表
@@ -43,9 +43,9 @@ public class QuestionGroupCtl {
      * @return
      */
     @RequestMapping(value = "list")
-    public MyPage<WordGroupModel> list(@ModelAttribute WordGroupQry qry){
+    public MyPage<QuestionGroupModel> list(@ModelAttribute QuestionGroupQry qry){
         logger.info("收到查询请求:{}", CommonJsonUtils.toJsonString(qry));
-        return wordGroupService.queryWordGroupPage(qry);
+        return questionGroupService.queryQuestionGroupPage(qry);
     }
 
     /**
@@ -53,10 +53,10 @@ public class QuestionGroupCtl {
      * @param qry
      * @return
      */
-    @RequestMapping(value = "word-list")
-    public MyPage<WordModel> listWord(@RequestBody WordGroupQry qry){
+    @RequestMapping(value = "question-list")
+    public MyPage<QuestionModel> listQuestion(@RequestBody QuestionGroupQry qry){
         logger.info("收到查询请求:{}", CommonJsonUtils.toJsonString(qry));
-        return wordGroupService.queryWordGroupListPage(qry);
+        return questionGroupService.queryQuestionGroupListPage(qry);
     }
 
     /**
@@ -64,15 +64,15 @@ public class QuestionGroupCtl {
      * @param qry
      * @return
      */
-    @RequestMapping(value = "create-tmp-word-group")
-    public CommonRsp createTmpWordGroup(@RequestBody WordGroupQry qry){
+    @RequestMapping(value = "create-tmp-question-group")
+    public CommonRsp createTmpQuestionGroup(@RequestBody QuestionGroupQry qry){
         logger.info("创建临时听写组:{}", CommonJsonUtils.toJsonString(qry));
         // TODO 后面创建组名称
         String groupName = qry.getName();
         if(!StringUtils.hasLength(groupName)){
             groupName = "临时组";
         }
-        wordGroupService.creatTmpWordGroup(groupName, qry.getWordList());
+        questionGroupService.creatTmpQuestionGroup(groupName, qry.getQuestionList());
         return CommonRsp.getOkCommonRsp();
     }
 
@@ -81,12 +81,12 @@ public class QuestionGroupCtl {
      * @param qry
      * @return
      */
-    @RequestMapping(value = "delete-word-group")
-    public CommonRsp deleteWordGroup(@RequestBody WordGroupQry qry){
+    @RequestMapping(value = "delete-question-group")
+    public CommonRsp deleteQuestionGroup(@RequestBody QuestionGroupQry qry){
         logger.info("删除组:{}", CommonJsonUtils.toJsonString(qry));
         Long groupId = qry.getGroupId();
         CheckUtil.checkNotNull("groupId", groupId);
-        wordGroupService.deleteWordGroupById(groupId);
+        questionGroupService.deleteQuestionGroupById(groupId);
         return CommonRsp.getOkCommonRsp();
     }
 
@@ -96,14 +96,14 @@ public class QuestionGroupCtl {
      * @return
      */
     @RequestMapping(value = "play")
-    public CommonRsp play(@RequestBody WordGroupQry qry){
+    public CommonRsp play(@RequestBody QuestionGroupQry qry){
         logger.info("收到play请求:{}", CommonJsonUtils.toJsonString(qry));
 
         // 播放全部符合要求的内容
-        MyPage<WordModel> myPage = wordGroupService.queryWordGroupListPage(qry);
+        MyPage<QuestionModel> myPage = questionGroupService.queryQuestionGroupListPage(qry);
         if (myPage != null) {
-            Collection<WordModel> iterms = myPage.getItems();
-            wordPlayMsg.play(iterms, qry.getGroupId());
+            Collection<QuestionModel> iterms = myPage.getItems();
+            questionPlayMsg.play(iterms, qry.getGroupId());
         }
 
         return CommonRsp.getOkCommonRsp();
@@ -115,7 +115,7 @@ public class QuestionGroupCtl {
      */
     @RequestMapping(value = "stop", method = RequestMethod.GET)
     public CommonRsp stopPlay(){
-        wordPlayMsg.stop();
+        questionPlayMsg.stop();
         return CommonRsp.getOkCommonRsp();
     }
 

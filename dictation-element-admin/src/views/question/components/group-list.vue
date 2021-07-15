@@ -20,7 +20,7 @@
 
       <el-table-column width="100px" align="center" label="词语总数">
         <template slot-scope="scope">
-          <span>{{ scope.row.wordTotal }}次</span>
+          <span>{{ scope.row.total }}次</span>
         </template>
       </el-table-column>
 
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { fetchList, deleteWordGroup} from '@/api/word-group'
+import { fetchList, deleteQuestionGroup} from '@/api/question-group'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const levelOptions = [
@@ -172,7 +172,7 @@ export default {
         const param = {
           groupId : row.id
         }
-        deleteWordGroup(param).then((response) => {
+        deleteQuestionGroup(param).then((response) => {
           var message = '操作成功!'
           this.$message({
             type: 'success',

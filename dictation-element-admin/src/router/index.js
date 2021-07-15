@@ -262,12 +262,12 @@ export const asyncRoutes = [
         name: 'Dictation-hist',
         meta: { title: '题目复习记录结果表', icon: 'list' }
       },
-      // {
-      //   path: 'gp-list',
-      //   component: () => import('@/views/question/gp-list'),
-      //   name: 'Group-list',
-      //   meta: { title: '组管理', icon: 'list' }
-      // },
+      {
+        path: 'gp-list',
+        component: () => import('@/views/question/gp-list'),
+        name: 'Group-list',
+        meta: { title: '组管理', icon: 'list' }
+      },
     ]
   },
 

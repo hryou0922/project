@@ -75,7 +75,7 @@ public class QuestionGroupServiceImpl extends ServiceImpl<QuestionGroupMapper, Q
         QueryWrapper<QuestionModel> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(qry.getGroupId() != null, "group_id", qry.getGroupId());
         // 列表
-        List<String> wordList = qry.getWordList();
+        List<String> wordList = qry.getQuestionList();
         queryWrapper.in(wordList != null && wordList.size() > 0 , "a.question_id", wordList);
 
         Page<QuestionModel> pageQry = new Page<>();
