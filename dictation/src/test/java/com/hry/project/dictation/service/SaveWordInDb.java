@@ -37,6 +37,13 @@ public class SaveWordInDb extends BaseTest {
         saveIntoDb(file);
     }
 
+    @Test
+    public void saveWordFromFile2(){
+        // D:\study\project\dictation\src\main\resources\word\word.csv
+        String file = "src\\main\\resources\\word\\word_2.csv";
+        saveIntoDb(file);
+    }
+
     private void saveIntoDb(String file) {
         try {
             List<String> lines = FileUtils.readLines(new File(file), "utf-8");

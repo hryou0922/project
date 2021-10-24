@@ -35,6 +35,7 @@ public class VoicePlayMsgImpl implements IVoicePlayMsg {
         this.rootDir = rootDir;
         this.playNum = playNum;
         this.sleepSencond = sleepSencond;
+        this.isPerWordSleepTime = isPerWordSleepTime;
     }
 
     @Override

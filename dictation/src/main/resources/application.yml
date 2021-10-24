@@ -2,7 +2,7 @@ app:
   id: ipass-simu
 # port
 server:
-  port: 10801
+  port: 20801
   servlet:
     context-path: /dictation
 #apollo:
