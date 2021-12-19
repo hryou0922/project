@@ -141,7 +141,7 @@ export default {
       listQuery: {
         name: undefined,
         pageNum: 1,
-        pageSize: 5
+        pageSize: 100
       }
     }
   },

@@ -179,7 +179,7 @@ export default {
         groupId: this.groupId,
         pageNum: 1,
         wordList: [],
-        pageSize: 20
+        pageSize: 100
       }
     }
   },

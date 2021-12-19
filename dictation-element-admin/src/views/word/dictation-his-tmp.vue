@@ -165,7 +165,7 @@ export default {
         result: undefined,
         word: undefined,
         pageNum: 1,
-        pageSize: 20
+        pageSize: 100
       }
     }
   },
