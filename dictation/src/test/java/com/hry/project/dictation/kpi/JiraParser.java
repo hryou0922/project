@@ -34,13 +34,13 @@ public class JiraParser {
 
     @Test
     public void parser(){
-        String file = "D:\\desktop\\tmp\\month\\绩效\\kpi3-t.xls";
+        String file = "D:\\desktop\\tmp\\month\\绩效\\kpi2-t.xls";
      //   String costTimeFile = "D:\\desktop\\tmp\\month\\绩效\\kpi2-cost.xls";
         String costTimeFile = file;
         ExcelReader excelReader = ExcelUtil.getReader(file);
         int rowNum = excelReader.getRowCount();
 
-        String cookie = "_ntes_nnid=d0d0877a0087d102c0adabe97303dc6f,1617878468203; _ga=GA1.1.285673834.1621822078; _ga_49ELM1L14F=GS1.1.1621822136.1.1.1621822140.0; hb_MA-809E-C9B7A6CD76FA_source=kms.netease.com; JSESSIONID=8589F86969F5035C554726B2C9258598; atlassian.xsrf.token=BZL9-PJFZ-08YD-4XJD|4a5df5aa09227a00a22e52c1069714a5d551a87e|lin; gantt_date_format_dmy=yyyy-MM-dd; gantt_date_format_complete=yyyy-MM-dd HH:mm:ss; gantt_locale=zh_CN; op_state_id_1.0=pso5hdh4ai; jira.editor.user.mode=wysiwyg; hrs_online_op_state_id_1.0=5ufnazmstz";
+        String cookie = "_ntes_nnid=d0d0877a0087d102c0adabe97303dc6f,1617878468203; _ga_49ELM1L14F=GS1.1.1621822136.1.1.1621822140.0; mp_MA-AF5D-8C93007541D1_hubble=%7B%22sessionReferrer%22%3A%20%22https%3A%2F%2Fkolibri.youdata.netease.com%2Fdash%2FdataConnection%2F450200774%22%2C%22updatedTime%22%3A%201632649235491%2C%22sessionStartTime%22%3A%201632648686436%2C%22sendNumClass%22%3A%20%7B%22allNum%22%3A%2056%2C%22errSendNum%22%3A%200%7D%2C%22deviceUdid%22%3A%20%221102df2bcd2e432dcefb00a4de3363f8acc41201%22%2C%22persistedTime%22%3A%201632648686399%2C%22LASTEVENT%22%3A%20%7B%22eventId%22%3A%20%220f8896408d96f35773da3e90815bfb3e574db398%22%2C%22time%22%3A%201632649235491%7D%2C%22currentReferrer%22%3A%20%22https%3A%2F%2Fkolibri.youdata.netease.com%2Fdash%2FdataConnection%2F450200774%3Fcid%3D11238%22%2C%22sessionUuid%22%3A%20%22af027760c82fb912c2f7e74984bf9b3044b062e3%22%2C%22user_id%22%3A%20%22liekecallcenter%40yixin.im%22%7D; _ga=GA1.2.285673834.1621822078; hb_MA-9FE8-3B0A80DFABF7_source=login.netease.com; hb_MA-809E-C9B7A6CD76FA_source=login.netease.com; hb_MA-B81D-6D453EE22C87_source=login.netease.com; hrs_online_op_state_id_1.0=659drgi4rs; gantt_date_format_dmy=yyyy-MM-dd; gantt_date_format_complete=yyyy-MM-dd HH:mm:ss; gantt_locale=zh_CN; authOpenIdToken=auth:openId:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSFJfSVNTVUVSIiwiZXhwIjoxNjQ0MDYwNDg1LCJpYXQiOjE2NDEzODIwODUsInVzZXJuYW1lIjoiWVgwMjk1In0.3tgzSE9aS-VY9qrJFkU79xylOYIP8xw8c6rbp-wFng0; op_state_id_1.0=uxww962vep; op_session_id_1.0=9BFEDEBEAFD5D6EF6CCB5042E08910996C3ED6183362EA376FDFEFA62C7C569E99DCEA1ECF3DC8AC0820368D57B63DCD827F3F58B84EF014826CB373E3BA39F552F06D710B379C683F0EAF6A2B0391D4BCCFB24BED890ECA29EF6B7CC90AA7382721BCDC341EF3C108F72E411267B729E01777FE53DFFDEFA47B62548611CB8EA3B6B03EB044CECBE6ECFA025D42043F90712EA068D1CD070EFE8FC9CA49739C0E8E2AFF76DA3E14709F8968C2F6CD74; JSESSIONID=8F390840931B085268F78240EA58630B; atlassian.xsrf.token=BZL9-PJFZ-08YD-4XJD|2eb828edfcf5f79fb901c05aa6dcd9c47b3921f3|lin";
         JiraPageParser jiraPageParser = new JiraPageParser(cookie);
 
         List<JiraTaskVo> jiraTaskVoList = new ArrayList<>();
@@ -94,8 +94,12 @@ public class JiraParser {
                     case "yixin.wangshihong":
                         costCell = writer.getOrCreateCell(13,i);
                         break;
+                        default:
+                            System.out.println("不认识的人："+ manager);
                 }
-                costCell.setCellValue(subTaskVo.getCostTime());
+                if(costCell !=null && subTaskVo.getCostTime()  != null) {
+                    costCell.setCellValue(subTaskVo.getCostTime());
+                }
             }
         }
         //关闭writer，释放内存
@@ -109,10 +113,10 @@ public class JiraParser {
         List<Cell> topicCellList = new ArrayList<>();
         List<Cell> typeCellList = new ArrayList<>();
 
-        String[] fileArray = new String[]{ "D:\\desktop\\tmp\\month\\kpi\\2021-03 2.22.0 ， 小程序2.9.1.xls",
-                "D:\\desktop\\tmp\\month\\kpi\\2021-04 2.24.0 ， 小程序2.9.4.xls",
-                "D:\\desktop\\tmp\\month\\kpi\\2021-04 2.25.0 ， 小程序2.10.0.xls",
-                "D:\\desktop\\tmp\\month\\kpi\\2021-05 2.23.0 ， 小程序2.9.2.xls"
+        String[] fileArray = new String[]{ "D:\\desktop\\tmp\\month\\kpi\\2021-09 3.1.0 ， 小程序3.0.0.xls",
+                "D:\\desktop\\tmp\\month\\kpi\\2021-10 3.3.0 ， 小程序3.1.0.xls",
+                "D:\\desktop\\tmp\\month\\kpi\\2021-10 3.3.0 ， 小程序3.1.1.xls",
+                "D:\\desktop\\tmp\\month\\kpi\\SP1201 3.5.0 ， 小程序3.1.0.xls"
                //  ,"",""
         };
 

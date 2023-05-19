@@ -17,6 +17,7 @@
         <module>zhihu</module>
         <module>fund</module>
         <module>dictation</module>
+        <module>capcut</module>
     </modules>
 
     <properties>

@@ -1,0 +1,10 @@
+my:
+  config:
+    # mp3 目录
+    mp3Dir: D:\douyin\sucai\mp3
+    # draft_content 模板目录
+    parentContentDir: C:\Users\Administrator\AppData\Local\JianyingPro\User Data\Projects\com.lveditor.draft
+    # draft_content 目标目录
+    sonContentDir: C:\Users\Administrator\AppData\Local\JianyingPro\User Data\Projects\com.lveditor.draft\self_auto-yue
+    # 配置目录
+    configDir: D:\douyin\sucai\config

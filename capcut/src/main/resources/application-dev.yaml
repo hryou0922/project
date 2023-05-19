@@ -1,0 +1,10 @@
+my:
+  config:
+    # mp3 目录
+    mp3Dir: E:\work\capcut\mp3
+    # draft_content 模板目录
+    parentContentDir: E:\work\capcut\parent
+    # draft_content 目标目录
+    sonContentDir: E:\work\capcut\son
+    # 配置目录
+    configDir: E:\work\capcut\config
