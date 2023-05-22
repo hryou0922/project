@@ -97,7 +97,7 @@ public class MsgServiceImpl implements MsgService {
         for(int i= 0; i < segmentArray.size(); i++){
             // 歌词
             JsonObject segmentJsonObject = segmentArray.get(i).getAsJsonObject();
-//            System.out.println(segmentJsonObject);
+            System.out.println(segmentJsonObject);
             // 歌词id
             String materialId = segmentJsonObject.get("material_id").getAsString();
             // 动画
@@ -110,6 +110,9 @@ public class MsgServiceImpl implements MsgService {
             int start = targetTimerangeJsonObject.get("start").getAsInt();
 
             for(int j=0; j < extraMaterialRefsJsonArray.size(); j++){
+                // 文本
+                updateMaterialTextInfo(contentJsonObject,materialId);
+                // 文本动画
                 updateMaterialAnTextInfo(contentJsonObject, extraMaterialRefsJsonArray.get(j).getAsString(), duration);
             }
 
@@ -150,8 +153,13 @@ public class MsgServiceImpl implements MsgService {
                  *     "type":"in"
                  * }
                  */
-//                animationsJsonArray.add();
-                JsonObject jsonObject = new JsonObject();
+                JsonObject jsonObject;
+                if(animationsJsonArray.size() == 0){
+                    jsonObject = new JsonObject();
+                    animationsJsonArray.add(jsonObject);
+                }else {
+                    jsonObject = animationsJsonArray.get(0).getAsJsonObject();
+                }
                 jsonObject.addProperty("category_id", "");
                 jsonObject.addProperty("category_name", "");
                 jsonObject.addProperty("duration", duration);
@@ -164,8 +172,6 @@ public class MsgServiceImpl implements MsgService {
                 jsonObject.addProperty("resource_id", "6841115718172283406");
                 jsonObject.addProperty("start", start);
                 jsonObject.addProperty("type", "in");
-
-                animationsJsonArray.add(jsonObject);
             }
         }
 
@@ -179,11 +185,31 @@ public class MsgServiceImpl implements MsgService {
      */
     private void updateMaterialTextInfo( JsonObject contentJsonObject, String materialId){
         JsonArray segmentArray = contentJsonObject.getAsJsonObject("materials").getAsJsonArray("texts");
-
+        int foneSize = 11;
         for(int i= 0; i < segmentArray.size(); i++){
             // 歌词文本
             JsonObject textJsonObject = segmentArray.get(i).getAsJsonObject();
-            // ...
+            // id
+            String id = textJsonObject.get("id").getAsString();
+            if(materialId.equalsIgnoreCase(id)){
+                // 内容
+                String content = textJsonObject.get("content").getAsString();
+                // 替换size
+                content = content.replaceAll("size=8.000000", "size="+foneSize);
+
+                // content : "<size=11><font id="" path="C:/Users/Administrator/AppData/Local/JianyingPro/Apps/4.0.1.9886/Resources/Font/SystemFont/zh-hans.ttf">[oh嘿妈妈]</font></size>"
+                // content : "<font id="" path="C:/Users/Administrator/AppData/Local/JianyingPro/Apps/4.0.1.9886/Resources/Font/SystemFont/zh-hans.ttf"><color=(1.000000, 1.000000, 1.000000, 1.000000)><size=8.000000>[oh嘿妈妈]</size></color></font>"
+
+                // font_path : "C:/Users/Administrator/AppData/Local/JianyingPro/Apps/4.0.1.9886/Resources/Font/SystemFont/zh-hans.ttf"
+
+                // font_size : 8
+
+                textJsonObject.remove("content");
+                textJsonObject.addProperty("content", content);
+                textJsonObject.addProperty("font_size", foneSize);
+                System.out.println("== " + textJsonObject.toString());
+            }
+
         }
 
     }
