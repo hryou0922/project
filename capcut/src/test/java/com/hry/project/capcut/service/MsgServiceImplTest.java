@@ -1,6 +1,7 @@
 package com.hry.project.capcut.service;
 
 import com.hry.project.capcut.TestBase;
+import com.hry.project.capcut.service.impl.ContextServiceImpl;
 import com.hry.project.capcut.service.impl.MsgServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MsgServiceImplTest extends TestBase {
     @Autowired
     private MsgServiceImpl msgService;
+    @Autowired
+    private ContextServiceImpl contextService;
 
     @Test
     public void exeute(){
@@ -24,5 +27,13 @@ public class MsgServiceImplTest extends TestBase {
     public void exeute2(){
         String mp3Name = "default.txt";
         msgService.execute(mp3Name);
+    }
+
+    @Test
+    public void exeucteGeCi(){
+
+        msgService.exeucteGeCi(6);
+
+
     }
 }

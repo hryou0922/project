@@ -1,5 +1,6 @@
 package com.hry.project.capcut.service;
 
+import com.google.gson.JsonObject;
 import com.hry.project.capcut.TestBase;
 import com.hry.project.capcut.service.impl.ContextServiceImpl;
 import org.junit.Test;
@@ -16,5 +17,11 @@ public class ContextServiceImplTest extends TestBase {
     @Test
     public void read(){
         System.out.println(contextService.getContentFromFile());
+    }
+
+    @Test
+    public void jsonObject(){
+       JsonObject jsonObject = contextService.getJsonObjectContentFromFile();
+       System.out.println(jsonObject.toString());
     }
 }

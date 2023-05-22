@@ -5,6 +5,8 @@ import cn.hutool.core.text.csv.CsvData;
 import cn.hutool.core.text.csv.CsvReader;
 import cn.hutool.core.text.csv.CsvRow;
 import cn.hutool.core.text.csv.CsvUtil;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.hry.project.capcut.config.MyConfig;
 import com.hry.project.capcut.pojo.FileMp3InfoVo;
 import com.hry.project.capcut.service.ContextService;
@@ -84,5 +86,105 @@ public class MsgServiceImpl implements MsgService {
         String mp3FileName = firsRow.get(0);
         String picName = firsRow.get(1);
         return execute(mp3FileName, picName);
+    }
+
+    @Override
+    public void exeucteGeCi(int tracksGeCiIndex) {
+        JsonObject contentJsonObject = contextService.getJsonObjectContentFromFile();
+        // 歌词 tracks[6].segments[]数组
+//        JsonArray segmentArray = contentJsonObject.getAsJsonArray("tracks").get(tracksGeCiIndex).getAsJsonObject().getAsJsonArray();
+        JsonArray segmentArray = contentJsonObject.getAsJsonArray("tracks").get(tracksGeCiIndex).getAsJsonObject().getAsJsonArray("segments");
+        for(int i= 0; i < segmentArray.size(); i++){
+            // 歌词
+            JsonObject segmentJsonObject = segmentArray.get(i).getAsJsonObject();
+//            System.out.println(segmentJsonObject);
+            // 歌词id
+            String materialId = segmentJsonObject.get("material_id").getAsString();
+            // 动画
+            JsonArray extraMaterialRefsJsonArray = segmentJsonObject.get("extra_material_refs").getAsJsonArray();
+            // target_timerange
+            JsonObject targetTimerangeJsonObject = segmentJsonObject.get("target_timerange").getAsJsonObject();
+            // duration
+            int duration = targetTimerangeJsonObject.get("duration").getAsInt();
+            // start
+            int start = targetTimerangeJsonObject.get("start").getAsInt();
+
+            for(int j=0; j < extraMaterialRefsJsonArray.size(); j++){
+                updateMaterialAnTextInfo(contentJsonObject, extraMaterialRefsJsonArray.get(j).getAsString(), duration);
+            }
+
+//            System.out.println(materialId);
+//            System.out.println(extraMaterialRefsJsonArray);
+        }
+
+        // 替换
+        contextService.saveJsonObjectContentFromFile(contentJsonObject);
+    }
+
+    private void updateMaterialAnTextInfo( JsonObject contentJsonObject, String extraMaterialRefId, int duration){
+        JsonArray materialAnimationsArray = contentJsonObject.getAsJsonObject("materials").getAsJsonArray("material_animations");
+
+        long animationsJsonArrayId = System.currentTimeMillis()/1000;
+        int start = 0;
+        for(int i= 0; i < materialAnimationsArray.size(); i++){
+            // 歌词动画
+            JsonObject animationsJsonObject = materialAnimationsArray.get(i).getAsJsonObject();
+            // id
+            String id = animationsJsonObject.get("id").getAsString();
+            if(extraMaterialRefId.equalsIgnoreCase(id)){
+                JsonArray  animationsJsonArray = animationsJsonObject.getAsJsonArray("animations");
+//                System.out.println("== "+animationsJsonArray);
+                /**
+                 * {
+                 *     "category_id":"",
+                 *     "category_name":"",
+                 *     "duration":3766666,
+                 *     "id":"1644336",
+                 *     "material_type":"sticker",
+                 *     "name":"音符弹跳",
+                 *     "panel":"",
+                 *     "path":"C:/Users/Administrator/AppData/Local/JianyingPro/User Data/Cache/effect/1644336/86c6e9061b14fd43049b6232ffc113fa",
+                 *     "platform":"all",
+                 *     "resource_id":"6841115718172283406",
+                 *     "start":0,
+                 *     "type":"in"
+                 * }
+                 */
+//                animationsJsonArray.add();
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("category_id", "");
+                jsonObject.addProperty("category_name", "");
+                jsonObject.addProperty("duration", duration);
+                jsonObject.addProperty("id", animationsJsonArrayId);
+                jsonObject.addProperty("material_type", "sticker");
+                jsonObject.addProperty("name", "音符弹跳");
+                jsonObject.addProperty("panel", "");
+                jsonObject.addProperty("path", "C:/Users/Administrator/AppData/Local/JianyingPro/User Data/Cache/effect/1644336/86c6e9061b14fd43049b6232ffc113fa");
+                jsonObject.addProperty("platform", "all");
+                jsonObject.addProperty("resource_id", "6841115718172283406");
+                jsonObject.addProperty("start", start);
+                jsonObject.addProperty("type", "in");
+
+                animationsJsonArray.add(jsonObject);
+            }
+        }
+
+
+    }
+
+    /**
+     * 更新歌词文本 - 暂时不改
+     * @param contentJsonObject
+     * @param materialId
+     */
+    private void updateMaterialTextInfo( JsonObject contentJsonObject, String materialId){
+        JsonArray segmentArray = contentJsonObject.getAsJsonObject("materials").getAsJsonArray("texts");
+
+        for(int i= 0; i < segmentArray.size(); i++){
+            // 歌词文本
+            JsonObject textJsonObject = segmentArray.get(i).getAsJsonObject();
+            // ...
+        }
+
     }
 }

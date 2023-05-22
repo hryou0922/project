@@ -10,4 +10,6 @@ public interface MsgService {
     FileMp3InfoVo execute(String mp3FileName, String picName);
 
     FileMp3InfoVo execute(String configFileName);
+
+    void exeucteGeCi(int tracksGeCiIndex);
 }

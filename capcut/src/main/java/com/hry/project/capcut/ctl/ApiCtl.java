@@ -41,6 +41,17 @@ public class ApiCtl {
     }
 
     /**
+     * 生成 内容
+     * @return
+     */
+    @GetMapping(value = "generateText")
+    public String generateText(){
+        int tracksGeCiIndex = 6;
+        msgService.exeucteGeCi(tracksGeCiIndex);
+        return "ok";
+    }
+
+    /**
      * 生成 配置文件
      * @return
      */
