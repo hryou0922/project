@@ -2,6 +2,8 @@ my:
   config:
     # mp3 目录
     mp3Dir: E:\work\capcut\mp3
+    # pic 目录
+    picDir: E:\work\capcut\pic
     # draft_content 模板目录
     parentContentDir: E:\work\capcut\parent
     # draft_content 目标目录

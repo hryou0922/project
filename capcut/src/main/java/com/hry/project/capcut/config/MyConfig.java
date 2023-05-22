@@ -17,6 +17,10 @@ public class MyConfig {
      */
     private String mp3Dir;
     /**
+     * pic 目录
+     */
+    private String picDir;
+    /**
      * draft_content 模板目录
      */
     private String parentContentDir;
