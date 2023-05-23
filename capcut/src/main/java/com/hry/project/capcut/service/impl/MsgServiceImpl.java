@@ -90,6 +90,8 @@ public class MsgServiceImpl implements MsgService {
 
     @Override
     public void exeucteGeCi(int tracksGeCiIndex) {
+        double transformX = 0;
+        double transformY = -0.2593902439024389;
         JsonObject contentJsonObject = contextService.getJsonObjectContentFromFile();
         // 歌词 tracks[6].segments[]数组
 //        JsonArray segmentArray = contentJsonObject.getAsJsonArray("tracks").get(tracksGeCiIndex).getAsJsonObject().getAsJsonArray();
@@ -108,6 +110,12 @@ public class MsgServiceImpl implements MsgService {
             int duration = targetTimerangeJsonObject.get("duration").getAsInt();
             // start
             int start = targetTimerangeJsonObject.get("start").getAsInt();
+
+            // 设置固定值
+            // clip - transform - x
+            segmentJsonObject.getAsJsonObject("clip").getAsJsonObject("transform").addProperty("x", transformX);
+            // clip - transform - y
+            segmentJsonObject.getAsJsonObject("clip").getAsJsonObject("transform").addProperty("y", transformY);
 
             for(int j=0; j < extraMaterialRefsJsonArray.size(); j++){
                 // 文本
