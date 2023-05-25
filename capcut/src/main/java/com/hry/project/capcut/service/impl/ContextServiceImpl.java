@@ -36,6 +36,12 @@ public class ContextServiceImpl implements ContextService {
     }
 
     @Override
+    public String getSonContentFromFile(){
+        String file = myConfig.getSonContentDir() + File.separator + "draft_content.json";
+        return FileUtil.readUtf8String(file);
+    }
+
+    @Override
     public JsonObject getJsonObjectContentFromFile(){
         String file = myConfig.getSonContentDir() + File.separator + "draft_content.json";
         String content = FileUtil.readUtf8String(file);

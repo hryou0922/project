@@ -90,9 +90,17 @@ public class MsgServiceImpl implements MsgService {
 
     @Override
     public void exeucteGeCi(int tracksGeCiIndex) {
+        // mp3 索引
+        int tracksMp3Index = 7;
+
         double transformX = 0;
         double transformY = -0.2593902439024389;
         JsonObject contentJsonObject = contextService.getJsonObjectContentFromFile();
+        // 视频长度 344000000
+        long totalDuration = contentJsonObject.get("duration").getAsLong();
+        // 获取音频的初始值：第一个歌词文本的start + 1 * 1000000L
+        long firstGeciStart = 0;
+
         // 歌词 tracks[6].segments[]数组
 //        JsonArray segmentArray = contentJsonObject.getAsJsonArray("tracks").get(tracksGeCiIndex).getAsJsonObject().getAsJsonArray();
         JsonArray segmentArray = contentJsonObject.getAsJsonArray("tracks").get(tracksGeCiIndex).getAsJsonObject().getAsJsonArray("segments");
@@ -107,15 +115,44 @@ public class MsgServiceImpl implements MsgService {
             // target_timerange
             JsonObject targetTimerangeJsonObject = segmentJsonObject.get("target_timerange").getAsJsonObject();
             // duration
-            int duration = targetTimerangeJsonObject.get("duration").getAsInt();
+            long duration = targetTimerangeJsonObject.get("duration").getAsLong();
             // start
-            int start = targetTimerangeJsonObject.get("start").getAsInt();
+            long start = targetTimerangeJsonObject.get("start").getAsLong();
+
+            // 所有歌词start间断
+            long newGeciStart = 0;
+            if(i == 0){
+                // 首个歌词长度
+                firstGeciStart = start - 1 * 1000000L;
+                newGeciStart =  1 * 1000000L;
+            }else {
+                newGeciStart = start - firstGeciStart;
+            }
+            log.info("歌词{} start {} -> {}", i, start, newGeciStart);
+            targetTimerangeJsonObject.addProperty("start", newGeciStart);
 
             // 设置固定值
             // clip - transform - x
-            segmentJsonObject.getAsJsonObject("clip").getAsJsonObject("transform").addProperty("x", transformX);
+            if(segmentJsonObject.getAsJsonObject("clip") == null) {
+                JsonObject transformJsonObject = new JsonObject();
+                transformJsonObject.addProperty("x", transformX);
+                JsonObject clipJsonObject = new JsonObject();
+                clipJsonObject.add("transform", transformJsonObject);
+                segmentJsonObject.add("clip", clipJsonObject);
+            }else {
+                segmentJsonObject.getAsJsonObject("clip").getAsJsonObject("transform").addProperty("x", transformX);
+            }
+
             // clip - transform - y
-            segmentJsonObject.getAsJsonObject("clip").getAsJsonObject("transform").addProperty("y", transformY);
+            if(segmentJsonObject.getAsJsonObject("clip") == null) {
+                JsonObject transformJsonObject = new JsonObject();
+                transformJsonObject.addProperty("x", transformY);
+                JsonObject clipJsonObject = new JsonObject();
+                clipJsonObject.add("transform", transformJsonObject);
+                segmentJsonObject.add("clip", clipJsonObject);
+            }else {
+                segmentJsonObject.getAsJsonObject("clip").getAsJsonObject("transform").addProperty("y", transformY);
+            }
 
             for(int j=0; j < extraMaterialRefsJsonArray.size(); j++){
                 // 文本
@@ -128,11 +165,32 @@ public class MsgServiceImpl implements MsgService {
 //            System.out.println(extraMaterialRefsJsonArray);
         }
 
+        // mp3 tracks[7].segments[]数组
+//        JsonArray segmentArray = contentJsonObject.getAsJsonArray("tracks").get(tracksGeCiIndex).getAsJsonObject().getAsJsonArray();
+
+        JsonArray segmentArrayMp3 = contentJsonObject.getAsJsonArray("tracks").get(tracksMp3Index).getAsJsonObject().getAsJsonArray("segments");
+        // 第一个就是mp3
+        JsonObject sourceTimerangeJsonObject = segmentArrayMp3.get(0).getAsJsonObject().get("source_timerange").getAsJsonObject();
+        // 替换起始时间
+        sourceTimerangeJsonObject.addProperty("start", firstGeciStart);
+//        // duration
+//        long duration = sourceTimerangeJsonObject.get("duration").getAsLong();
+//        // start
+//        long start = sourceTimerangeJsonObject.get("start").getAsLong();
+
         // 替换
         contextService.saveJsonObjectContentFromFile(contentJsonObject);
+
+        log.info("替换时长：{} -> {}", totalDuration, totalDuration - firstGeciStart);
+        // 所有的文本间断替换长度
+        String content = contextService.getSonContentFromFile();
+        // 时长替换
+        String  newContent = content.replaceAll(totalDuration+"", (totalDuration - firstGeciStart) + "");
+        // 替换
+        contextService.saveContent2File(newContent);
     }
 
-    private void updateMaterialAnTextInfo( JsonObject contentJsonObject, String extraMaterialRefId, int duration){
+    private void updateMaterialAnTextInfo( JsonObject contentJsonObject, String extraMaterialRefId, long duration){
         JsonArray materialAnimationsArray = contentJsonObject.getAsJsonObject("materials").getAsJsonArray("material_animations");
 
         long animationsJsonArrayId = System.currentTimeMillis()/1000;

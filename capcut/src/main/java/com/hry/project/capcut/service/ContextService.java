@@ -14,6 +14,8 @@ public interface ContextService {
      */
     String getContentFromFile();
 
+    String getSonContentFromFile();
+
     /**
      * 获取文件内容
      * @return
