@@ -1,16 +1,20 @@
 package com.hry.project.capcut.content.template.impl;
 
+import cn.hutool.core.io.file.FileNameUtil;
 import com.google.gson.JsonObject;
 import com.hry.project.capcut.content.DraftContent;
 import com.hry.project.capcut.content.enums.NodeEnum;
+import com.hry.project.capcut.content.parser.MaterialsTextsParser;
 import com.hry.project.capcut.content.parser.MaterialsVideosParser;
 import com.hry.project.capcut.content.parser.TracksParser;
 import com.hry.project.capcut.content.template.BaseTemplateProcessMsg;
+import com.hry.project.capcut.content.vo.MaterialsTextsVo;
 import com.hry.project.capcut.content.vo.MaterialsVideosVo;
 import com.hry.project.capcut.content.vo.TracksVo;
 import com.hry.project.capcut.content.vo.common.SourceTimerangeVo;
 import com.hry.project.capcut.content.vo.common.TargetTimerangeVo;
 import com.hry.project.capcut.pojo.TemplateConfigV1Vo;
+import com.hry.project.capcut.utils.GsonBox;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -31,41 +35,25 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
 
         // 0:主轨道
         processTrack0(draftContent, templateConfigV1Vo);
-
-        // TRACK
-        int size = draftContent.getJsonArraySize(NodeEnum.TRACKS);
-
-
-//        TracksParser p =  draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS,0);
-//
-//        // 新的图片文件名称： pexels-pixabay-290548.jpg
-//        String picName;
-//        MaterialsAudiosParser p = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS,0);
-//        System.out.println(GsonBox.PUBLIC.toJson(p.getVo()));
-//        p.saveVo(p.getVo());
-
-        /**
-         * 视频计划长度
-         */
-        long durationSecond;
-        /**
-         * 标题
-         */
-        String title;
-
-
-        /**
-         * mp3 名称： 小城故事邓丽君.mp3"
-         */
-        String mp3Name;
-        /**
-         * 副标题：这里是作者 薛明媛-完整版； 薛明媛-简化版
-         */
-        String subtitle;
-
+        // 1：音乐进度条
+        processTrack1(draftContent, templateConfigV1Vo);
+        // 2：下雨效果
+        processTrack2(draftContent, templateConfigV1Vo);
+        // 3: 倘若你喜欢音乐，而我刚好有
+        processTrack3(draftContent, templateConfigV1Vo);
+        // 4: 副标题-作者
+        processTrack4(draftContent, templateConfigV1Vo);
+        // 5: 主标题-歌名
+        processTrack5(draftContent, templateConfigV1Vo);
+        // 6: 歌词
+        processTrack6(draftContent, templateConfigV1Vo);
+        // 7: mp3
+        processTrack7(draftContent, templateConfigV1Vo);
 
         return draftContent.getRootJsonObject();
     }
+
+
 
     /**
      * 主轨道：图片
@@ -73,25 +61,217 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
      * @param templateConfigV1Vo
      */
     private void processTrack0(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
-        log.debug("处理主轨道: 0");
-        long mp3Duration = templateConfigV1Vo.getMp3Duration();
+        log.debug("处理主轨道 图片 : 0");
+        long mp3Duration = templateConfigV1Vo.getDuration();
         TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 0);
         TracksVo tracksVo = tracksParser.getVo();
         TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
         String segmentMaterialId = segmentsBean.getMaterial_id();
         // 更新主轨道时长
-        TargetTimerangeVo targetTimerange = segmentsBean.getTarget_timerange();
-        targetTimerange.setDuration(mp3Duration);
-        SourceTimerangeVo sourceTimerange = segmentsBean.getSource_timerange();
-        sourceTimerange.setDuration(mp3Duration);
+        updateTimeRange(mp3Duration, segmentsBean);
         tracksParser.saveVo(tracksVo);
 
-        // 获取主轨道的材料
+        // 主轨道的材料的图片信息更新
         MaterialsVideosParser materialsVideosParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS, segmentMaterialId);
         MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
         materialsVideosVo.setDuration(mp3Duration);
         materialsVideosVo.setMaterial_name(templateConfigV1Vo.getPicName());
         materialsVideosVo.setPath(templateConfigV1Vo.getPicNameWithPath());
         materialsVideosParser.saveVo(materialsVideosVo);
+    }
+
+    /**
+     * 音乐进度条
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processTrack1(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        log.debug("处理轨道 音乐进度条 : 1");
+        long mp3Duration = templateConfigV1Vo.getDuration();
+        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 1);
+        TracksVo tracksVo = tracksParser.getVo();
+        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
+        String segmentMaterialId = segmentsBean.getMaterial_id();
+        // 更新主轨道时长
+        updateTimeRange(mp3Duration, segmentsBean);
+        tracksParser.saveVo(tracksVo);
+
+        // 主轨道的材料的 音乐进度条
+        MaterialsVideosParser materialsVideosParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS, segmentMaterialId);
+        MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
+        materialsVideosVo.setDuration(mp3Duration);
+        materialsVideosParser.saveVo(materialsVideosVo);
+    }
+
+    /**
+     * 下雨效果
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processTrack2(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        log.debug("处理轨道 下雨效果 : 2");
+        long duration = templateConfigV1Vo.getDuration();
+        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 2);
+        TracksVo tracksVo = tracksParser.getVo();
+        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
+        String segmentMaterialId = segmentsBean.getMaterial_id();
+        // 更新主轨道时长
+        updateTimeRange(duration, segmentsBean);
+        tracksParser.saveVo(tracksVo);
+
+        // 主轨道的材料的 下雨效果: TODO 这里可以根据配置，未来使用不同的配置
+//        MaterialsVideoEffectsParser materialsVideoEffectsParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOEFFECTS, segmentMaterialId);
+//        MaterialsVideoEffectsVo materialsVideosVo = materialsVideoEffectsParser.getVo();
+//        materialsVideoEffectsParser.saveVo(materialsVideosVo);
+    }
+
+    /**
+     *  3: 倘若你喜欢音乐，而我刚好有
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processTrack3(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        // 什么也不做
+    }
+
+    /**
+     * 4: 副标题-作者
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processTrack4(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        log.debug("副标题-作者 : 4");
+        long duration = templateConfigV1Vo.getDuration();
+        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 4);
+        TracksVo tracksVo = tracksParser.getVo();
+        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
+        String segmentMaterialId = segmentsBean.getMaterial_id();
+        // 更新主轨道时长
+        updateTimeRange(duration, segmentsBean);
+        tracksParser.saveVo(tracksVo);
+
+        // 轨道的材料的
+        MaterialsTextsParser materialsTextParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_TEXTS, segmentMaterialId);
+        MaterialsTextsVo materialsTextVo = materialsTextParser.getVo();
+
+        // 副标题 TODO，可根据配置，作者后面的值是 完整版
+        String newTile = templateConfigV1Vo.getAuthor() + " - 完整版";
+        saveContentText(newTile, materialsTextVo);
+
+        materialsTextParser.saveVo(materialsTextVo);
+    }
+
+
+
+    /**
+     *  5: 主标题-歌名
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processTrack5(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        log.debug("处理轨道 主标题-歌名 : 5");
+        long duration = templateConfigV1Vo.getDuration();
+        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 5);
+        TracksVo tracksVo = tracksParser.getVo();
+        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
+        String segmentMaterialId = segmentsBean.getMaterial_id();
+        // 更新主轨道时长
+        updateTimeRange(duration, segmentsBean);
+        tracksParser.saveVo(tracksVo);
+
+        // 轨道的材料的
+        MaterialsTextsParser materialsTextParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_TEXTS, segmentMaterialId);
+        MaterialsTextsVo materialsTextVo = materialsTextParser.getVo();
+        // 主标题
+        String newTitle = FileNameUtil.mainName(templateConfigV1Vo.getMp3Name());
+        saveContentText(newTitle, materialsTextVo);
+        materialsTextParser.saveVo(materialsTextVo);
+    }
+
+    /**
+     *  6: 歌词
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processTrack6(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        log.debug("处理轨道 歌词 : 6");
+//        long mp3Duration = templateConfigV1Vo.getDuration();
+//        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 6);
+//        TracksVo tracksVo = tracksParser.getVo();
+//        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
+//        String segmentMaterialId = segmentsBean.getMaterial_id();
+//        // 更新主轨道时长
+//        updateTimeRange(mp3Duration, segmentsBean);
+//        tracksParser.saveVo(tracksVo);
+//
+//        // 轨道的材料的
+//        MaterialsVideosParser materialsVideosParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS, segmentMaterialId);
+//        MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
+//        materialsVideosVo.setDuration(mp3Duration);
+//        materialsVideosParser.saveVo(materialsVideosVo);
+    }
+
+    /**
+     *  7: mp3
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processTrack7(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        log.debug("处理轨道 mp3 : 7");
+//        long mp3Duration = templateConfigV1Vo.getDuration();
+//        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 7);
+//        TracksVo tracksVo = tracksParser.getVo();
+//        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
+//        String segmentMaterialId = segmentsBean.getMaterial_id();
+//        // 更新主轨道时长
+//        updateTimeRange(mp3Duration, segmentsBean);
+//        tracksParser.saveVo(tracksVo);
+//
+//        // 轨道的材料的
+//        MaterialsVideosParser materialsVideosParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS, segmentMaterialId);
+//        MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
+//        materialsVideosVo.setDuration(mp3Duration);
+//        materialsVideosParser.saveVo(materialsVideosVo);
+
+    }
+
+    /**
+     * 保存文件内容
+     * @param newText
+     * @param materialsTextVo
+     */
+    private void saveContentText(String newText, MaterialsTextsVo materialsTextVo) {
+        newText = "[" + newText + "]";
+        // "<useLetterColor><outline color=(0,0,0,1) width=0.08><size=14><font id=6740439840254333443 path=C:/Users/Administrator/AppData/Local/JianyingPro/User Data/Cache/effect/349329/92988aefce8a45c8fd7fe58a60fc72cc/特黑体-思源黑体1号.otf>[王蓉 - 完整版]</font></size></outline></useLetterColor>"
+        String content = materialsTextVo.getContent();
+        String newContent = content.replaceAll("\\[.*\\]", newText);
+        log.debug("new title = {}", newContent);
+        materialsTextVo.setContent(newContent);
+    }
+
+    private void updateTimeRange(long duration, TracksVo.SegmentsBean segmentsBean) {
+        updateTimeRange(null, duration, null, duration, segmentsBean);
+    }
+
+    private void updateTimeRange(Integer targetStart, long targetDuration, Integer sourceStart, long sourceDuration, TracksVo.SegmentsBean segmentsBean) {
+        TargetTimerangeVo targetTimerange = segmentsBean.getTarget_timerange();
+        if(targetTimerange == null){
+            log.info("没有找到 targetTimerange, {}", GsonBox.PUBLIC.toJson(segmentsBean));
+        }else {
+            targetTimerange.setDuration(targetDuration);
+            if (targetStart != null) {
+                targetTimerange.setStart(targetStart);
+            }
+        }
+
+        SourceTimerangeVo sourceTimerange = segmentsBean.getSource_timerange();
+        if(sourceTimerange == null){
+            log.info("没有找到 sourceTimerange, {}", GsonBox.PUBLIC.toJson(segmentsBean));
+        }else {
+            sourceTimerange.setDuration(sourceDuration);
+            if (sourceStart != null) {
+                sourceTimerange.setStart(sourceStart);
+            }
+        }
     }
 }

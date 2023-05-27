@@ -4,6 +4,10 @@ import lombok.Data;
 
 /**
  * 模板配置1
+ *
+ *  扩展字段：
+ *      效果：下雨、其他效果等
+ *
  * @author: huangrongyou@yixin.im
  * @date: 2023/5/27 21:22
  */
@@ -11,9 +15,9 @@ import lombok.Data;
 public class TemplateConfigV1Vo extends BaseTemplateConfigVo {
 
     /**
-     * map3长度 = 秒数时长 * 1000000L
+     * 总视频长度 = 秒数时长 * 1000000L
      */
-    private long mp3Duration;
+    private long duration;
     /**
      * 新的图片文件名称： pexels-pixabay-290548.jpg
      */

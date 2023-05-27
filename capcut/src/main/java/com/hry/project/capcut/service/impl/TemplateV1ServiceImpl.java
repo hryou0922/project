@@ -48,7 +48,7 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
         String content = contextService.getContentFromFile();
 
         TemplateConfigV1Vo templateConfigV1Vo = new TemplateConfigV1Vo();
-        templateConfigV1Vo.setMp3Duration(durationSecond * 1000000L);
+        templateConfigV1Vo.setDuration(durationSecond * 1000000L);
         templateConfigV1Vo.setPicName(picName);
 //        templateConfigV1Vo.setPicNameWithPath(myConfig.getPicDir() + File.separator + picName);
         // TODO 待修改
