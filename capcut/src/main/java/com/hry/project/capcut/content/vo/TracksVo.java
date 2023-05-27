@@ -1,5 +1,7 @@
 package com.hry.project.capcut.content.vo;
 
+import com.hry.project.capcut.content.vo.common.SourceTimerangeVo;
+import com.hry.project.capcut.content.vo.common.TargetTimerangeVo;
 import lombok.Data;
 
 import java.util.List;
@@ -147,9 +149,9 @@ public class TracksVo implements BaseElementVo {
         private String material_id;
         private int render_index;
         private boolean reverse;
-        private SourceTimerangeBean source_timerange;
+        private SourceTimerangeVo source_timerange;
         private int speed;
-        private TargetTimerangeBean target_timerange;
+        private TargetTimerangeVo target_timerange;
         private String template_id;
         private String template_scene;
         private int track_attribute;
@@ -226,28 +228,5 @@ public class TracksVo implements BaseElementVo {
 
         }
 
-        @Data
-        public static class SourceTimerangeBean {
-            /**
-             * duration : 238866667
-             * start : 0
-             */
-
-            private int duration;
-            private int start;
-
-        }
-
-        @Data
-        public static class TargetTimerangeBean {
-            /**
-             * duration : 238866667
-             * start : 0
-             */
-
-            private int duration;
-            private int start;
-
-        }
     }
 }

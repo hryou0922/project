@@ -4,8 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hry.project.capcut.content.enums.NodeEnum;
-import com.hry.project.capcut.content.parser.*;
-import lombok.Data;
+import com.hry.project.capcut.content.parser.BaseParser;
 
 import java.lang.reflect.Constructor;
 
@@ -13,7 +12,6 @@ import java.lang.reflect.Constructor;
  * @author: huangrongyou@yixin.im
  * @date: 2023/5/26 19:15
  */
-@Data
 public class DraftContent {
 
     /**
@@ -117,6 +115,26 @@ public class DraftContent {
     }
 
     /**
+     * 获取数组 解析类 BaseParser
+     * @param nodeEnum
+     * @param id
+     * @param <V>
+     * @return
+     */
+    public <V extends BaseParser> V getJsonArrayParser(NodeEnum nodeEnum, String id){
+        JsonObject jsonObject = getJsonObject(nodeEnum, id);
+        Constructor<V> constructor = null;
+        try {
+            constructor = nodeEnum.getParserClass().getConstructor(JsonObject.class);
+            // materialsAudiosJsonArray.get(index).getAsJsonObject()
+            return constructor.newInstance(jsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * 获取 长度
      * @return
      */
@@ -141,8 +159,31 @@ public class DraftContent {
         return jsonObject;
     }
 
+    /**
+     * 根据id查询
+     * @param nodeEnum
+     * @param id
+     * @return
+     */
+    private JsonObject getJsonObject(NodeEnum nodeEnum, String id){
+        JsonObject jsonObject = null;
+        switch (nodeEnum){
+            // root 返回root值
+            case SIMPLE_ROOT: throw new RuntimeException("root 不支持id查询");
+            default:
+                JsonArray jsonArray = getJsonArray(nodeEnum);
+                for(int i = 0; i < jsonArray.size(); i++){
+                    JsonObject tmpJsonObject = jsonArray.get(i).getAsJsonObject();
+                    if(id.equalsIgnoreCase(tmpJsonObject.get("id").getAsString())){
+                        jsonObject = tmpJsonObject;
+                        break;
+                    }
+                }
+        }
+        return jsonObject;
+    }
 
-
-
-
+    public JsonObject getRootJsonObject() {
+        return rootJsonObject;
+    }
 }

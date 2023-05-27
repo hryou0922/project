@@ -52,7 +52,7 @@ public class BaseParser<T extends BaseElementVo> {
                     log.debug("save key={} newJsonElemnt={}", key, tmpJsonArrayElement);
                     if(tmpJsonArrayElement.isJsonObject()){
                         isElementJsonObject = true;
-                        saveVo0(tmpJsonArrayElement.getAsJsonObject(), newJsonObject.get(key).getAsJsonArray().get(i).getAsJsonObject());
+                        saveVo0(tmpJsonArrayElement.getAsJsonObject(), desJsonObject.get(key).getAsJsonArray().get(i).getAsJsonObject());
                     }else {
                         log.info("save key={} newJsonElemnt={} 元素不是jsonobject，直接跳出，在外部进行替换", key, tmpJsonArrayElement);
                         isElementJsonObject = false;

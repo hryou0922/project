@@ -27,7 +27,7 @@ public class SimpleRootVo implements BaseElementVo {
 
     private int color_space;
     private int create_time;
-    private int duration;
+    private long duration;
     private float fps;
     private boolean free_render_index_mode_on;
     private String id;

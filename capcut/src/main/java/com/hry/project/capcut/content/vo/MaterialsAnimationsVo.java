@@ -63,7 +63,7 @@ public class MaterialsAnimationsVo implements BaseElementVo {
 
         private String category_id;
         private String category_name;
-        private int duration;
+        private long duration;
         private String id;
         private String material_type;
         private String name;

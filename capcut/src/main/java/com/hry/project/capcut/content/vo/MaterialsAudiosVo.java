@@ -73,7 +73,7 @@ public class MaterialsAudiosVo implements BaseElementVo {
     private String category_id;
     private String category_name;
     private int check_flag;
-    private int duration;
+    private long duration;
     private String effect_id;
     private String formula_id;
     private String id;
