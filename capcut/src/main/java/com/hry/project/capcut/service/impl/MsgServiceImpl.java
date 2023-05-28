@@ -75,11 +75,6 @@ public class MsgServiceImpl implements MsgService {
         //从文件中读取CSV数据
         CsvData data = reader.read(FileUtil.file(myConfig.getConfigDir() + File.separator + configFileName));
         List<CsvRow> rows = data.getRows();
-        //遍历行
-//        for (CsvRow csvRow : rows) {
-//            //getRawList返回一个List列表，列表的每一项为CSV中的一个单元格（既逗号分隔部分）
-//            Console.log(csvRow.getRawList());
-//        }
         // 当前值读取第一行
         CsvRow firsRow = rows.get(1);
         log.info(GsonBox.PUBLIC.toJson(firsRow));

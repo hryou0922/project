@@ -17,4 +17,13 @@ public interface TemplateV1Service {
      * @return
      */
     TemplateReturnInfoV1Vo execute(String mp3FileName, String picName, boolean init, LyricTruncatedModeEnum lyricTruncatedModeEnum);
+
+    /**
+     * 执行
+     * @param configFileName 配置文件
+     * @param init
+     * @param lyricTruncatedModeEnum
+     * @return
+     */
+    TemplateReturnInfoV1Vo execute(String configFileName,boolean init, LyricTruncatedModeEnum lyricTruncatedModeEnum);
 }

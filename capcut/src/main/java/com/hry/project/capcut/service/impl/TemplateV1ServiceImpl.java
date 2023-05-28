@@ -1,5 +1,10 @@
 package com.hry.project.capcut.service.impl;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.csv.CsvData;
+import cn.hutool.core.text.csv.CsvReader;
+import cn.hutool.core.text.csv.CsvRow;
+import cn.hutool.core.text.csv.CsvUtil;
 import com.hry.project.capcut.config.MyConfig;
 import com.hry.project.capcut.content.enums.LyricTruncatedModeEnum;
 import com.hry.project.capcut.content.template.impl.TemplateProcessV1Msg;
@@ -8,16 +13,20 @@ import com.hry.project.capcut.pojo.TemplateConfigV1Vo;
 import com.hry.project.capcut.pojo.TemplateReturnInfoV1Vo;
 import com.hry.project.capcut.service.ContextService;
 import com.hry.project.capcut.service.Mp3Service;
+import com.hry.project.capcut.utils.GsonBox;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author: huangrongyou@yixin.im
  * @date: 2023/5/27 22:26
  */
 @Component
+@Slf4j
 public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
     @Autowired
     private TemplateProcessV1Msg templateProcessV1Msg;
@@ -27,6 +36,20 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
     private ContextService contextService;
     @Autowired
     private MyConfig myConfig;
+
+    @Override
+    public TemplateReturnInfoV1Vo execute(String configFileName,boolean init, LyricTruncatedModeEnum lyricTruncatedModeEnum) {
+        CsvReader reader = CsvUtil.getReader();
+        //从文件中读取CSV数据
+        CsvData data = reader.read(FileUtil.file(myConfig.getConfigDir() + File.separator + configFileName));
+        List<CsvRow> rows = data.getRows();
+        // 当前值读取第一行
+        CsvRow firsRow = rows.get(1);
+        log.info(GsonBox.PUBLIC.toJson(firsRow));
+        String mp3FileName = firsRow.get(0);
+        String picName = firsRow.get(1);
+        return execute(mp3FileName, picName, init, lyricTruncatedModeEnum);
+    }
 
     /**
      * 文件

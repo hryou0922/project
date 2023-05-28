@@ -26,4 +26,20 @@ public enum LyricTruncatedModeEnum {
         this.name = name;
         this.desc = desc;
     }
+
+    public static LyricTruncatedModeEnum valueOfType(String type){
+        if(type == null){
+            return BEGIN_TRUNCATE;
+        }
+
+        LyricTruncatedModeEnum enumType = null;
+        for(LyricTruncatedModeEnum tmpEnumType : LyricTruncatedModeEnum.values()){
+            if(tmpEnumType.type.equalsIgnoreCase(type)){
+                enumType = tmpEnumType;
+                break;
+            }
+        }
+        return enumType;
+    }
+
 }
