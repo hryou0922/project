@@ -193,8 +193,8 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         MaterialsTextsParser materialsTextParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_TEXTS, segmentMaterialId);
         MaterialsTextsVo materialsTextVo = materialsTextParser.getVo();
 
-        // 副标题 TODO，可根据配置，作者后面的值是 完整版
-        String newTile = templateConfigV1Vo.getAuthor() + " - 完整版";
+        // 副标题
+        String newTile = templateConfigV1Vo.getAuthor() + " - " + templateConfigV1Vo.getMp3VersionTypeEnum().getName();
         saveContentText(newTile, materialsTextVo);
 
         materialsTextParser.saveVo(materialsTextVo);

@@ -1,5 +1,7 @@
 package com.hry.project.capcut.pojo;
 
+import com.hry.project.capcut.content.enums.LyricTruncatedModeEnum;
+import com.hry.project.capcut.content.enums.Mp3VersionTypeEnum;
 import lombok.Data;
 
 /**
@@ -35,6 +37,10 @@ public class TemplateConfigV1Vo extends BaseTemplateConfigVo {
      */
     private String mp3NameWithPath;
     /**
+     * mp3 类型
+     */
+    private Mp3VersionTypeEnum mp3VersionTypeEnum;
+    /**
      * 作者
      *  和其他值组成 副标题：这里是作者 薛明媛-完整版； 薛明媛-简化版
      */
@@ -62,12 +68,19 @@ public class TemplateConfigV1Vo extends BaseTemplateConfigVo {
      */
     private long alllLricStart;
 
+    /**
+     * 截断的模式
+     */
+    private LyricTruncatedModeEnum lyricTruncatedModeEnum;
+
     public TemplateConfigV1Vo(){
         lyricTransformX = 0;
         lyricTransformY = -0.2593902439024389;
         lyricFontSize = 12;
         lyricGapTime = (long) (1.5 * 1000000L);
         alllLricStart = 0;
+        this.mp3VersionTypeEnum = Mp3VersionTypeEnum.FULL;
+        this.lyricTruncatedModeEnum = LyricTruncatedModeEnum.BEGIN_TRUNCATE;
     }
 
 }
