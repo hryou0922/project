@@ -127,7 +127,7 @@ public class KeyframesVideosVo implements BaseElementVo {
     private double sharpen_value;
     private double smart_color_adjust_value;
     private double temperature_value;
-    private int time_offset;
+    private long time_offset;
     private double tone_value;
     private String type;
     private double vignetting_value;

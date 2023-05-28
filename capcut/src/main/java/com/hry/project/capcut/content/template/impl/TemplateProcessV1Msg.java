@@ -4,21 +4,19 @@ import cn.hutool.core.io.file.FileNameUtil;
 import com.google.gson.JsonObject;
 import com.hry.project.capcut.content.DraftContent;
 import com.hry.project.capcut.content.enums.NodeEnum;
-import com.hry.project.capcut.content.parser.MaterialsAudiosParser;
-import com.hry.project.capcut.content.parser.MaterialsTextsParser;
-import com.hry.project.capcut.content.parser.MaterialsVideosParser;
-import com.hry.project.capcut.content.parser.TracksParser;
+import com.hry.project.capcut.content.parser.*;
 import com.hry.project.capcut.content.template.BaseTemplateProcessMsg;
-import com.hry.project.capcut.content.vo.MaterialsAudiosVo;
-import com.hry.project.capcut.content.vo.MaterialsTextsVo;
-import com.hry.project.capcut.content.vo.MaterialsVideosVo;
-import com.hry.project.capcut.content.vo.TracksVo;
+import com.hry.project.capcut.content.vo.*;
 import com.hry.project.capcut.content.vo.common.SourceTimerangeVo;
 import com.hry.project.capcut.content.vo.common.TargetTimerangeVo;
 import com.hry.project.capcut.pojo.TemplateConfigV1Vo;
 import com.hry.project.capcut.utils.GsonBox;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 版本1
@@ -78,6 +76,39 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         String segmentMaterialId = segmentsBean.getMaterial_id();
         // 更新主轨道时长
         updateTimeRange(mp3Duration, segmentsBean);
+        // 处理关键帧：使用第2帧
+        String keyframeId = segmentsBean.getKeyframe_refs().get(0);
+        // 获取第一个帧模板获取，其他帧重新创建
+        KeyframesVideosParser keyframesVideosParser = draftContent.getJsonArrayParser(NodeEnum.KEYFRAMES_VIDEOS, keyframeId);
+        KeyframesVideosVo keyframesVideosVo = keyframesVideosParser.getVo();
+
+        // 重新创建帧列表
+        List<String> newKeyframeIdList = new ArrayList<>();
+        newKeyframeIdList.add(keyframeId);
+        segmentsBean.setKeyframe_refs(newKeyframeIdList);
+        long fullDuration = templateConfigV1Vo.getDuration();
+        // 每段长度
+        long partDuraton = 30 * 1000000L;
+        long newTimeoffset = partDuraton;
+        while(true){
+            // 创建新帧
+            String newKeyframeId = UUID.randomUUID().toString();
+            newKeyframeIdList.add(newKeyframeId);
+            // 更新帧新值
+            keyframesVideosVo.setId(newKeyframeId);
+            keyframesVideosVo.setTime_offset(newTimeoffset);
+            // 实现循环左右
+            keyframesVideosVo.getPosition().setX(keyframesVideosVo.getPosition().getX() * -1);
+            KeyframesVideosParser newKeyframesVideosParser = draftContent.createJsonArrayParser(NodeEnum.KEYFRAMES_VIDEOS);
+            newKeyframesVideosParser.saveVo(keyframesVideosVo);
+
+            if(newTimeoffset >= fullDuration){
+                break;
+            }
+            // 更新值
+            newTimeoffset = (newTimeoffset + partDuraton) < fullDuration ? (newTimeoffset + partDuraton) : fullDuration;
+        }
+        // 保存
         tracksParser.saveVo(tracksVo);
 
         // 主轨道的材料的图片信息更新

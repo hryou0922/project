@@ -114,6 +114,7 @@ public class DraftContent {
         }
     }
 
+
     /**
      * 获取数组 解析类 BaseParser
      * @param nodeEnum
@@ -132,6 +133,45 @@ public class DraftContent {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+
+    /**
+     * 获取数组 解析类 BaseParser
+     * @param nodeEnum
+     * @param <V>
+     * @return
+     */
+    public <V extends BaseParser> V createJsonArrayParser(NodeEnum nodeEnum){
+        JsonObject jsonObject = createJsonObject(nodeEnum);
+        Constructor<V> constructor = null;
+        try {
+            constructor = nodeEnum.getParserClass().getConstructor(JsonObject.class);
+            // materialsAudiosJsonArray.get(index).getAsJsonObject()
+            return constructor.newInstance(jsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 根据id查询
+     * @param nodeEnum
+     * @return
+     */
+    private JsonObject createJsonObject(NodeEnum nodeEnum){
+        JsonObject jsonObject = null;
+        switch (nodeEnum){
+            // root 返回root值
+            case SIMPLE_ROOT: throw new RuntimeException("root 不支持id查询");
+            default:
+                JsonArray jsonArray = getJsonArray(nodeEnum);
+                JsonObject newJsonObject = new JsonObject();
+                jsonArray.add(newJsonObject);
+                jsonObject = newJsonObject;
+        }
+        return jsonObject;
     }
 
     /**

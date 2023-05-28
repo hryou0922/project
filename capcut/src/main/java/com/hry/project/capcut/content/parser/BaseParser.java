@@ -27,7 +27,14 @@ public class BaseParser<T extends BaseElementVo> {
     public void saveVo(T vo){
         // 保存时，如果有些值没有被转，则不能简单的替换
         JsonObject newJsonObject = GsonBox.PUBLIC.toJsonTree(vo).getAsJsonObject();
-        saveVo0(newJsonObject, this.jsonObject);
+        if(this.jsonObject.size() == 0){
+            // 当在数组下新建时，json属性为空，则简单复制就可以
+            for(Map.Entry<String, JsonElement> entry : newJsonObject.entrySet()){
+                this.jsonObject.add(entry.getKey(), entry.getValue());
+            }
+        }else {
+            saveVo0(newJsonObject, this.jsonObject);
+        }
     }
 
     /**
