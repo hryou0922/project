@@ -53,11 +53,16 @@ public class TemplateConfigV1Vo extends BaseTemplateConfigVo {
      * 歌词文字大小
      */
     private int lyricFontSize;
+    /**
+     * 总视频长度 = 秒数时长 * 1000000L
+     */
+    private long lyricGapTime;
 
     public TemplateConfigV1Vo(){
         lyricTransformX = 0;
         lyricTransformY = -0.2593902439024389;
         lyricFontSize = 12;
+        lyricGapTime = 2 * 1000000L;
     }
 
 }

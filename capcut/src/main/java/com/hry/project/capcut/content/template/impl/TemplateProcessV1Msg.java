@@ -237,11 +237,12 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         double lyricTransformX = templateConfigV1Vo.getLyricTransformX();
         double lyricTransformY = templateConfigV1Vo.getLyricTransformY();
 
-        long mp3Duration = templateConfigV1Vo.getDuration();
+        long duration = templateConfigV1Vo.getDuration();
         TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, index);
         TracksVo tracksVo = tracksParser.getVo();
         // 首个歌词起始值
-        Long firstLyricStart = null;
+        Long tructLyricStart = null;
+        //
 
         for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
             // 歌词起始
@@ -253,15 +254,21 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
             // 歌词动画
             String materialAnimationId = segmentsBean.getExtra_material_refs().get(0);
 
+            // 歌词
+            if(tructLyricStart == null){
+                long lyricGapTime = templateConfigV1Vo.getLyricGapTime();
+                if(lyricStart < lyricGapTime){
+                    log.debug("首个歌词的起始时间为{} < {}，忽略，不执行截断", lyricStart, lyricGapTime);
+                }else {
+                    // 首个歌词
+                    tructLyricStart = lyricStart - lyricGapTime;
+                    log.debug("首个歌词的起始时间为:{}, 持续时间 {}", lyricStart, lyricDuration);
+                }
+            }
+
             // 设置歌词位置
             setLyricTransformLocation(lyricTransformX, lyricTransformY, segmentsBean);
 
-            // 歌词
-            if(firstLyricStart == null){
-                // 首个歌词
-                firstLyricStart = lyricStart;
-                log.debug("首个歌词的起始时间为:{}, 持续时间 {}", lyricStart, lyricDuration);
-            }
             // 配置歌词文本字体信息
             configLyricTextVo(draftContent, templateConfigV1Vo, materialId);
 
@@ -273,20 +280,16 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
 //            updateTimeRange(mp3Duration, segmentsBean);
 
         }
+
+        // 歌词前部分截断
+        for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
+            // 歌词起始
+            long lyricStart = segmentsBean.getTarget_timerange().getStart();
+            segmentsBean.getTarget_timerange().setStart(lyricStart - tructLyricStart);
+            log.debug("首个:{} 歌词截断start: {} -> {}", tructLyricStart, lyricStart, lyricStart - tructLyricStart);
+        }
         // 保存配置
         tracksParser.saveVo(tracksVo);
-
-//        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
-//        String segmentMaterialId = segmentsBean.getMaterial_id();
-//        // 更新主轨道时长
-//        updateTimeRange(mp3Duration, segmentsBean);
-//        tracksParser.saveVo(tracksVo);
-//
-//        // 轨道的材料的
-//        MaterialsVideosParser materialsVideosParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS, segmentMaterialId);
-//        MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
-//        materialsVideosVo.setDuration(mp3Duration);
-//        materialsVideosParser.saveVo(materialsVideosVo);
     }
 
     /**
