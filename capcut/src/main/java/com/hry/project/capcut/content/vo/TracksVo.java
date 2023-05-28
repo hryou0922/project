@@ -173,7 +173,7 @@ public class TracksVo implements BaseElementVo {
 
             private int alpha;
             private FlipBean flip;
-            private int rotation;
+            private double rotation;
             private ScaleBean scale;
             private TransformBean transform;
 
@@ -196,8 +196,8 @@ public class TracksVo implements BaseElementVo {
                  * y : 1
                  */
 
-                private int x;
-                private int y;
+                private double x;
+                private double y;
 
             }
 
@@ -208,8 +208,8 @@ public class TracksVo implements BaseElementVo {
                  * y : 0
                  */
 
-                private int x;
-                private int y;
+                private double x;
+                private double y;
 
             }
         }

@@ -31,11 +31,18 @@ public class TemplateConfigV1Vo extends BaseTemplateConfigVo {
      */
     private String mp3Name;
     /**
+     * 新的mp3,带路径： D:\douyin\sucai\mp3/小城故事#邓丽君.mp3
+     */
+    private String mp3NameWithPath;
+    /**
      * 作者
      *  和其他值组成 副标题：这里是作者 薛明媛-完整版； 薛明媛-简化版
      */
     private String author;
-
+    /**
+     * 是否已经有歌词：如果有歌词，则执行歌词处理
+     */
+    private boolean lyric;
 
 
 }

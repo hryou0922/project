@@ -49,13 +49,27 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
 
         TemplateConfigV1Vo templateConfigV1Vo = new TemplateConfigV1Vo();
         templateConfigV1Vo.setDuration(durationSecond * 1000000L);
+
+
+        // pic 信息
         templateConfigV1Vo.setPicName(picName);
 //        templateConfigV1Vo.setPicNameWithPath(myConfig.getPicDir() + File.separator + picName);
         // TODO 待修改
         templateConfigV1Vo.setPicNameWithPath("D:\\douyin\\sucai\\tupian" + File.separator + picName);
+
+        // mp3信息
+        templateConfigV1Vo.setMp3Name(mp3FileName);
+        // TODO 待修改
+//        templateConfigV1Vo.setPicNameWithPath(myConfig.getMp3Dir() + File.separator + mp3FileName);
+        templateConfigV1Vo.setMp3NameWithPath("D:\\douyin\\sucai\\mp3" + File.separator + mp3FileName);
+
+
         templateConfigV1Vo.setMp3Name(mp3FileName);
         templateConfigV1Vo.setAuthor(author);
         templateConfigV1Vo.setTitle(title);
+
+        // TODO 是否有歌词判断
+
         String newContent = templateProcessV1Msg.execute(content, templateConfigV1Vo);
         contextService.saveContent2File(newContent);
 

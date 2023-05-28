@@ -4,10 +4,12 @@ import cn.hutool.core.io.file.FileNameUtil;
 import com.google.gson.JsonObject;
 import com.hry.project.capcut.content.DraftContent;
 import com.hry.project.capcut.content.enums.NodeEnum;
+import com.hry.project.capcut.content.parser.MaterialsAudiosParser;
 import com.hry.project.capcut.content.parser.MaterialsTextsParser;
 import com.hry.project.capcut.content.parser.MaterialsVideosParser;
 import com.hry.project.capcut.content.parser.TracksParser;
 import com.hry.project.capcut.content.template.BaseTemplateProcessMsg;
+import com.hry.project.capcut.content.vo.MaterialsAudiosVo;
 import com.hry.project.capcut.content.vo.MaterialsTextsVo;
 import com.hry.project.capcut.content.vo.MaterialsVideosVo;
 import com.hry.project.capcut.content.vo.TracksVo;
@@ -32,6 +34,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
     protected JsonObject execute0(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
 
         // 长度
+        int size = draftContent.getJsonArraySize(NodeEnum.TRACKS);
 
         // 0:主轨道
         processTrack0(draftContent, templateConfigV1Vo);
@@ -45,11 +48,17 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         processTrack4(draftContent, templateConfigV1Vo);
         // 5: 主标题-歌名
         processTrack5(draftContent, templateConfigV1Vo);
-        // 6: 歌词
-        processTrack6(draftContent, templateConfigV1Vo);
-        // 7: mp3
-        processTrack7(draftContent, templateConfigV1Vo);
 
+        // 歌词处理
+        if(templateConfigV1Vo.isLyric() && size >= 7){
+            // 6: 歌词
+            processTrackLyric(draftContent, templateConfigV1Vo);
+        }else {
+            log.info("没有个歌词，不进行处理");
+        }
+        // 最后：mp3
+        // mp3
+        processTrackMp3(draftContent, templateConfigV1Vo, size - 1);
         return draftContent.getRootJsonObject();
     }
 
@@ -183,7 +192,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         MaterialsTextsParser materialsTextParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_TEXTS, segmentMaterialId);
         MaterialsTextsVo materialsTextVo = materialsTextParser.getVo();
         // 主标题
-        String newTitle = FileNameUtil.mainName(templateConfigV1Vo.getMp3Name());
+        String newTitle = FileNameUtil.mainName(templateConfigV1Vo.getTitle());
         saveContentText(newTitle, materialsTextVo);
         materialsTextParser.saveVo(materialsTextVo);
     }
@@ -193,7 +202,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
      * @param draftContent
      * @param templateConfigV1Vo
      */
-    private void processTrack6(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+    private void processTrackLyric(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
         log.debug("处理轨道 歌词 : 6");
 //        long mp3Duration = templateConfigV1Vo.getDuration();
 //        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 6);
@@ -216,22 +225,28 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
      * @param draftContent
      * @param templateConfigV1Vo
      */
-    private void processTrack7(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
-        log.debug("处理轨道 mp3 : 7");
-//        long mp3Duration = templateConfigV1Vo.getDuration();
-//        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 7);
-//        TracksVo tracksVo = tracksParser.getVo();
-//        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
-//        String segmentMaterialId = segmentsBean.getMaterial_id();
-//        // 更新主轨道时长
-//        updateTimeRange(mp3Duration, segmentsBean);
-//        tracksParser.saveVo(tracksVo);
-//
-//        // 轨道的材料的
-//        MaterialsVideosParser materialsVideosParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS, segmentMaterialId);
-//        MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
-//        materialsVideosVo.setDuration(mp3Duration);
-//        materialsVideosParser.saveVo(materialsVideosVo);
+    private void processTrackMp3(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo, int trackIndex) {
+        log.debug("处理轨道 mp3 : {}", trackIndex);
+        long duration = templateConfigV1Vo.getDuration();
+        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, trackIndex);
+        TracksVo tracksVo = tracksParser.getVo();
+        String type = tracksVo.getType();
+        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
+        String segmentMaterialId = segmentsBean.getMaterial_id();
+        // TODO 这里可配置切除头，去除尾部，不切除
+        // 更新主轨道时长
+        updateTimeRange(duration, segmentsBean);
+        tracksParser.saveVo(tracksVo);
+
+        // 轨道的材料的： mp3
+        MaterialsAudiosParser materialsAudioParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_AUDIOS, segmentMaterialId);
+        MaterialsAudiosVo materialsAudioVo = materialsAudioParser.getVo();
+        // TODO 截断后，这里duration 也需要打断 ?
+        materialsAudioVo.setDuration(duration);
+        materialsAudioVo.setPath(templateConfigV1Vo.getMp3NameWithPath());
+        materialsAudioVo.setName(templateConfigV1Vo.getMp3Name());
+
+        materialsAudioParser.saveVo(materialsAudioVo);
 
     }
 
