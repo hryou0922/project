@@ -60,26 +60,41 @@ public class TemplateConfigV1Vo extends BaseTemplateConfigVo {
      */
     private int lyricFontSize;
     /**
-     * 总视频长度 = 秒数时长 * 1000000L
+     * 首个歌词间隔值 = 秒数时长 * 1000000L
      */
     private long lyricGapTime;
+
     /**
-     * 歌词起始值
+     * 后一个歌词超过前1个歌词这个值则丢弃 = 秒数时长 * 1000000L
+     */
+    private long lyricDiscardThreshold;
+
+    /**
+     * 歌词截断起始值，主要给mp3做截断使用
+     *  回传可被修改
      */
     private long alllLricStart;
-
+    /**
+     * 歌词截断的结束值
+     *  回传可被修改，默认值为空
+     */
+    private Long alllLricEnd;
     /**
      * 截断的模式
      */
     private LyricTruncatedModeEnum lyricTruncatedModeEnum;
+
 
     public TemplateConfigV1Vo(){
         lyricTransformX = 0;
         lyricTransformY = -0.2593902439024389;
         lyricFontSize = 12;
         lyricGapTime = (long) (1.5 * 1000000L);
+        // 可考虑传参数
+        lyricDiscardThreshold = 20 * 1000000L;
         alllLricStart = 0;
         this.mp3VersionTypeEnum = Mp3VersionTypeEnum.FULL;
+        // 可考虑传参数
         this.lyricTruncatedModeEnum = LyricTruncatedModeEnum.BEGIN_TRUNCATE;
     }
 

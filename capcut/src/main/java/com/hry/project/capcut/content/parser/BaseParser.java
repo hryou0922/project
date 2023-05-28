@@ -35,6 +35,16 @@ public class BaseParser<T extends BaseElementVo> {
     }
 
     /**
+     * 覆盖更新
+     * @param vo
+     */
+    public void putVo(T vo){
+        // 保存时，如果有些值没有被转，则不能简单的替换
+        JsonObject newJsonObject = GsonBox.PUBLIC.toJsonTree(vo).getAsJsonObject();
+        simpeCopyJsonObject(newJsonObject, this.jsonObject);
+    }
+
+    /**
      * 简单复制：
      *  将新的对象的属性简单复制到目标文件
      * @param newJsonObject
