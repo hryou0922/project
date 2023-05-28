@@ -1,6 +1,7 @@
 package com.hry.project.capcut.service.impl;
 
 import com.hry.project.capcut.config.MyConfig;
+import com.hry.project.capcut.content.enums.LyricTruncatedModeEnum;
 import com.hry.project.capcut.content.template.impl.TemplateProcessV1Msg;
 import com.hry.project.capcut.pojo.FileMp3InfoVo;
 import com.hry.project.capcut.pojo.TemplateConfigV1Vo;
@@ -34,7 +35,7 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
      * @return
      */
     @Override
-    public TemplateReturnInfoV1Vo execute(String mp3FileName, String picName, boolean init){
+    public TemplateReturnInfoV1Vo execute(String mp3FileName, String picName, boolean init, LyricTruncatedModeEnum lyricTruncatedModeEnum){
         TemplateConfigV1Vo templateConfigV1Vo = new TemplateConfigV1Vo();
 
         FileMp3InfoVo mp3InfoVo = mp3Service.parser(mp3FileName);
@@ -49,10 +50,7 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
 
         // 获取文件内容
         String content = getContentFromFile(init, templateConfigV1Vo);
-
-
         templateConfigV1Vo.setDuration(durationSecond * 1000000L);
-
 
         // pic 信息
         templateConfigV1Vo.setPicName(picName);
@@ -70,6 +68,7 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
         templateConfigV1Vo.setMp3Name(mp3FileName);
         templateConfigV1Vo.setAuthor(author);
         templateConfigV1Vo.setTitle(title);
+        templateConfigV1Vo.setLyricTruncatedModeEnum(lyricTruncatedModeEnum);
 
         String newContent = templateProcessV1Msg.execute(content, templateConfigV1Vo);
         contextService.saveContent2File(newContent);

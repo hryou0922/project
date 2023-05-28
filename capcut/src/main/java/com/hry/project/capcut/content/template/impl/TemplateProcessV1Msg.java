@@ -3,6 +3,7 @@ package com.hry.project.capcut.content.template.impl;
 import cn.hutool.core.io.file.FileNameUtil;
 import com.google.gson.JsonObject;
 import com.hry.project.capcut.content.DraftContent;
+import com.hry.project.capcut.content.enums.LyricTruncatedModeEnum;
 import com.hry.project.capcut.content.enums.NodeEnum;
 import com.hry.project.capcut.content.parser.*;
 import com.hry.project.capcut.content.template.BaseTemplateProcessMsg;
@@ -40,14 +41,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
             processTrackLyric(draftContent, templateConfigV1Vo, 6);
         }
         // 主root信息
-        log.debug("处理root参数 : 0");
-        long duration = templateConfigV1Vo.getDuration();
-        SimpleRootParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.SIMPLE_ROOT, -1);
-        SimpleRootVo tracksVo = tracksParser.getVo();
-        tracksVo.setDuration(duration);
-        tracksParser.saveVo(tracksVo);
-
-
+        processRoot(draftContent, templateConfigV1Vo);
         // 0:主轨道
         processTrack0(draftContent, templateConfigV1Vo);
         // 1：音乐进度条
@@ -67,6 +61,19 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         return draftContent.getRootJsonObject();
     }
 
+    /**
+     * 处理root信息
+     * @param draftContent
+     * @param templateConfigV1Vo
+     */
+    private void processRoot(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
+        log.debug("处理root参数 : 0");
+        long duration = templateConfigV1Vo.getDuration();
+        SimpleRootParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.SIMPLE_ROOT, -1);
+        SimpleRootVo tracksVo = tracksParser.getVo();
+        tracksVo.setDuration(duration);
+        tracksParser.saveVo(tracksVo);
+    }
 
 
     /**
@@ -263,7 +270,6 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
 
         // 设置总时长变短
         templateConfigV1Vo.setDuration(struncatedEnd - allLyricStart);
-//        templateConfigV1Vo.setDuration(71266667);
         templateConfigV1Vo.setAlllLricStart(allLyricStart);
         log.debug("视频总时长: {} ->{} 起始值:{}", duration, duration - allLyricStart, allLyricStart);
 
@@ -272,10 +278,8 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
             // 歌词起始
             long lyricStart = segmentsBean.getTarget_timerange().getStart();
             segmentsBean.getTarget_timerange().setStart(lyricStart - allLyricStart);
-            log.debug("首个:{} 歌词截断start: {} -> {}", allLyricStart, lyricStart, lyricStart - allLyricStart);
         }
-        // 保存配置
-//        tracksParser.saveVo(tracksVo);
+        // 覆盖配置
         tracksParser.putVo(tracksVo);
     }
 
@@ -286,33 +290,33 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
      * @return 返回阶段的时间末位点
      */
     private long procesStruncated(TemplateConfigV1Vo templateConfigV1Vo, TracksVo tracksVo) {
-//        // 首个歌词截断值
-//        List<Long> alllLricEndList = new ArrayList<>();
-
         // 首个要阶段的起始值
         long struncatedEnd = templateConfigV1Vo.getDuration();
-        // 上一个歌词结束的时间
-        long lastLyricEnd = 0;
-        // 截断处理后的列表
-        List<TracksVo.SegmentsBean> newSegmentList = new ArrayList<>();
-        for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
-            // 歌词起始
-            long lyricStart = segmentsBean.getTarget_timerange().getStart();
-            // 歌词持续信息
-            long lyricDuration = segmentsBean.getTarget_timerange().getDuration();
-            // 歌词
-            if(lyricStart - lastLyricEnd > templateConfigV1Vo.getLyricDiscardThreshold()){
-                struncatedEnd = lastLyricEnd;
-                log.info("立即进行截断的时间点： {} 和上一个值 {} 之差 {} > {}, 做为备选点"
-                        , lyricStart, lastLyricEnd, (lyricStart - lastLyricEnd),  templateConfigV1Vo.getLyricDiscardThreshold());
-                break;
+        if(templateConfigV1Vo.getLyricTruncatedModeEnum() == LyricTruncatedModeEnum.BEGIN_TRUNCATE_ONLY_FIRST_PART){
+            // 上一个歌词结束的时间
+            long lastLyricEnd = 0;
+            // 截断处理后的列表
+            List<TracksVo.SegmentsBean> newSegmentList = new ArrayList<>();
+            for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
+                // 歌词起始
+                long lyricStart = segmentsBean.getTarget_timerange().getStart();
+                // 歌词持续信息
+                long lyricDuration = segmentsBean.getTarget_timerange().getDuration();
+                // 歌词
+                if(lyricStart - lastLyricEnd > templateConfigV1Vo.getLyricDiscardThreshold()){
+                    // 加上gap值
+                    struncatedEnd = lastLyricEnd + templateConfigV1Vo.getLyricGapTime();
+                    log.info("立即进行截断的时间点： {} 和上一个值 {} 之差 {} > {}, 做为备选点"
+                            , lyricStart, lastLyricEnd, (lyricStart - lastLyricEnd),  templateConfigV1Vo.getLyricDiscardThreshold());
+                    break;
+                }
+                lastLyricEnd = lyricStart + lyricDuration;
+                // 添加
+                newSegmentList.add(segmentsBean);
             }
-            lastLyricEnd = lyricStart + lyricDuration;
-            // 添加
-            newSegmentList.add(segmentsBean);
+            // 进行替换
+            tracksVo.setSegments(newSegmentList);
         }
-        // 进行替换
-        tracksVo.setSegments(newSegmentList);
         return struncatedEnd;
     }
 
@@ -322,8 +326,14 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
      * @param tracksVo
      * @return
      */
-    private Long getLyricStart(TemplateConfigV1Vo templateConfigV1Vo, TracksVo tracksVo) {
-        Long allLyricStart;
+    private long getLyricStart(TemplateConfigV1Vo templateConfigV1Vo, TracksVo tracksVo) {
+
+        if(templateConfigV1Vo.getLyricTruncatedModeEnum() == LyricTruncatedModeEnum.FULL){
+            log.debug("当前是全量值，不执行首阶段");
+            return 0;
+        }
+
+        long allLyricStart;
         TracksVo.SegmentsBean firstSegmentsBean = tracksVo.getSegments().get(0);
         // 歌词起始
         long lyricStart = firstSegmentsBean.getTarget_timerange().getStart();
