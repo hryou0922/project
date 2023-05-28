@@ -58,20 +58,21 @@ public class BaseParser<T extends BaseElementVo> {
             JsonElement val = entry.getValue();
             if(val instanceof JsonObject){
                 JsonObject tmpNewJsonObject = (JsonObject) val;
-                log.debug("save key={} newJsonObject={}", key, tmpNewJsonObject);
+//                log.debug("save key={} newJsonObject={}", key, tmpNewJsonObject);
                 saveVo0(tmpNewJsonObject, desJsonObject.get(key).getAsJsonObject());
             }else if( val instanceof JsonArray){
                 JsonArray jsonArray = (JsonArray) val;
-                // 如果对象是 jsonObject，则循环进去，否则外部直接替换
+                // 如果对象是 jsonObject，则循环进去，否则外部直接替换，如列表的内容是字符串 "111","122","333"
+                // save key=extra_material_refs newJsonElemnt="0349B9B5-FB07-41be-AB53-4409C4FE102F" 元素不是jsonobject，直接跳出，在外部进行替换
                 boolean isElementJsonObject = true;
                 for(int i = 0; i < jsonArray.size(); i++){
                     JsonElement tmpJsonArrayElement = jsonArray.get(i);
-                    log.debug("save key={} newJsonElemnt={}", key, tmpJsonArrayElement);
+//                    log.debug("save key={} newJsonElemnt={}", key, tmpJsonArrayElement);
                     if(tmpJsonArrayElement.isJsonObject()){
                         isElementJsonObject = true;
                         // 如果数组不相等：如数组有新增，则先创建
                         JsonArray desJsonArray = desJsonObject.get(key).getAsJsonArray();
-                        if(i > desJsonArray.size()){
+                        if(i < desJsonArray.size()){
                             saveVo0(tmpJsonArrayElement.getAsJsonObject(), desJsonArray.get(i).getAsJsonObject());
                         }else {
                             // 在数组上创建一个新的json，然后将数据添加到上面

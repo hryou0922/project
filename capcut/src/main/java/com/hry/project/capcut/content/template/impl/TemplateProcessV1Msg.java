@@ -68,13 +68,13 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
      */
     private void processTrack0(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
         log.debug("处理主轨道 图片 : 0");
-        long mp3Duration = templateConfigV1Vo.getDuration();
+        long duration = templateConfigV1Vo.getDuration();
         TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 0);
         TracksVo tracksVo = tracksParser.getVo();
         TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
         String segmentMaterialId = segmentsBean.getMaterial_id();
         // 更新主轨道时长
-        updateTimeRange(mp3Duration, segmentsBean);
+        updateTimeRange(duration, segmentsBean);
         // 处理关键帧：使用第2帧
         String keyframeId = segmentsBean.getKeyframe_refs().get(0);
         // 获取第一个帧模板获取，其他帧重新创建
@@ -113,7 +113,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         // 主轨道的材料的图片信息更新
         MaterialsVideosParser materialsVideosParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_VIDEOS, segmentMaterialId);
         MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
-        materialsVideosVo.setDuration(mp3Duration);
+        materialsVideosVo.setDuration(duration);
         materialsVideosVo.setMaterial_name(templateConfigV1Vo.getPicName());
         materialsVideosVo.setPath(templateConfigV1Vo.getPicNameWithPath());
         materialsVideosParser.saveVo(materialsVideosVo);
@@ -241,8 +241,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, index);
         TracksVo tracksVo = tracksParser.getVo();
         // 首个歌词起始值
-        Long tructLyricStart = null;
-        //
+        Long allLyricStart = null;
 
         for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
             // 歌词起始
@@ -255,13 +254,14 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
             String materialAnimationId = segmentsBean.getExtra_material_refs().get(0);
 
             // 歌词
-            if(tructLyricStart == null){
+            if(allLyricStart == null){
                 long lyricGapTime = templateConfigV1Vo.getLyricGapTime();
                 if(lyricStart < lyricGapTime){
                     log.debug("首个歌词的起始时间为{} < {}，忽略，不执行截断", lyricStart, lyricGapTime);
+                    allLyricStart = 0L;
                 }else {
                     // 首个歌词
-                    tructLyricStart = lyricStart - lyricGapTime;
+                    allLyricStart = lyricStart - lyricGapTime;
                     log.debug("首个歌词的起始时间为:{}, 持续时间 {}", lyricStart, lyricDuration);
                 }
             }
@@ -281,12 +281,17 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
 
         }
 
+
+        // 设置总时长变短
+        templateConfigV1Vo.setDuration(duration - allLyricStart);
+        templateConfigV1Vo.setAlllLricStart(allLyricStart);
+        log.debug("视频总时长: {} ->{} 起始值:{}", duration, duration - allLyricStart, allLyricStart);
         // 歌词前部分截断
         for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
             // 歌词起始
             long lyricStart = segmentsBean.getTarget_timerange().getStart();
-            segmentsBean.getTarget_timerange().setStart(lyricStart - tructLyricStart);
-            log.debug("首个:{} 歌词截断start: {} -> {}", tructLyricStart, lyricStart, lyricStart - tructLyricStart);
+            segmentsBean.getTarget_timerange().setStart(lyricStart - allLyricStart);
+            log.debug("首个:{} 歌词截断start: {} -> {}", allLyricStart, lyricStart, lyricStart - allLyricStart);
         }
         // 保存配置
         tracksParser.saveVo(tracksVo);
@@ -387,7 +392,8 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         String segmentMaterialId = segmentsBean.getMaterial_id();
         // TODO 这里可配置切除头，去除尾部，不切除
         // 更新主轨道时长
-        updateTimeRange(duration, segmentsBean);
+//        updateTimeRange(duration, segmentsBean);
+        updateTimeRange(0L, duration, templateConfigV1Vo.getAlllLricStart(), duration, segmentsBean);
         tracksParser.saveVo(tracksVo);
 
         // 轨道的材料的： mp3
@@ -420,7 +426,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         updateTimeRange(null, duration, null, duration, segmentsBean);
     }
 
-    private void updateTimeRange(Integer targetStart, long targetDuration, Integer sourceStart, long sourceDuration, TracksVo.SegmentsBean segmentsBean) {
+    private void updateTimeRange(Long targetStart, long targetDuration, Long sourceStart, long sourceDuration, TracksVo.SegmentsBean segmentsBean) {
         TargetTimerangeVo targetTimerange = segmentsBean.getTarget_timerange();
         if(targetTimerange == null){
             log.info("没有找到 targetTimerange, {}", GsonBox.PUBLIC.toJson(segmentsBean));
