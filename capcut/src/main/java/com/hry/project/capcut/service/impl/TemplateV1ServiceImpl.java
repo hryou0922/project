@@ -34,7 +34,9 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
      * @return
      */
     @Override
-    public TemplateReturnInfoV1Vo execute(String mp3FileName, String picName){
+    public TemplateReturnInfoV1Vo execute(String mp3FileName, String picName, boolean init){
+        TemplateConfigV1Vo templateConfigV1Vo = new TemplateConfigV1Vo();
+
         FileMp3InfoVo mp3InfoVo = mp3Service.parser(mp3FileName);
         // 语音时长
         long durationSecond = mp3InfoVo.getDurationSecond();
@@ -45,9 +47,10 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
         // 标题
         String title = mp3InfoVo.getTitle();
 
-        String content = contextService.getContentFromFile();
+        // 获取文件内容
+        String content = getContentFromFile(init, templateConfigV1Vo);
 
-        TemplateConfigV1Vo templateConfigV1Vo = new TemplateConfigV1Vo();
+
         templateConfigV1Vo.setDuration(durationSecond * 1000000L);
 
 
@@ -68,8 +71,6 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
         templateConfigV1Vo.setAuthor(author);
         templateConfigV1Vo.setTitle(title);
 
-        // TODO 是否有歌词判断
-
         String newContent = templateProcessV1Msg.execute(content, templateConfigV1Vo);
         contextService.saveContent2File(newContent);
 
@@ -81,4 +82,20 @@ public class TemplateV1ServiceImpl extends BaseTemplateV1Service {
         templateReturnInfoV1Vo.setTitle(title);
         return templateReturnInfoV1Vo;
     }
+
+    private String getContentFromFile(boolean init, TemplateConfigV1Vo templateConfigV1Vo) {
+        String content;
+        if(init) {
+            // 如果是初始化，则从模板获取
+            content = contextService.getInitContentFromFile();
+            templateConfigV1Vo.setLyric(false);
+        }else {
+            // 从工程目录获取
+            content = contextService.getSonContentFromFile();
+            // 此时应该有歌词
+            templateConfigV1Vo.setLyric(true);
+        }
+        return content;
+    }
+
 }

@@ -16,10 +16,19 @@ public class TemplateV1ServiceImplTest extends TestBase {
     private TemplateV1ServiceImpl templateV1Service;
 
     @Test
-    public void execute(){
+    public void executeInitTrue(){
         String mp3FileName = "小城故事#邓丽君.mp3";
         String picName = "黄昏.jpg";
-        TemplateReturnInfoV1Vo templateReturnInfoV1Vo = templateV1Service.execute(mp3FileName, picName);
+        TemplateReturnInfoV1Vo templateReturnInfoV1Vo = templateV1Service.execute(mp3FileName, picName, true);
+        System.out.println(GsonBox.PUBLIC.toJson(templateReturnInfoV1Vo));
+    }
+
+
+    @Test
+    public void executeInitFalse(){
+        String mp3FileName = "小城故事#邓丽君.mp3";
+        String picName = "黄昏.jpg";
+        TemplateReturnInfoV1Vo templateReturnInfoV1Vo = templateV1Service.execute(mp3FileName, picName, false);
         System.out.println(GsonBox.PUBLIC.toJson(templateReturnInfoV1Vo));
     }
 }

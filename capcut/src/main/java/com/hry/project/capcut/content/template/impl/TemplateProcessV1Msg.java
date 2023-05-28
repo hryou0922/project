@@ -34,6 +34,12 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         // 长度
         int size = draftContent.getJsonArraySize(NodeEnum.TRACKS);
 
+        // 先处理歌词
+        if(templateConfigV1Vo.isLyric()){
+            // 6: 歌词
+            processTrackLyric(draftContent, templateConfigV1Vo, 6);
+        }
+
         // 0:主轨道
         processTrack0(draftContent, templateConfigV1Vo);
         // 1：音乐进度条
@@ -47,13 +53,6 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
         // 5: 主标题-歌名
         processTrack5(draftContent, templateConfigV1Vo);
 
-        // 歌词处理
-        if(templateConfigV1Vo.isLyric() && size >= 7){
-            // 6: 歌词
-            processTrackLyric(draftContent, templateConfigV1Vo);
-        }else {
-            log.info("没有个歌词，不进行处理");
-        }
         // 最后：mp3
         // mp3
         processTrackMp3(draftContent, templateConfigV1Vo, size - 1);
@@ -233,11 +232,50 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
      * @param draftContent
      * @param templateConfigV1Vo
      */
-    private void processTrackLyric(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo) {
-        log.debug("处理轨道 歌词 : 6");
-//        long mp3Duration = templateConfigV1Vo.getDuration();
-//        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, 6);
-//        TracksVo tracksVo = tracksParser.getVo();
+    private void processTrackLyric(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo, int index) {
+        log.debug("处理轨道 歌词");
+        double lyricTransformX = templateConfigV1Vo.getLyricTransformX();
+        double lyricTransformY = templateConfigV1Vo.getLyricTransformY();
+
+        long mp3Duration = templateConfigV1Vo.getDuration();
+        TracksParser tracksParser = draftContent.getJsonArrayParser(NodeEnum.TRACKS, index);
+        TracksVo tracksVo = tracksParser.getVo();
+        // 首个歌词起始值
+        Long firstLyricStart = null;
+
+        for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
+            // 歌词起始
+            long lyricStart = segmentsBean.getTarget_timerange().getStart();
+            // 歌词持续信息
+            long lyricDuration = segmentsBean.getTarget_timerange().getDuration();
+            // 歌词文本信息
+            String materialId = segmentsBean.getMaterial_id();
+            // 歌词动画
+            String materialAnimationId = segmentsBean.getExtra_material_refs().get(0);
+
+            // 设置歌词位置
+            setLyricTransformLocation(lyricTransformX, lyricTransformY, segmentsBean);
+
+            // 歌词
+            if(firstLyricStart == null){
+                // 首个歌词
+                firstLyricStart = lyricStart;
+                log.debug("首个歌词的起始时间为:{}, 持续时间 {}", lyricStart, lyricDuration);
+            }
+            // 配置歌词文本字体信息
+            configLyricTextVo(draftContent, templateConfigV1Vo, materialId);
+
+            // 对应歌词动画处理
+            configLyricLryicAnimationVo(draftContent, templateConfigV1Vo, lyricDuration, materialAnimationId);
+
+
+            // 更新歌词轨道时长
+//            updateTimeRange(mp3Duration, segmentsBean);
+
+        }
+        // 保存配置
+        tracksParser.saveVo(tracksVo);
+
 //        TracksVo.SegmentsBean segmentsBean = tracksVo.getSegments().get(0);
 //        String segmentMaterialId = segmentsBean.getMaterial_id();
 //        // 更新主轨道时长
@@ -249,6 +287,86 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
 //        MaterialsVideosVo materialsVideosVo = materialsVideosParser.getVo();
 //        materialsVideosVo.setDuration(mp3Duration);
 //        materialsVideosParser.saveVo(materialsVideosVo);
+    }
+
+    /**
+     * 配置歌词动画效果
+     * @param draftContent
+     * @param templateConfigV1Vo
+     * @param lyricDuration
+     * @param materialId
+     */
+    private void configLyricLryicAnimationVo(DraftContent draftContent,  TemplateConfigV1Vo templateConfigV1Vo,
+                                             long lyricDuration, String materialId) {
+        MaterialsAnimationsParser materialsAnimationsParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_MATERIAL_ANIMATIONS, materialId);
+        MaterialsAnimationsVo materialsAnimationsVo = materialsAnimationsParser.getVo();
+        List<MaterialsAnimationsVo.AnimationsBean> animationsBeanList = materialsAnimationsVo.getAnimations();
+        MaterialsAnimationsVo.AnimationsBean animationsBean = null;
+        if(animationsBeanList != null || animationsBeanList.size() == 0){
+            animationsBeanList = new ArrayList<>();
+            materialsAnimationsVo.setAnimations(animationsBeanList);
+            animationsBean = new MaterialsAnimationsVo.AnimationsBean();
+            animationsBeanList.add(animationsBean);
+        }else {
+            // 默认获取首个值
+            animationsBean = animationsBeanList.get(0);
+        }
+        // 设置动画效果： 音符弹跳
+        String animationsId = UUID.randomUUID().toString();
+        animationsBean.setCategory_id("");
+        animationsBean.setCategory_name("");
+        animationsBean.setDuration(lyricDuration);
+        animationsBean.setId(animationsId);
+        animationsBean.setMaterial_type("sticker");
+        animationsBean.setName("音符弹跳");
+        animationsBean.setPanel("");
+        animationsBean.setPath("C:/Users/Administrator/AppData/Local/JianyingPro/User Data/Cache/effect/1644336/86c6e9061b14fd43049b6232ffc113fa");
+        animationsBean.setPlatform("all");
+        animationsBean.setResource_id("6841115718172283406");
+        animationsBean.setStart(0);
+        animationsBean.setType("in");
+        // 保存变化
+        materialsAnimationsParser.saveVo(materialsAnimationsVo);
+    }
+
+    /**
+     * 配置歌词文本字体信息
+     * @param draftContent
+     * @param templateConfigV1Vo
+     * @param materialId
+     */
+    private void configLyricTextVo(DraftContent draftContent, TemplateConfigV1Vo templateConfigV1Vo, String materialId) {
+        // 歌词大小
+        int lyricFontSize = templateConfigV1Vo.getLyricFontSize();
+        // 对应歌词文本处理
+        MaterialsTextsParser materialsTextParser = draftContent.getJsonArrayParser(NodeEnum.MATERIALS_TEXTS, materialId);
+        MaterialsTextsVo materialsTextVo = materialsTextParser.getVo();
+        // 设置文字大小
+        // content : "<size=11><font id="" path="C:/Users/Administrator/AppData/Local/JianyingPro/Apps/4.0.1.9886/Resources/Font/SystemFont/zh-hans.ttf">[oh嘿妈妈]</font></size>"
+        // content : "<font id="" path="C:/Users/Administrator/AppData/Local/JianyingPro/Apps/4.0.1.9886/Resources/Font/SystemFont/zh-hans.ttf"><color=(1.000000, 1.000000, 1.000000, 1.000000)><size=8.000000>[oh嘿妈妈]</size></color></font>"
+        String content = materialsTextVo.getContent();
+        content = "<size="+lyricFontSize+">" + content +  "</size>";
+        materialsTextVo.setContent(content);
+        materialsTextVo.setFont_size(lyricFontSize);
+        materialsTextParser.saveVo(materialsTextVo);
+    }
+
+    /**
+     * 设置歌词位置
+     * @param lyricTransformX
+     * @param lyricTransformY
+     * @param segmentsBean
+     */
+    private void setLyricTransformLocation(double lyricTransformX, double lyricTransformY, TracksVo.SegmentsBean segmentsBean) {
+        TracksVo.SegmentsBean.ClipBean clipBean = segmentsBean.getClip();
+        if(clipBean == null){
+            clipBean = new TracksVo.SegmentsBean.ClipBean();
+            segmentsBean.setClip(clipBean);
+        }
+        TracksVo.SegmentsBean.ClipBean.TransformBean transformBean = new TracksVo.SegmentsBean.ClipBean.TransformBean();
+        transformBean.setX(lyricTransformX);
+        transformBean.setY(lyricTransformY);
+        clipBean.setTransform(transformBean);
     }
 
     /**

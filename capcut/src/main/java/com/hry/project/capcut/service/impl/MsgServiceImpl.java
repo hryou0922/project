@@ -46,7 +46,7 @@ public class MsgServiceImpl implements MsgService {
         // 标题
         String title = mp3InfoVo.getTitle();
 
-        String content = contextService.getContentFromFile();
+        String content = contextService.getInitContentFromFile();
 
         // 开始替换
         String newContent = content;

@@ -7,5 +7,12 @@ import com.hry.project.capcut.pojo.TemplateReturnInfoV1Vo;
  * @date: 2023/5/27 22:25
  */
 public interface TemplateV1Service {
-    TemplateReturnInfoV1Vo execute(String mp3FileName, String picName);
+    /**
+     *
+     * @param mp3FileName
+     * @param picName
+     * @param init 是否初始化
+     * @return
+     */
+    TemplateReturnInfoV1Vo execute(String mp3FileName, String picName, boolean init);
 }

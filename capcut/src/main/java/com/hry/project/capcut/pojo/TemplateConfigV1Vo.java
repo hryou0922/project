@@ -44,5 +44,20 @@ public class TemplateConfigV1Vo extends BaseTemplateConfigVo {
      */
     private boolean lyric;
 
+    /**
+     * 歌词位置
+     */
+    private double lyricTransformX;
+    private double lyricTransformY;
+    /**
+     * 歌词文字大小
+     */
+    private int lyricFontSize;
+
+    public TemplateConfigV1Vo(){
+        lyricTransformX = 0;
+        lyricTransformY = -0.2593902439024389;
+        lyricFontSize = 12;
+    }
 
 }

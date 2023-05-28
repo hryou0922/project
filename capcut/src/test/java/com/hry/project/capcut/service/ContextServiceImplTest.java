@@ -16,7 +16,7 @@ public class ContextServiceImplTest extends TestBase {
 
     @Test
     public void read(){
-        System.out.println(contextService.getContentFromFile());
+        System.out.println(contextService.getInitContentFromFile());
     }
 
     @Test

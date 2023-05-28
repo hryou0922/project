@@ -9,10 +9,10 @@ import com.google.gson.JsonObject;
 public interface ContextService {
 
     /**
-     * 获取文件内容
+     * 获取初始化模板文件内容
      * @return
      */
-    String getContentFromFile();
+    String getInitContentFromFile();
 
     String getSonContentFromFile();
 
