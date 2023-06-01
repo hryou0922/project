@@ -43,7 +43,12 @@ public class TemplateV1ServiceImplTest extends TestBase {
 
     @Test
     public void executeInitFalseBeginFirstPart(){
-        String mp3FileName = "小城故事#邓丽君.mp3";
+//        String mp3FileName = "小城故事#邓丽君.mp3";
+//        String picName = "黄昏.jpg";
+//        TemplateReturnInfoV1Vo templateReturnInfoV1Vo = templateV1Service.execute(mp3FileName, picName, false, LyricTruncatedModeEnum.BEGIN_TRUNCATE_ONLY_FIRST_PART);
+//        System.out.println(GsonBox.PUBLIC.toJson(templateReturnInfoV1Vo));
+
+        String mp3FileName = "爱情木瓜#1983组合.mp3";
         String picName = "黄昏.jpg";
         TemplateReturnInfoV1Vo templateReturnInfoV1Vo = templateV1Service.execute(mp3FileName, picName, false, LyricTruncatedModeEnum.BEGIN_TRUNCATE_ONLY_FIRST_PART);
         System.out.println(GsonBox.PUBLIC.toJson(templateReturnInfoV1Vo));

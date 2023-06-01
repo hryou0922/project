@@ -297,6 +297,7 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
             long lastLyricEnd = 0;
             // 截断处理后的列表
             List<TracksVo.SegmentsBean> newSegmentList = new ArrayList<>();
+            boolean isFirstText = true;
             for(TracksVo.SegmentsBean segmentsBean : tracksVo.getSegments()){
                 // 歌词起始
                 long lyricStart = segmentsBean.getTarget_timerange().getStart();
@@ -304,15 +305,22 @@ public class TemplateProcessV1Msg extends BaseTemplateProcessMsg<TemplateConfigV
                 long lyricDuration = segmentsBean.getTarget_timerange().getDuration();
                 // 歌词
                 if(lyricStart - lastLyricEnd > templateConfigV1Vo.getLyricDiscardThreshold()){
-                    // 加上gap值
-                    struncatedEnd = lastLyricEnd + templateConfigV1Vo.getLyricGapTime();
-                    log.info("立即进行截断的时间点： {} 和上一个值 {} 之差 {} > {}, 做为备选点"
-                            , lyricStart, lastLyricEnd, (lyricStart - lastLyricEnd),  templateConfigV1Vo.getLyricDiscardThreshold());
-                    break;
+                    // 如果第一个文本大于阈值要忽略
+                    if(!isFirstText){
+                        // 加上gap值
+                        struncatedEnd = lastLyricEnd + templateConfigV1Vo.getLyricGapTime();
+                        log.info("立即进行截断的时间点： {} 和上一个值 {} 之差 {} > {}, 做为备选点"
+                                , lyricStart, lastLyricEnd, (lyricStart - lastLyricEnd),  templateConfigV1Vo.getLyricDiscardThreshold());
+                        break;
+                    }
                 }
                 lastLyricEnd = lyricStart + lyricDuration;
                 // 添加
                 newSegmentList.add(segmentsBean);
+                // 表示第一个已经处理
+                if(!isFirstText){
+                    isFirstText = false;
+                }
             }
             // 进行替换
             tracksVo.setSegments(newSegmentList);
